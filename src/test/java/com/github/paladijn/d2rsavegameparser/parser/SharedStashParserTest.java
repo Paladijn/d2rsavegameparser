@@ -39,7 +39,7 @@ class SharedStashParserTest {
 
         assertThat(result).hasSize(3);
 
-        SharedStashTab tab1 = result.get(0);
+        SharedStashTab tab1 = result.getFirst();
         assertThat(tab1.gold()).isEqualTo(100);
         assertThat(tab1.lengthInBytes()).isEqualTo(483);
         assertThat(tab1.items()).hasSize(11);
@@ -61,7 +61,7 @@ class SharedStashParserTest {
 
         assertThat(result).hasSize(3);
 
-        SharedStashTab tab1 = result.get(0);
+        SharedStashTab tab1 = result.getFirst();
         assertThat(tab1.gold()).isZero();
         assertThat(tab1.items()).isEmpty();
 

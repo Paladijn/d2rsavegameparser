@@ -21,6 +21,7 @@ Other applications of the library may include:
 * Etc., etc
 
 ### How to use
+Minimal Java version: 21  
 Required dependencies: org.slf4j:org.slf4j-api
 
 Example projects:

@@ -336,7 +336,7 @@ final class ItemParser {
         if (itemScaffolding.getCntFilledSockets() > 0
                 && itemScaffolding.getItemQuality() == ItemQuality.NORMAL
                 && !itemScaffolding.isRuneword()) {
-            itemBuilder.itemName(String.format("%s %s", "Gemmed", itemScaffolding.getItemName()));
+            itemBuilder.itemName("%s %s".formatted("Gemmed", itemScaffolding.getItemName()));
         }
 
         if (itemScaffolding.isEthereal()) {
@@ -367,7 +367,7 @@ final class ItemParser {
         itemBuilder.personalizedName(personalizedName);
         if (!itemScaffolding.isRuneword()) { // Runewords are on odd duck: the item will become "Personalized's Leather Armor" with the name Stealth.
             final String personalizedFormat = personalizedName.endsWith("s") ? "%s' %s" : "%s's %s";
-            itemBuilder.itemName(String.format(personalizedFormat, personalizedName, itemScaffolding.getItemName()));
+            itemBuilder.itemName(personalizedFormat.formatted(personalizedName, itemScaffolding.getItemName()));
         }
     }
 
@@ -583,7 +583,7 @@ final class ItemParser {
         itemBuilder
                 .rareNameId1(rareId1)
                 .rareNameId2(rareId2)
-                .itemName(String.format("%s %s", name1, name2))
+                .itemName("%s %s".formatted(name1, name2))
                 .reqLvl(reqLvl);
     }
 
@@ -656,7 +656,7 @@ final class ItemParser {
         if (prefix != 0) {
             itemBuilder.addPrefixId(prefix);
             final MagicAffix magicPrefix = txtProperties.getMagicPrefix(prefix);
-            itemName = String.format("%s %s", magicPrefix.getName(), itemName);
+            itemName = "%s %s".formatted(magicPrefix.getName(), itemName);
             if (magicPrefix.getReqLvl() > reqLvl) {
                 reqLvl = magicPrefix.getReqLvl();
             }
@@ -666,7 +666,7 @@ final class ItemParser {
         if (suffix != 0) {
             itemBuilder.addSuffixId(suffix);
             final MagicAffix magicSuffix = txtProperties.getMagicSuffix(suffix);
-            itemName = String.format("%s %s", itemName, magicSuffix.getName());
+            itemName = "%s %s".formatted(itemName, magicSuffix.getName());
             if (magicSuffix.getReqLvl()> reqLvl) {
                 reqLvl = magicSuffix.getReqLvl();
             }

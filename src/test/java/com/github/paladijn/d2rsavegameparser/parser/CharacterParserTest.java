@@ -147,8 +147,8 @@ class CharacterParserTest {
         final Item lightbrand = isenhart.items().get(39);
         List<ItemProperty> lightbrandProperties = lightbrand.properties();
         assertThat(lightbrandProperties).hasSize(3);
-        assertThat(lightbrandProperties.get(0).name()).isEqualTo("item_fasterattackrate");
-        assertThat(lightbrandProperties.get(0).values()[0]).isEqualTo(20);
+        assertThat(lightbrandProperties.getFirst().name()).isEqualTo("item_fasterattackrate");
+        assertThat(lightbrandProperties.getFirst().values()[0]).isEqualTo(20);
         assertThat(lightbrandProperties.get(1).name()).isEqualTo("mindamage");
         assertThat(lightbrandProperties.get(1).values()[0]).isEqualTo(10);
         assertThat(lightbrand.treasureClass()).isEqualTo(15);
@@ -171,8 +171,8 @@ class CharacterParserTest {
         assertThat(caseProperties.get(2).values()[0]).isEqualTo(2);
         assertThat(torsoCase.treasureClass()).isEqualTo(18);
         // 2+ item bonus
-        assertThat(caseProperties.get(0).name()).isEqualTo("item_armor_perlevel");
-        assertThat(caseProperties.get(0).values()[0]).isEqualTo(16); // this should be 2, but for some reason it's 8*
+        assertThat(caseProperties.getFirst().name()).isEqualTo("item_armor_perlevel");
+        assertThat(caseProperties.getFirst().values()[0]).isEqualTo(16); // this should be 2, but for some reason it's 8*
     }
 
     @Test
@@ -183,8 +183,8 @@ class CharacterParserTest {
         final Item horns = isenhartHorns.items().get(12);
         List<ItemProperty> hornsProperties = horns.properties();
         assertThat(hornsProperties).hasSize(6);
-        assertThat(hornsProperties.get(0).name()).isEqualTo("dexterity");
-        assertThat(hornsProperties.get(0).values()[0]).isEqualTo(6);
+        assertThat(hornsProperties.getFirst().name()).isEqualTo("dexterity");
+        assertThat(hornsProperties.getFirst().values()[0]).isEqualTo(6);
         assertThat(hornsProperties.get(5).name()).isEqualTo("normal_damage_reduction");
         assertThat(hornsProperties.get(5).values()[0]).isEqualTo(2);
         assertThat(horns.treasureClass()).isEqualTo(15);
@@ -207,8 +207,8 @@ class CharacterParserTest {
         final Item parry = isenhart.items().get(40);
         List<ItemProperty> parryProperties = parry.properties();
         assertThat(parryProperties).hasSize(6);
-        assertThat(parryProperties.get(0).name()).isEqualTo("armorclass");
-        assertThat(parryProperties.get(0).values()[0]).isEqualTo(40);
+        assertThat(parryProperties.getFirst().name()).isEqualTo("armorclass");
+        assertThat(parryProperties.getFirst().values()[0]).isEqualTo(40);
         assertThat(parryProperties.get(5).name()).isEqualTo("item_attackertakeslightdamage");
         assertThat(parryProperties.get(5).values()[0]).isEqualTo(4);
         assertThat(parry.treasureClass()).isEqualTo(30);
@@ -230,9 +230,9 @@ class CharacterParserTest {
         List<ItemProperty> benefits = isenhart.equippedSetBenefits();
         assertThat(benefits).hasSize(10);
         // partial bonus, 2 items
-        assertThat(benefits.get(0).name()).isEqualTo("strength");
-        assertThat(benefits.get(0).values()[0]).isEqualTo(10);
-        assertThat(benefits.get(0).qualityFlag()).isEqualTo(22);
+        assertThat(benefits.getFirst().name()).isEqualTo("strength");
+        assertThat(benefits.getFirst().values()[0]).isEqualTo(10);
+        assertThat(benefits.getFirst().qualityFlag()).isEqualTo(22);
         // partial bonus, 3 items
         assertThat(benefits.get(1).name()).isEqualTo("dexterity");
         assertThat(benefits.get(1).values()[0]).isEqualTo(10);
@@ -352,7 +352,7 @@ class CharacterParserTest {
                 .toList();
 
         assertThat(stealth).hasSize(1);
-        assertThat(stealth.get(0).itemName()).isEqualTo("Stealth");
-        assertThat(stealth.get(0).personalizedName()).isEqualTo("LongestPossible");
+        assertThat(stealth.getFirst().itemName()).isEqualTo("Stealth");
+        assertThat(stealth.getFirst().personalizedName()).isEqualTo("LongestPossible");
     }
 }

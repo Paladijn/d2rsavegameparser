@@ -86,7 +86,7 @@ public final class CharacterParser {
 
         int header = buffer.getInt(0);
         if (header != 0xaa55aa55) {
-            throw new ParseException(String.format("Wrong fileHeader %d, this is not a Diablo II saveGame file", header));
+            throw new ParseException("Wrong fileHeader %d, this is not a Diablo II saveGame file".formatted(header));
         }
         FileData fileData = getFileData(buffer);
 

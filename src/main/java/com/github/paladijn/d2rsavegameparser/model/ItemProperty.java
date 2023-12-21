@@ -43,7 +43,7 @@ public record ItemProperty(int index, String name, int[] values, int qualityFlag
             sbValues.append(value);
         }
         sbValues.append("]");
-        return String.format("ItemProperty(index=%d, name=%s, values=%s, qualityFlag=%d, order=%d)", index, name, sbValues, qualityFlag, order);
+        return "ItemProperty(index=%d, name=%s, values=%s, qualityFlag=%d, order=%d)".formatted(index, name, sbValues, qualityFlag, order);
     }
 
     @Override

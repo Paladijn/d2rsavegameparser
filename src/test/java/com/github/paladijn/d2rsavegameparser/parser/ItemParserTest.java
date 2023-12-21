@@ -273,7 +273,7 @@ class ItemParserTest {
 
         assertThat(gemmedSkullCap.itemName()).isEqualTo("Gemmed Skull Cap");
         assertThat(gemmedSkullCap.socketedItems()).hasSize(2);
-        assertThat(gemmedSkullCap.socketedItems().get(0).itemName()).isEqualTo("Ral Rune");
-        assertThat(gemmedSkullCap.socketedItems().get(1).itemName()).isEqualTo("Tal Rune");
+        assertThat(gemmedSkullCap.socketedItems().getFirst().itemName()).isEqualTo("Ral Rune");
+        assertThat(gemmedSkullCap.socketedItems().getLast().itemName()).isEqualTo("Tal Rune");
     }
 }
