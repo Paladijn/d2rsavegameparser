@@ -22,7 +22,7 @@ Other applications of the library may include:
 
 ### How to use
 Minimal Java version: 21  
-Required dependencies: org.slf4j:org.slf4j-api
+Required dependencies: org.slf4j:org.slf4j-api:2.0.9+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
 
 Example projects:
 * [My own example project](https://github.com/Paladijn/d2rsavegameparser-examples) includes socket reward available, list specific items (Sets) and translations.
