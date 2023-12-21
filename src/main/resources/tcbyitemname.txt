@@ -1,0 +1,521 @@
+name	treasure class # This is a custom .txt file, so should remain outside the versioned folders. Some item names have different names for the same code, such as hbt -> greaves/plate boots, while some are typoed, such as Espadon
+Wand	3
+Throwing Knife	3
+Short Sword	3
+Short Staff	3
+Short Bow	3
+Scepter	3
+Sash	3
+Quilted Armor	3
+Leather Gloves	3
+Gloves	3
+Leather Armor	3
+Katar	3
+Javelin	3
+Hand Axe	3
+Eagle Orb	3
+Dagger	3
+Club	3
+Cap	3
+Buckler	3
+Boots	3
+Leather Boots	3
+Wolf Head	6
+Targe	6
+Spiked Club	6
+Spear	6
+Small Shield	6
+Skull Cap	6
+Scimitar	6
+Preserved Head	6
+Light Crossbow	6
+Large Axe	6
+Jawbone Cap	6
+Hunter's Bow	6
+Hunter\92s Bow	6
+Hard Leather Armor	6
+Hard Leather	6
+Fulminating Potion	6
+Bardiche	6
+Zombie Head	9
+Wrist Blade	9
+Trident	9
+Throwing Axe	9
+Studded Leather	9
+Strangling Gas Potion	9
+Sacred Globe	9
+Sabre	9
+Saber	9
+Rondache	9
+Mace	9
+Long Staff	9
+Long Bow	9
+Light Belt	9
+Heavy Gloves	9
+Heavy Boots	9
+Hawk Helm	9
+Fanged Helm	9
+Dirk	9
+Axe	9
+Yew Wand	12
+Voulge	12
+Two-Handed Sword	12
+2-Handed Sword	12
+Spiked Shield	12
+Smoked Sphere	12
+Ring Mail	12
+Pilum	12
+Large Shield	12
+Helm	12
+Hatchet Hands	12
+Gnarled Staff	12
+Falchion	12
+Crystal Sword	12
+Composite Bow	12
+Chain Gloves	12
+Chain Boots	12
+Broad Axe	12
+Bracers	12
+Belt	12
+Short Spear	15
+Scythe	15
+Scale Mail	15
+Morning Star	15
+Kite Shield	15
+Grand Scepter	15
+Full Helm	15
+Double Axe	15
+Crossbow	15
+Chain Mail	15
+Cestus	15
+Broad Sword	15
+Balanced Knife	15
+Unraveller Head	18
+Stag Bow	18
+Short Battle Bow	18
+Maiden Spear	18
+Kris	18
+Horned Helm	18
+Heraldic Shield	18
+Exploding Potion	18
+Claymore	18
+Claws	18
+Clasped Orb	18
+Breast Plate	18
+Brandistock	18
+Bone Wand	18
+Battle Staff	18
+Battle Axe	18
+Balanced Axe	18
+Antlers	18
+War Scepter	21
+Splint Mail	21
+Spetum	21
+Poleaxe	21
+Military Pick	21
+Maul	21
+Mask	21
+Long Sword	21
+Light Plated Boots	21
+Light Plate Boots	21
+Light Gauntlets	21
+Heavy Belt	21
+Giant Sword	21
+Gargoyle Head	21
+Flail	21
+Falcon Mask	21
+Choking Gas Potion	21
+Bone Shield	21
+Blade Talons	21
+Assault Helmet	21
+Aerin Shield	21
+War Staff	24
+Tower Shield	24
+Spirit Mask	24
+Scissors Katar	24
+Plate Mail	24
+Pike	24
+Maiden Javelin	24
+Long Battle Bow	24
+Jared's Stone	24
+Heavy Crossbow	24
+Great Helm	24
+Great Axe	24
+Glaive	24
+Demon Head	24
+Crown Shield	24
+Circlet	24
+Bone Helm	24
+Blade	24
+Bastard Sword	24
+Avenger Guard	24
+War Sword	27
+War Hammer	27
+War Axe	27
+Short War Bow	27
+Reflex Bow	27
+Plated Belt	27
+Girdle	27
+Maiden Pike	27
+Grim Wand	27
+Greaves	27
+Plate Boots	27
+Girdle	27
+Giant Axe	27
+Gauntlets	27
+Flamberge	27
+War Javelin	30
+Throwing Spear	30
+Quhab	30
+Oil Potion	30
+Jo Staff	30
+Jo Stalf	30
+Halberd	30
+Gothic Shield	30
+Gladius	30
+Field Plate	30
+Edge Bow	30
+Cudgel	30
+Crown	30
+Wrist Spike	33
+War Spear	33
+Rune Scepter	33
+Repeating Crossbow	33
+Razor Bow	33
+Rancid Gas Potion	33
+Poignard	33
+Mummified Trophy	33
+Long War Bow	33
+Lochaber Axe	33
+Jawbone Visor	33
+Hatchet	33
+Great Sword	33
+Great Maul	33
+Gothic Plate	33
+Glowing Orb	33
+Demonhide Gloves	33
+Burnt Wand	33
+Battle Dart	33
+Barbed Club	33
+War Scythe	36
+War Hat	36
+Shamshir	36
+Serpentskin Armor	36
+Rondel	36
+Quarterstaff	36
+Partizan	36
+Military Axe	36
+Light Plate	36
+Ghost Armor	36
+Fuscina	36
+Francisca	36
+Flanged Mace	36
+Fascia	36
+Demonhide Sash	36
+Demonhide Boots	36
+Defender	36
+Cleaver	36
+Ceremonial Javelin	36
+Cedar Bow	36
+CedarBow	36
+Arbalest	36
+Alpha Helm	36
+Akaran Targe	36
+War Dart	39
+Twin Axe	39
+Tulwar	39
+Sharkskin Gloves	39
+Sharkskin Boots	39
+Sharkskin Belt	39
+Sallet	39
+Round Shield	39
+Petrified Wand	39
+Lion Helm	39
+Jagged Star	39
+Great Pilum	39
+Full Plate Mail	39
+Fetish Trophy	39
+Espandon	39
+Espadon	39
+Double Bow	39
+Dimensional Blade	39
+Demonhide Armor	39
+Crystalline Globe	39
+Cedar Staff	39
+Bill	39
+Bearded Axe	39
+Ashwood Bow	39
+War Fork	42
+Trellised Armor	42
+Tresllised Armor	42
+Tabar	42
+Simbilan	42
+Siege Crossbow	42
+Scutum	42
+Linked Mail	42
+Hurlbat	42
+Holy Water Sprinkler	42
+Hand Scythe	42
+Griffon Headress	42
+Gothic Staff	42
+Dacian Falx	42
+Cloudy Sphere	42
+Cinquedeas	42
+Casque	42
+Battle Sword	42
+Battle Scythe	42
+Barbed Shield	42
+Ancient Armor	42
+AncientArmor	42
+Akaran Rondache	42
+Yari	45
+War Club	45
+Tusk Sword	45
+Tomb Wand	45
+Tigulated Mail	45
+Short Siege Bow	45
+Sexton Trophy	45
+Rune Sword	45
+Rage Mask	45
+Mesh Boots	45
+Mesh Belt	45
+Mesh Armor	45
+Knout	45
+Heavy Bracers	45
+Greater Claws	45
+Dragon Shield	45
+Divine Scepter	45
+Cutlass	45
+Crowbill	45
+Ceremonial Spear	45
+Basinet	45
+Stilleto	48
+Sparking Ball	48
+Rune Staff	48
+Protector Shield	48
+Naga	48
+Large Siege Bow	48
+Long Siege Bow	48
+Lance	48
+Hunter's Guise	48
+Grim Shield	48
+Gothic Sword	48
+Gothic Axe	48
+Death Mask	48
+Cuirass	48
+Ceremonial Bow	48
+Battle Hammer	48
+Ballista	48
+Balista	48
+Zweihander	51
+Winged Helm	51
+Swirling Crystal	51
+Savage Helmet	51
+Sacred Feathers	51
+Russet Armor	51
+Rune Bow	51
+Pavise	51
+Harpoon	51
+Gilded Shield	51
+Grim Helm	51
+Greater Talons	51
+Grave Wand	51
+Ceremonial Pike	51
+Cantor Trophy	51
+Bec-de-Corbin	51
+Battle Gauntlets	51
+Battle Guantlets	51
+Battle Belt	51
+Battle Boots	51
+Ancient Sword	51
+Ancient Axe	51
+War Gauntlets	54
+War Boots	54
+War Belt	54
+Truncheon	54
+Tomahawk	54
+Templar Coat	54
+Slayer Guard	54
+Scissors Quhab	54
+Matriarchal Bow	54
+Martel de Fer	54
+Hyperion Javelin	54
+Hierophant Trophy	54
+Heirophant Trophy	54
+Gothic Bow	54
+Giant Conch	54
+Executioner Sword	54
+Coronet	54
+Chu-Ko-Nu	54
+Tyrant Club	57
+Totemic Mask	57
+Spider Bow	57
+Sharktooth Armor	57
+Royal Shield	57
+Polished Wand	57
+Pellet Bow	57
+Grim Scythe	57
+Grand Crown	57
+Flying Axe	57
+Feral Axe	57
+Falcata	57
+Bramble Mitts	57
+Ancient Shield	57
+Wyrmhide Boots	60
+Walking Stick	60
+Suwayyah	60
+Shako	60
+Ogre Axe	60
+Minion Skull	60
+Mage Plate	60
+Legend Sword	60
+Hyperion Spear	60
+Heavenly Stone	60
+Heater	60
+Embossed Plate	60
+Carnage Helm	60
+Bone Knife	60
+Blade Bow	60
+Wrist Sword	63
+Vampirebone Gloves	63
+Stygian Pilum	63
+Spiderweb Sash	63
+Small Crescent	63
+Shadow Bow	63
+Sacred Targe	63
+Reinforced Mace	63
+Mighty Scepter	63
+Matriarchal Spear	63
+Luna	63
+Hydraskull	63
+Elegant Blade	63
+Chaos Armor	63
+Boneweave	63
+Blood Spirit	63
+Ataghan	63
+Stygian Pike	66
+Stalagmite	66
+Silver-Edged Axe	66
+Scarabshell Boots	66
+Overseer Skull	66
+Ornate Plate	66
+Ornate Armor	66
+Matriarchal Javelin	66
+Hyperion	66
+Highland Blade	66
+Ghost Wand	66
+Fury Visor	66
+Flying Knife	66
+Dusk Shroud	66
+Colossus Voulge	66
+Wyrmhide	69
+War Fist	69
+Vampirefang Belt	69
+Vambraces	69
+Sun Spirit	69
+Scarab Husk	69
+Ogre Maul	69
+Hydra Edge	69
+Hellspawn Skull	69
+Great Bow	69
+Gorgon Crossbow	69
+Eldritch Orb	69
+Blade Barrier	69
+Armet	69
+Wire Fleece	72
+Tiara	72
+thresher	72
+Sacred Rondache	72
+Monarch	72
+Mithirl Point	72
+Ettin Axe	72
+Diamond Mail	72
+Diamond Bow	72
+Devil Star	72
+Boneweave Boots	72
+Balrog Spear	72
+Balrog Blade	72
+Phase Blade	75
+Mithril Coil	75
+Mancatcher	75
+Loricated Mail	75
+Lich Wand	75
+Kurast Shield	75
+Great Hauberk	75
+Elder Staff	75
+Destroyer Helm	75
+Demonhead	75
+Demon Heart	75
+Decapitator	75
+Colossus Crossbow	75
+Battle Cestus	75
+Winged Knife	78
+Troll Nest	78
+Seraph Rod	78
+Scourge	78
+Hellforge Plate	78
+Grand Matron Bow	78
+Feral Claws	78
+Earth Spirit	78
+Crusader Gauntlets	78
+Crusader Bow	78
+Conquest Sword	78
+Champion Sword	78
+Balrog Skin	78
+Winged Axe	81
+Ward Bow	81
+War Spike	81
+Succubus Skull	81
+succubae skull	81
+Spired Helm	81
+Runic Talons	81
+Mirrored Boots	81
+Matriarchal Pike	81
+Kraken Shell	81
+Ghost Glaive	81
+Cryptic Axe	81
+conqueror crown	81
+Colossus Sword	81
+Aegis	81
+Zakarum Shield	84
+Ward	84
+Vortex Orb	84
+Troll Belt	84
+Sky Spirit	84
+Shillelagh	84
+Shadow Plate	84
+Legendary Mallet	84
+Lacquered Plate	84
+Great Poleaxe	84
+Ghost Spear	84
+Fanged Knife	84
+Demon Crossbow	84
+Cryptic Sword	84
+Champion Axe	84
+Bone Visage	84
+Archon Plate	84
+Winged Harpoon	87
+War Pike	87
+Vortex Shield	87
+Unearthed Wand	87
+Thunder Maul	87
+Scissors Suwayyah	87
+Sacred Armor	87
+Ogre Gauntlets	87
+Mythical Sword	87
+myrmidon greaves	87
+Legend Spike	87
+Hydra Bow	87
+Guardian Crown	87
+Glorious Axe	87
+Giant Thresher	87
+Dream Spirit	87
+Dimensional Shard	87
+Diadem	87
+Corona	87
+Colossus Girdle	87
+Colossus Blade	87
+Caduceus	87
+Bloodlord Skull	87
+Berserker Axe	87
+Archon Staff	87
