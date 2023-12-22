@@ -95,7 +95,7 @@ public final class Runeword {
             return false;
         }
         if (patch != null && patch.startsWith("D2R Ladder")) {
-            log.info("DII:R Ladder runeword found, which is likely allowed in SP. Start: {}", patch);
+            log.debug("DII:R Ladder runeword found, which is likely allowed in SP. Start: {}", patch);
         }
 
         for (Map.Entry<String, Integer> requiredRune: runes.entrySet()) {

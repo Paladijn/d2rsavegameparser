@@ -323,9 +323,15 @@ public final class CharacterParser {
 
             int larzukIndex = 345 + 70 + difficulty.ordinal() * 96;
             short larzuk = buffer.getShort(larzukIndex);
+            // 01000100 socket reward available
+            // 10000100 socket quest used
+            boolean bit0 = (larzuk & 1) != 0;
+            boolean bit1 = (larzuk & (1 << 1)) != 0;
+            boolean bit5 = (larzuk & (1 << 5)) != 0;
             questDataBuilder
                     .socketQuestStarted(larzuk != 0)
-                    .socketQuestAvailable((larzuk & (1 << 5)) != 0);
+                    .socketQuestRewardAvailable(bit1 && bit5)
+                    .socketQuestUsed(bit0 && bit5);
 
             int anyaIndex = 345 + 74 + difficulty.ordinal() * 96;
             short anya = buffer.getShort(anyaIndex);

@@ -76,7 +76,7 @@ class CharacterParserTest {
     void readHell() {
         D2Character lohengrin = cut.parse(TestCommons.getBuffer("2.7/Lohengrin.d2s"));
         assertThat(lohengrin.level()).isEqualTo((byte)76);
-        assertThat(lohengrin.questDataPerDifficulty().get(0).socketQuestAvailable()).isTrue();
+        assertThat(lohengrin.questDataPerDifficulty().get(0).socketQuestRewardAvailable()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).socketQuestStarted()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).resistanceScrollRead()).isTrue();
         assertThat(lohengrin.actProgression()).isEqualTo((byte)11);

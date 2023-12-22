@@ -22,13 +22,14 @@ package com.github.paladijn.d2rsavegameparser.model;
  * <p>
  * Supported quests:
  *  A5.0: Siege on Harrogath -> socketQuestStarted
- *  A5.0: Siege on Harrogath bit 5 -> socketQuestAvailable
+ *  A5.0: Siege on Harrogath bit 1 and 5 -> socketQuestRewardAvailable
+ *  A5.0: Siege on Harrogath bit 0 and 5 -> socketQuestUsed
  *  A5.2: Prison of ice bit 7 -> resistanceScrollRead
  * </p>
  *
  * @author Paladijn
  */
-public record QuestData(Difficulty difficulty, boolean socketQuestStarted, boolean socketQuestAvailable, boolean resistanceScrollRead) {
+public record QuestData(Difficulty difficulty, boolean socketQuestStarted, boolean socketQuestRewardAvailable, boolean socketQuestUsed, boolean resistanceScrollRead) {
 
     /**
      * Builder class for creating instances of the {@link QuestData} class.
@@ -47,9 +48,14 @@ public record QuestData(Difficulty difficulty, boolean socketQuestStarted, boole
         private boolean socketQuestStarted;
 
         /**
-         * A flag indicating whether the socket quest is available in the specified difficulty.
+         * A flag indicating whether the socket quest reward is available in the specified difficulty.
          */
-        private boolean socketQuestAvailable;
+        private boolean socketQuestRewardAvailable;
+
+        /**
+         * A flag indicating whether the socket quest reward has been used in the specified difficulty.
+         */
+        private boolean socketQuestUsed;
 
         /**
          * A flag indicating whether the resistance scroll has been read in the specified difficulty.
@@ -77,13 +83,24 @@ public record QuestData(Difficulty difficulty, boolean socketQuestStarted, boole
         }
 
         /**
-         * Sets the availability status of the socket quest in the specified difficulty.
+         * Sets the status of the socket quest reward in the specified difficulty.
          *
          * @param available True if the socket quest is available, false otherwise.
          * @return The current QuestDataBuilder instance.
          */
-        public QuestDataBuilder socketQuestAvailable(boolean available) {
-            this.socketQuestAvailable = available;
+        public QuestDataBuilder socketQuestRewardAvailable(boolean available) {
+            this.socketQuestRewardAvailable = available;
+            return this;
+        }
+
+        /**
+         * Sets the status of the socket quest reward to used in the specified difficulty.
+         *
+         * @param used True if the socket quest reward has been used, false otherwise.
+         * @return The current QuestDataBuilder instance.
+         */
+        public QuestDataBuilder socketQuestUsed(boolean used) {
+            this.socketQuestUsed = used;
             return this;
         }
 
@@ -105,7 +122,7 @@ public record QuestData(Difficulty difficulty, boolean socketQuestStarted, boole
          * @return A new QuestData instance.
          */
         public QuestData build() {
-            return new QuestData(difficulty, socketQuestStarted, socketQuestAvailable, resistanceScrollRead);
+            return new QuestData(difficulty, socketQuestStarted, socketQuestRewardAvailable, socketQuestUsed, resistanceScrollRead);
         }
     }
 }
