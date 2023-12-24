@@ -25,9 +25,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/paladijn/d2rsavegameparser.git</connection>
-        <developerConnection>scm:git:ssh://github.com/paladijn/d2rsavegameparser.git</developerConnection>
-        <url>http://github.com/paladijn/d2rsavegameparser/tree/master</url>
+        <connection>scm:git:git://github.com/Paladijn/d2rsavegameparser.git</connection>
+        <developerConnection>scm:git:git://github.com/Paladijn/d2rsavegameparser.git</developerConnection>
+        <url>https://github.com/Paladijn/d2rsavegameparser/tree/main</url>
     </scm>
 
     <distributionManagement>
