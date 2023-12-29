@@ -99,6 +99,7 @@ class CharacterParserTest {
         assertThat(wandelaar.attributes().mana()).isEqualTo(15);
         assertThat(wandelaar.level()).isEqualTo((byte)1);
 
+        assertThat(wandelaar.skills()).isEmpty();
     }
 
     @Test

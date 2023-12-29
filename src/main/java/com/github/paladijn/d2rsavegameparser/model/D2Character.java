@@ -69,7 +69,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
 
         private CharacterAttributes attributes;
 
-        private List<Skill> skills;
+        private List<Skill> skills = new ArrayList<>();
 
         private List<Item> items = new ArrayList<>();
 
