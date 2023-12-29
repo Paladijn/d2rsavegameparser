@@ -66,8 +66,6 @@ public final class TXTProperties {
     private final HashMap<String, String> propertyTooltipByStat = new HashMap<>();
     private final HashMap<String, String> propertyParameterByStat = new HashMap<>();
 
-    private final HashMap<Integer, Skill> skillById = new HashMap<>();
-
     private final List<Runeword> runewords = new ArrayList<>();
 
     private final List<String> rarePrefixes = new ArrayList<>();
@@ -107,7 +105,6 @@ public final class TXTProperties {
         parseRareSuffix();
         parseMagicPrefix();
         parseMagicSuffix();
-        parseSkills();
         parseTreasureClass();
     }
 
@@ -258,19 +255,6 @@ public final class TXTProperties {
      */
     public int getTreasureClass(String itemName) {
         return Optional.ofNullable(treasureClassByItem.get(itemName.toLowerCase())).orElse(0);
-    }
-
-    private void parseSkills() {
-        try (InputStream resource = Thread.currentThread().getContextClassLoader().getResourceAsStream(PATCH_VERSION + "/skills.txt")) {
-            new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines().forEach(line -> {
-                if (!line.startsWith("skill")) {
-                    Skill skill = new Skill(line);
-                    skillById.put(skill.getId(), skill);
-                }
-            });
-        } catch (IOException | NullPointerException e) {
-            throw new ParseException("Could not parse skills.txt file", e);
-        }
     }
 
     private void parseMagicSuffix() {
@@ -521,7 +505,7 @@ public final class TXTProperties {
      * @param itemStatCostAndProperties A container {@link ItemStatCostAndProperties} containing both {@link ItemStatCost} and a map of properties used for the Gems statistics.
      * @return a {@link List} of {@link ItemProperty} filtered by the supplied name with all internal values calculated properly. In most cases this will only return one item, ones like res-all return multiple, one for each type.
      */
-    protected static List<ItemProperty> getPropertiesByName(String name, String min, String max, String param, int qualityFlag,
+    static List<ItemProperty> getPropertiesByName(String name, String min, String max, String param, int qualityFlag,
                                                             ItemStatCostAndProperties itemStatCostAndProperties) {
         List<ItemProperty> result = new ArrayList<>();
         int[] propertyValues = {0, 0, 0};

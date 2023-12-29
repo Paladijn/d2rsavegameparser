@@ -17,6 +17,8 @@
  */
 package com.github.paladijn.d2rsavegameparser.model;
 
+import com.github.paladijn.d2rsavegameparser.parser.ParseException;
+
 /**
  * Helper class to supply starter {@link CharacterAttributes} for Diablo II characters. These are used in case a new character file is present without any existing stats.
  * It usually takes five minutes for the saveGame to be updated resulting in empty or wrong values for the display.
@@ -39,6 +41,7 @@ public interface StarterAttributes {
             case SORCERESS -> new CharacterAttributes.CharacterAttributesBuilder(10, 25, 10, 35, 40, 30, 74).build();
             case ASSASSIN -> new CharacterAttributes.CharacterAttributesBuilder(20, 20, 20, 25, 50, 25, 95).build();
             case DRUID -> new CharacterAttributes.CharacterAttributesBuilder(15, 20, 25, 20, 55, 20, 84).build();
+            case NONE -> throw new ParseException("No character type to build attributes for");
         };
     }
 }

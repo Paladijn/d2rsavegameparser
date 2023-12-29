@@ -52,7 +52,11 @@ public enum CharacterType {
     /**
      * Assassin
      */
-    ASSASSIN("Assassin");
+    ASSASSIN("Assassin"),
+    /**
+     * None
+     */
+    NONE("-");
 
     private final String displayString;
 

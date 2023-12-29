@@ -21,7 +21,10 @@ import com.github.paladijn.d2rsavegameparser.TestCommons;
 import com.github.paladijn.d2rsavegameparser.model.D2Character;
 import com.github.paladijn.d2rsavegameparser.model.Item;
 import com.github.paladijn.d2rsavegameparser.model.ItemProperty;
+import com.github.paladijn.d2rsavegameparser.model.Skill;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -274,73 +277,25 @@ class CharacterParserTest {
         assertThat(questItems).hasSize(4);
     }
 
-    @Test
-    void testBird() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Sparkles-crash-bird.d2s"));
+    @ParameterizedTest
+    @CsvSource({
+            "2.8/Sparkles-crash-bird.d2s, The Golden Bird",
+            "2.8/Sparkles-crash-statue.d2s, A Jade Figurine",
+            "2.8/Sparkles-scroll_of_inifuss.d2s, Scroll of Inifuss",
+            "2.8/Fjoerich-cairstone_map.d2s, Key to the Cairn Stones",
+            "1.6.77312/LongestPossible-Cairn.d2s, Key to the Cairn Stones",
+            "2.8/Sparkles-mephistostone.d2s, Mephisto's Soulstone",
+            "2.8/Sparkles-potion.d2s, Potion of Life"
+    })
+    void testSingularQuestItem(String saveGameLocation, String itemName) {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer(saveGameLocation));
 
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("The Golden Bird"))
+        List<Item> questItems = d2Character.items().stream()
+                .filter(item -> item.itemName().startsWith(itemName))
                 .toList();
-        assertThat(questItems).hasSize(1);
-    }
 
-    @Test
-    void testStatue() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Sparkles-crash-statue.d2s"));
+        log.info("verifying there is one item with name {} in {}", itemName, saveGameLocation);
 
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("A Jade Figurine"))
-                .toList();
-        assertThat(questItems).hasSize(1);
-    }
-
-    @Test
-    void testInifuss() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Sparkles-scroll_of_inifuss.d2s"));
-
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("Scroll of Inifuss"))
-                .toList();
-        assertThat(questItems).hasSize(1);
-    }
-
-    @Test
-    void testCairstoneMap() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Fjoerich-cairstone_map.d2s"));
-
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("Key to the Cairn Stones"))
-                .toList();
-        assertThat(questItems).hasSize(1);
-    }
-
-    @Test
-    void testCairstoneMapIn77312() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("1.6.77312/LongestPossible-Cairn.d2s"));
-
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("Key to the Cairn Stones"))
-                .toList();
-        assertThat(questItems).hasSize(1);
-    }
-
-    @Test
-    void testStone() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Sparkles-mephistostone.d2s"));
-
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("Mephisto's Soulstone"))
-                .toList();
-        assertThat(questItems).hasSize(1);
-    }
-
-    @Test
-    void testPotion() {
-        D2Character sparkles = cut.parse(TestCommons.getBuffer("2.8/Sparkles-potion.d2s"));
-
-        List<Item> questItems = sparkles.items().stream()
-                .filter(item -> item.itemName().startsWith("Potion of Life"))
-                .toList();
         assertThat(questItems).hasSize(1);
     }
 
@@ -354,5 +309,22 @@ class CharacterParserTest {
         assertThat(stealth).hasSize(1);
         assertThat(stealth.getFirst().itemName()).isEqualTo("Stealth");
         assertThat(stealth.getFirst().personalizedName()).isEqualTo("LongestPossible");
+    }
+
+    @Test
+    void testPassiveBonusesFromSkills() {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Fjoerich-max-res.d2s"));
+
+        List<Skill> skillsWithBenefits = d2Character.skills().stream().filter(skill -> !skill.passiveBonuses().isEmpty()).toList();
+
+        assertThat(skillsWithBenefits).hasSize(3);
+        assertThat(skillsWithBenefits.getFirst().passiveBonuses().getFirst().name()).isEqualTo("maxfireresist");
+        assertThat(skillsWithBenefits.getFirst().passiveBonuses().getFirst().values()[0]).isEqualTo(10);
+
+        assertThat(skillsWithBenefits.get(1).passiveBonuses().getFirst().name()).isEqualTo("maxcoldresist");
+        assertThat(skillsWithBenefits.get(1).passiveBonuses().getFirst().values()[0]).isZero();
+
+        assertThat(skillsWithBenefits.getLast().passiveBonuses().getFirst().name()).isEqualTo("maxlightresist");
+        assertThat(skillsWithBenefits.getLast().passiveBonuses().getFirst().values()[0]).isEqualTo(4);
     }
 }

@@ -30,6 +30,8 @@ import com.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import com.github.paladijn.d2rsavegameparser.model.Location;
 import com.github.paladijn.d2rsavegameparser.model.Mercenary;
 import com.github.paladijn.d2rsavegameparser.model.QuestData;
+import com.github.paladijn.d2rsavegameparser.model.Skill;
+import com.github.paladijn.d2rsavegameparser.model.SkillType;
 import com.github.paladijn.d2rsavegameparser.model.StarterAttributes;
 import com.github.paladijn.d2rsavegameparser.model.WaypointStatus;
 import com.github.paladijn.d2rsavegameparser.txt.SetData;
@@ -39,6 +41,7 @@ import org.slf4j.Logger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -103,6 +106,7 @@ public final class CharacterParser {
 
         characterBuilder.characterType(characterType)
                 .level(buffer.get(43))
+                // not bothering to parse the hotkeys and selected left/right click assigned skills. We may in the future.
                 .locations(List.of(
                         parseLocation(NORMAL, buffer.get(168)),
                         parseLocation(NIGHTMARE, buffer.get(169)),
@@ -144,7 +148,7 @@ public final class CharacterParser {
             throw new ParseException("Could not find stat header");
         }
 
-        // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 40
+        // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 40 which so far seems to work
         byte[] skillHeaderBytes = new byte[2];
         int skillIndex = -1;
         for(int i = 800; i < 840; i++) {
@@ -158,6 +162,10 @@ public final class CharacterParser {
         byte[] statBytes = new byte[statLength];
         buffer.get(767, statBytes, 0, statLength);
         characterBuilder.attributes(attributeParser.parse(statBytes));
+
+        byte[] skillBytes = new byte[30];
+        buffer.get(skillIndex + 2, skillBytes, 0, 30);
+        characterBuilder.skills(parseSkills(characterType, skillBytes));
 
         // (available) skills are 30 bytes after the skillindex plus the 2 header bytes
         int itemIndex = skillIndex + 32;
@@ -233,6 +241,45 @@ public final class CharacterParser {
                 buffer.getInt(4),   // file version
                 buffer.getInt(8),   // file size
                 buffer.getInt(48) * 1000L);  // timestamp seconds since Jan 1st, 1970 so * 1000L to get the proper unix value
+    }
+
+    private List<Skill> parseSkills(final CharacterType characterType, final byte[] skillBytes) {
+        List<Skill> skills = new ArrayList<>();
+        int index = 0;
+        for(SkillType skillType: SkillType.getSkillListForCharacter(characterType)) {
+            byte level = skillBytes[index];
+            index++;
+            List<ItemProperty> passiveBonuses =
+            switch (skillType) {
+                case RESIST_FIRE -> List.of(new ItemProperty(40, "maxfireresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                case RESIST_COLD -> List.of(new ItemProperty(44, "maxcoldresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                case RESIST_LIGHTNING -> List.of(new ItemProperty(42, "maxlightresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                case NATURAL_RESISTANCE -> getBarbNaturalResistanceStatsByLevel(level); // this should be extended with the +skills and +skilltrees after we have all items
+                default -> List.of();
+            };
+
+            skills.add(new Skill(skillType, level, passiveBonuses));
+        }
+
+        return Collections.unmodifiableList(skills);
+    }
+
+    private List<ItemProperty> getBarbNaturalResistanceStatsByLevel(byte skillLevel) {
+        // source https://diablo2.io/skills/natural-resistance-t4125.html
+        int[] resistancePerLevel = {0, 12, 21, 28, 35, 40, 44, 47, 49, 52, 54,
+                                    56, 58, 60, 61, 62, 64, 64, 65, 66, 67,
+                                    68, 68, 69, 70, 70, 71, 72, 72, 72, 72,
+                                    73, 73, 74, 74, 75, 75, 75, 76, 76, 76,
+                                    76, 76, 76, 76, 77, 77, 77, 77, 78, 78,
+                                    78, 78, 78, 79, 79, 79, 79, 79, 79, 80};
+        final int resistance = resistancePerLevel[Math.max(skillLevel, 60)];
+
+        return List.of(
+                new ItemProperty(40, "maxfireresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(42, "maxlightresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(44, "maxcoldresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(44, "maxpoisonresist", new int[]{resistance, 0, 0}, 0, 0)
+        );
     }
 
     private List<WaypointStatus> parseWaypoints(ByteBuffer buffer) {

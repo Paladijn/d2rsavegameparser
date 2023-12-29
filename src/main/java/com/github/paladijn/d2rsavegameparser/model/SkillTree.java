@@ -22,6 +22,7 @@ import static com.github.paladijn.d2rsavegameparser.model.CharacterType.ASSASSIN
 import static com.github.paladijn.d2rsavegameparser.model.CharacterType.BARBARIAN;
 import static com.github.paladijn.d2rsavegameparser.model.CharacterType.DRUID;
 import static com.github.paladijn.d2rsavegameparser.model.CharacterType.NECROMANCER;
+import static com.github.paladijn.d2rsavegameparser.model.CharacterType.NONE;
 import static com.github.paladijn.d2rsavegameparser.model.CharacterType.PALADIN;
 import static com.github.paladijn.d2rsavegameparser.model.CharacterType.SORCERESS;
 
@@ -138,7 +139,7 @@ public enum SkillTree {
     /**
      * Unknown skill tree.
      */
-    UNKNOWN(999, null, "Unknown skilltree");
+    UNKNOWN(999, NONE, "Unknown skilltree (or not linked to any character type)");
 
     private final int index;
 

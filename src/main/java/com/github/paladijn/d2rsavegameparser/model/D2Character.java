@@ -31,7 +31,7 @@ import java.util.List;
 public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean expansion, byte actProgression,
                          CharacterType characterType, byte level, List<Location> locations, List<QuestData> questDataPerDifficulty,
                          List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
-                         List<Item> deadBodyItems, Item golemItem, List<ItemProperty> equippedSetBenefits) {
+                         List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
 
 
     /**
@@ -68,6 +68,8 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         private Mercenary mercenary;
 
         private CharacterAttributes attributes;
+
+        private List<Skill> skills;
 
         private List<Item> items = new ArrayList<>();
 
@@ -188,6 +190,17 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         }
 
         /**
+         * Set the skills for the Diablo II character being built.
+         *
+         * @param skills a list of {@link Skill}s belonging to this character.
+         * @return The builder instance for method chaining.
+         */
+        public D2CharacterBuilder skills(List<Skill> skills) {
+            this.skills = skills;
+            return this;
+        }
+
+        /**
          * Set the items for the Diablo II character being built.
          *
          * @param items The {@link Item}s to set for the character.
@@ -253,7 +266,8 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
             return new D2Character(fileData, name, hardcore, died, expansion, actProgression, characterType, level,
                     Collections.unmodifiableList(locations), Collections.unmodifiableList(questDataPerDifficulty),
                     Collections.unmodifiableList(waypoints), mercenary, attributes, Collections.unmodifiableList(items),
-                    Collections.unmodifiableList(deadBodyItems), golemItem, Collections.unmodifiableList(equippedSetBenefits));
+                    Collections.unmodifiableList(deadBodyItems), golemItem, Collections.unmodifiableList(skills),
+                    Collections.unmodifiableList(equippedSetBenefits));
         }
     }
 }
