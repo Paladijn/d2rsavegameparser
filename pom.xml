@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.paladijn</groupId>
     <artifactId>d2rsavegameparser</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A libary to parse savegame files of the 2021 Diablo II: Resurrected game.</description>
@@ -27,7 +27,7 @@
         <connection>scm:git:https://github.com/Paladijn/d2rsavegameparser.git</connection>
         <developerConnection>scm:git:https://github.com/Paladijn/d2rsavegameparser.git</developerConnection>
         <url>https://github.com/Paladijn/d2rsavegameparser/tree/main</url>
-      <tag>HEAD</tag>
+      <tag>d2rsavegameparser-1.1.0</tag>
   </scm>
 
     <distributionManagement>
