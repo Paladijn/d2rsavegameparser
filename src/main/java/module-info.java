@@ -35,10 +35,10 @@
  *
  * @author Paladijn (Paladijn2960+d2rsavegameparser@gmail.com)
  */
-module com.github.paladijn.d2rsavegameparser {
+module io.github.paladijn.d2rsavegameparser {
     requires org.slf4j;
 
-    exports com.github.paladijn.d2rsavegameparser.parser;
-    exports com.github.paladijn.d2rsavegameparser.model;
-    exports com.github.paladijn.d2rsavegameparser.txt;
+    exports io.github.paladijn.d2rsavegameparser.parser;
+    exports io.github.paladijn.d2rsavegameparser.model;
+    exports io.github.paladijn.d2rsavegameparser.txt;
 }
