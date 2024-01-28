@@ -56,6 +56,7 @@
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
+        <central-publishing-plugin.version>0.1.6</central-publishing-plugin.version>
 
         <openrewrite-plugin.version>5.17.1</openrewrite-plugin.version>
         <openrewrite-migrate-java.version>2.5.0</openrewrite-migrate-java.version>
@@ -204,6 +205,16 @@
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing-plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <tokenEnabled>true</tokenEnabled>
                         </configuration>
                     </plugin>
                     <plugin>

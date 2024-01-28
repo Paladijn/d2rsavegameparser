@@ -419,8 +419,8 @@ public final class CharacterParser {
             log.debug("adjusting set {} item {}, remaining properties: {}", item.setName(), item.itemName(), keepThese.size());
 
             adjustedItems.add(new Item(item.isIdentified(), item.isSocketed(), item.isNew(), item.isEar(), item.isStarter(),
-                    item.isSimple(), item.isEthereal(), item.isPersonalized(), item.isRuneword(), item.isThrown(), item.version(),
-                    item.x(), item.y(), item.altPosition(), item.code(), item.type(), item.type2(), item.itemType(),
+                    item.isSimple(), item.isEthereal(), item.isPersonalized(), item.isRuneword(), item.isThrown(), item.isTwoHanded(),
+                    item.version(), item.x(), item.y(), item.altPosition(), item.code(), item.type(), item.type2(), item.itemType(),
                     item.cntSockets(), item.cntFilledSockets(), item.fingerPrint(), item.guid(), item.level(), item.pictureId(),
                     item.prefixIds(), item.suffixIds(), item.setItemId(), item.uniqueId(), item.rareNameId1(), item.rareNameId2(),
                     item.itemName(), item.setName(), item.personalizedName(), item.baseDefense(), item.maxDurability(), item.durability(),

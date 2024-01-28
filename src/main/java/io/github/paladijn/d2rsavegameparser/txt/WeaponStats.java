@@ -33,6 +33,8 @@ public final class WeaponStats {
 
     private final String code;
 
+    private final boolean isTwoHanded;
+
     private final boolean isStackable;
 
     private final boolean isThrown;
@@ -53,6 +55,8 @@ public final class WeaponStats {
         type = blocks[1];
         type2 = blocks[2];
         code = blocks[3];
+
+        isTwoHanded = blocks[17].equals("1");
 
         if (ParseHelper.isNumeric(blocks[26])) {
             reqStr = Integer.parseInt(blocks[26]);
@@ -146,5 +150,14 @@ public final class WeaponStats {
      */
     public int getReqLvl() {
         return reqLvl;
+    }
+
+    /**
+     * Checks if the item requires two hands.
+     *
+     * @return True if the item requires two hands, false otherwise.
+     */
+    public boolean isTwoHanded() {
+        return isTwoHanded;
     }
 }

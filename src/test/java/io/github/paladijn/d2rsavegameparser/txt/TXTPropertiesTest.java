@@ -17,8 +17,10 @@
  */
 package io.github.paladijn.d2rsavegameparser.txt;
 
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class TXTPropertiesTest {
@@ -26,5 +28,12 @@ class TXTPropertiesTest {
 
     private final TXTProperties cut = TXTProperties.getInstance();
 
-    // TODO we need tests here...
+    @Test
+    void parseTwoHandedWeapons() {
+        final WeaponStats giantAxe = cut.getWeaponStatsByCode("gix");
+        assertThat(giantAxe.isTwoHanded()).isTrue();
+
+        final WeaponStats grandScepter = cut.getWeaponStatsByCode("gsc");
+        assertThat(grandScepter.isTwoHanded()).isFalse();
+    }
 }

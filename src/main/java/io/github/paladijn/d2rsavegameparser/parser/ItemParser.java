@@ -368,6 +368,7 @@ final class ItemParser {
     }
 
     private void parseWeaponStats(Item.ItemBuilder itemBuilder, ItemScaffolding itemScaffolding, BitReader br, WeaponStats weaponStats) {
+        itemBuilder.twohanded(weaponStats.isTwoHanded());
         itemBuilder.thrown(weaponStats.isThrown());
         final short maxDurability = br.readShort(8);
 

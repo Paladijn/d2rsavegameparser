@@ -29,8 +29,8 @@ import java.util.List;
  * @author Paladijn
  */
 public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, boolean isEar, boolean isStarter,
-                   boolean isSimple, boolean isEthereal, boolean isPersonalized, boolean isRuneword, boolean isThrown, int version,
-                   short x, short y, byte altPosition, String code, String type, String type2, ItemType itemType,
+                   boolean isSimple, boolean isEthereal, boolean isPersonalized, boolean isRuneword, boolean isThrown, boolean isTwoHanded,
+                   int version, short x, short y, byte altPosition, String code, String type, String type2, ItemType itemType,
                    short cntSockets, short cntFilledSockets, String fingerPrint, String guid, short level,
                    short pictureId, List<Short> prefixIds, List<Short> suffixIds, short setItemId, short uniqueId, short rareNameId1,
                    short rareNameId2, String itemName, String setName, String personalizedName, int baseDefense, short maxDurability,
@@ -142,6 +142,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         private boolean isPersonalized;
         private boolean isRuneword;
         private boolean isThrown;
+        private boolean isTwoHanded;
         private int version;
         private short x;
         private short y;
@@ -293,6 +294,17 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
          */
         public ItemBuilder thrown(boolean thrown) {
             this.isThrown = thrown;
+            return this;
+        }
+
+        /**
+         * Sets whether this item is two-handed or not.
+         *
+         * @param isTwoHanded True if the item is two-handed, false otherwise.
+         * @return The current ItemBuilder instance.
+         */
+        public ItemBuilder twohanded(boolean isTwoHanded) {
+            this.isTwoHanded = isTwoHanded;
             return this;
         }
 
@@ -473,9 +485,9 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         }
 
         /**
-         * Sets the item ID.
+         * Sets the item set itemID.
          *
-         * @param setItemId The item ID to be set.
+         * @param setItemId The set item ID to be set.
          * @return The current ItemBuilder instance.
          */
         public ItemBuilder setItemId(short setItemId) {
@@ -745,7 +757,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
             // ensure the properties are stored in the correct order (high -> low) for display purposes
             this.properties.sort(new ReverseItemPropertyOrderComparator());
 
-            return new Item(isIdentified, isSocketed, isNew, isEar, isStarter, isSimple, isEthereal, isPersonalized, isRuneword, isThrown,
+            return new Item(isIdentified, isSocketed, isNew, isEar, isStarter, isSimple, isEthereal, isPersonalized, isRuneword, isThrown, isTwoHanded,
                     version, x, y, altPosition, code, type, type2, itemType, cntSockets, cntFilledSockets, fingerPrint,
                     guid, level, pictureId, Collections.unmodifiableList(prefixIds), Collections.unmodifiableList(suffixIds),
                     setItemId, uniqueId, rareNameId1, rareNameId2, itemName, setName, personalizedName, baseDefense, maxDurability,
