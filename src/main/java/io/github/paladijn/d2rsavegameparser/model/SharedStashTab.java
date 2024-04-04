@@ -18,7 +18,6 @@
 package io.github.paladijn.d2rsavegameparser.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -106,7 +105,7 @@ public record SharedStashTab (int version, int gold, int lengthInBytes, List<Ite
          * @return A new SharedStashTab instance.
          */
         public SharedStashTab build() {
-            return new SharedStashTab(version, gold, lengthInBytes, Collections.unmodifiableList(items));
+            return new SharedStashTab(version, gold, lengthInBytes, List.copyOf(items));
         }
     }
 }

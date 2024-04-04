@@ -21,7 +21,6 @@ import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.ItemType;
 
-import java.util.Collections;
 import java.util.List;
 
 public final class ItemScaffolding {
@@ -143,7 +142,7 @@ public final class ItemScaffolding {
     }
 
     public void setSocketedItems(List<Item> items) {
-        socketedItems = Collections.unmodifiableList(items);
+        socketedItems = List.copyOf(items);
     }
 
     public List<Item> getSocketedItems() {

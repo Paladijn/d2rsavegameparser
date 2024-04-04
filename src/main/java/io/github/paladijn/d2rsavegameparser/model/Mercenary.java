@@ -18,7 +18,6 @@
 package io.github.paladijn.d2rsavegameparser.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -107,7 +106,7 @@ public record Mercenary (int id, short nameId, short typeId, int experience, Lis
          * @return A new Mercenary instance.
          */
         public Mercenary build() {
-            return new Mercenary(id, nameId, typeId, experience, Collections.unmodifiableList(items));
+            return new Mercenary(id, nameId, typeId, experience, List.copyOf(items));
         }
     }
 }

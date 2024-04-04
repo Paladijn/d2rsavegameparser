@@ -20,7 +20,6 @@ package io.github.paladijn.d2rsavegameparser.txt;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -94,6 +93,6 @@ public final class GemAndRuneStats {
      * @return an immutable list of {@link ItemProperty} offered by this item
      */
     public List<ItemProperty> getAllProperties() {
-        return Collections.unmodifiableList(allProperties);
+        return List.copyOf(allProperties);
     }
 }

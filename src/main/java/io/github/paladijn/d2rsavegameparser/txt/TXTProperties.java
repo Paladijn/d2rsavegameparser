@@ -173,7 +173,7 @@ public final class TXTProperties {
 
     /**
      * Return all uniques, for example to set up a holy grail list.
-     * @return A {@link List} of  all available {@link UniqueItem}s.
+     * @return An immutable {@link List} of  all available {@link UniqueItem}s.
      */
     public List<UniqueItem> getUniques() {
         return uniqueItemById.values().stream().toList();
@@ -181,10 +181,10 @@ public final class TXTProperties {
 
     /**
      * Return all runewords, for example to set up a holy grail list or to filter a specific item using the helper functions in {@link Runeword}
-     * @return A {@link List} of  all available {@link Runeword}s.
+     * @return An immutable {@link List} of all available {@link Runeword}s.
      */
     public List<Runeword> getRunewords() {
-        return runewords;
+        return List.copyOf(runewords);
     }
 
     /**
@@ -207,7 +207,7 @@ public final class TXTProperties {
 
     /**
      * Return all set items, for example to set up a holy grail list.
-     * @return A {@link List} of  all available {@link SetItem}s.
+     * @return An immutable {@link List} of  all available {@link SetItem}s.
      */
     public List<SetItem> getSetItems() {
         return setItems.values().stream().toList();
@@ -224,7 +224,7 @@ public final class TXTProperties {
 
     /**
      * Return all set names, for example to set up a holy grail list.
-     * @return A {@link List} of all available set names.
+     * @return An immutable {@link List} of all available set names.
      */
     public List<String> getSetNames() {
         return setData.keySet().stream().toList();

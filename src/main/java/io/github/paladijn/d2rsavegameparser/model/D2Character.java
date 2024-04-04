@@ -18,7 +18,6 @@
 package io.github.paladijn.d2rsavegameparser.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -264,10 +263,10 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
          */
         public D2Character build() {
             return new D2Character(fileData, name, hardcore, died, expansion, actProgression, characterType, level,
-                    Collections.unmodifiableList(locations), Collections.unmodifiableList(questDataPerDifficulty),
-                    Collections.unmodifiableList(waypoints), mercenary, attributes, Collections.unmodifiableList(items),
-                    Collections.unmodifiableList(deadBodyItems), golemItem, Collections.unmodifiableList(skills),
-                    Collections.unmodifiableList(equippedSetBenefits));
+                    List.copyOf(locations), List.copyOf(questDataPerDifficulty),
+                    List.copyOf(waypoints), mercenary, attributes, List.copyOf(items),
+                    List.copyOf(deadBodyItems), golemItem, List.copyOf(skills),
+                    List.copyOf(equippedSetBenefits));
         }
     }
 }

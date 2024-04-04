@@ -20,7 +20,6 @@ package io.github.paladijn.d2rsavegameparser.model;
 import io.github.paladijn.d2rsavegameparser.internal.parser.ReverseItemPropertyOrderComparator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -759,10 +758,10 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
 
             return new Item(isIdentified, isSocketed, isNew, isEar, isStarter, isSimple, isEthereal, isPersonalized, isRuneword, isThrown, isTwoHanded,
                     version, x, y, altPosition, code, type, type2, itemType, cntSockets, cntFilledSockets, fingerPrint,
-                    guid, level, pictureId, Collections.unmodifiableList(prefixIds), Collections.unmodifiableList(suffixIds),
+                    guid, level, pictureId, List.copyOf(prefixIds), List.copyOf(suffixIds),
                     setItemId, uniqueId, rareNameId1, rareNameId2, itemName, setName, personalizedName, baseDefense, maxDurability,
-                    durability, stacks, reqStr, reqDex, reqLvl, restrictedToClass, Collections.unmodifiableList(properties),
-                    Collections.unmodifiableList(socketedItems), location, quality, position, container, treasureClass, tomeId);
+                    durability, stacks, reqStr, reqDex, reqLvl, restrictedToClass, List.copyOf(properties),
+                    List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId);
         }
     }
 }

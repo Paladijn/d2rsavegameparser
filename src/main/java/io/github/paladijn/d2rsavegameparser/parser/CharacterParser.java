@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -258,7 +257,7 @@ public final class CharacterParser {
             skills.add(new Skill(skillType, level, passiveBonuses));
         }
 
-        return Collections.unmodifiableList(skills);
+        return List.copyOf(skills);
     }
 
     private List<ItemProperty> getBarbNaturalResistanceStatsByLevel(byte skillLevel) {

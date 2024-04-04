@@ -21,7 +21,6 @@ import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -88,7 +87,7 @@ public final class SetData {
      * @return List of immutable {@link ItemProperty} of partial bonuses for this set
      */
     public List<ItemProperty> getPartialBonuses() {
-        return Collections.unmodifiableList(partialBonuses);
+        return List.copyOf(partialBonuses);
     }
 
     /**
@@ -96,7 +95,7 @@ public final class SetData {
      * @return An immutable list of set item id's belonging to this set
      */
     public List<Short> getItemIDs() {
-        return Collections.unmodifiableList(itemIDs);
+        return List.copyOf(itemIDs);
     }
 
     /**
@@ -104,6 +103,6 @@ public final class SetData {
      * @return List of immutable {@link ItemProperty} of full set bonuses for this set
      */
     public Collection<ItemProperty> getFullBonuses() {
-        return Collections.unmodifiableList(fullBonuses);
+        return List.copyOf(fullBonuses);
     }
 }
