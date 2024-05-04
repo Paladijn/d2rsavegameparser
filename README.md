@@ -22,6 +22,16 @@ Other applications of the library may include:
 
 ### How to use
 Minimal Java version: 21  
+Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.6.77312 ones from the txt folder in this project.
+
+Dependency:
+```xml
+<dependency>
+  <groupId>io.github.paladijn</groupId>
+  <artifactId>d2rsavegameparser</artifactId>
+  <version>1.2.0</version>
+</dependency>
+```
 Required dependencies: org.slf4j:org.slf4j-api:2.0.9+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
 
 Example projects:
@@ -51,5 +61,5 @@ Many thanks to Trevin Beattie's description of the 1.0.9 format [hosted here](ht
 [GoMule](https://sourceforge.net/projects/gomule/) by _Randall_ and _Silospen_ has been a great resource as well. This project loads and saves character files using a Java Swing UI, so if you're looking for that please check it out.
 
 ### External content
-The .txt files supplied in the resources folder are retrieved from the game files and match their patch level. These are usually altered for modding purposes, but in our case we use a couple of them for fast updates of game data.  
+The .txt files supplied in the tzt folder are retrieved from the game files and match their patch level. These are usually altered for modding purposes, but in our case we use a couple of them for fast updates of game data.  
 Diablo II: Resurrected was developed by Vicarious Visions/Blizzard Albany and is a trademark of Blizzard entertainment. More information is available on [Wikipedia](https://en.wikipedia.org/wiki/Diablo_II:_Resurrected) or at [Blizzard's site](https://diablo2.blizzard.com).
