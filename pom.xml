@@ -121,7 +121,7 @@
                     <useReleaseProfile>false</useReleaseProfile>
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
-                    <username>paladijn2960@gmail.com</username>
+                    <username>git</username>
                 </configuration>
             </plugin>
             <plugin>
