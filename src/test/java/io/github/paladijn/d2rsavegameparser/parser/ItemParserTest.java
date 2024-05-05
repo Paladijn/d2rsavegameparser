@@ -95,9 +95,9 @@ class ItemParserTest {
         assertThat(result.reqLvl()).isEqualTo(35);
 
         assertThat(result.properties()).hasSize(6);
-        assertThat(result.properties().get(0).values()[0]).isEqualTo(2);
-        assertThat(result.properties().get(0).values()[1]).isEqualTo(2);
-        assertThat(result.properties().get(0).name()).isEqualTo("item_addskill_tab");
+        assertThat(result.properties().getFirst().values()[0]).isEqualTo(2);
+        assertThat(result.properties().getFirst().values()[1]).isEqualTo(2);
+        assertThat(result.properties().getFirst().name()).isEqualTo("item_addskill_tab");
         assertThat(result.properties().get(1).values()[0]).isEqualTo(20);
         assertThat(result.properties().get(1).name()).isEqualTo("item_fasterattackrate");
         assertThat(result.properties().get(2).values()[0]).isEqualTo(3);
@@ -196,8 +196,8 @@ class ItemParserTest {
         assertThat(result.socketedItems()).hasSize(2);
 
         assertThat(result.properties()).hasSize(7); // 2 for the superior stats, 2 + 3 for ral + tal
-        assertThat(result.properties().get(0).name()).isEqualTo("tohit");
-        assertThat(result.properties().get(0).values()[0]).isEqualTo(2);
+        assertThat(result.properties().getFirst().name()).isEqualTo("tohit");
+        assertThat(result.properties().getFirst().values()[0]).isEqualTo(2);
         assertThat(result.properties().get(5).name()).isEqualTo("item_maxdurability_percent");
         assertThat(result.properties().get(5).values()[0]).isEqualTo(11);
         assertThat(result.maxDurability()).isEqualTo((short)65);

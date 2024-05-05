@@ -71,15 +71,15 @@ class CharacterParserTest {
         assertThat(dierentuin.level()).isEqualTo((byte)16);
         assertThat(dierentuin.items()).hasSize(68);
         assertThat(dierentuin.mercenary().items()).hasSize(2);
-        assertThat(dierentuin.questDataPerDifficulty().get(0).socketQuestStarted()).isFalse();
-        assertThat(dierentuin.waypoints().get(0).act2LutGholein()).isFalse();
+        assertThat(dierentuin.questDataPerDifficulty().getFirst().socketQuestStarted()).isFalse();
+        assertThat(dierentuin.waypoints().getFirst().act2LutGholein()).isFalse();
     }
 
     @Test
     void readHell() {
         D2Character lohengrin = cut.parse(TestCommons.getBuffer("2.7/Lohengrin.d2s"));
         assertThat(lohengrin.level()).isEqualTo((byte)76);
-        assertThat(lohengrin.questDataPerDifficulty().get(0).socketQuestRewardAvailable()).isTrue();
+        assertThat(lohengrin.questDataPerDifficulty().getFirst().socketQuestRewardAvailable()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).socketQuestStarted()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).resistanceScrollRead()).isTrue();
         assertThat(lohengrin.actProgression()).isEqualTo((byte)11);
@@ -107,14 +107,14 @@ class CharacterParserTest {
         D2Character deadBody = cut.parse(TestCommons.getBuffer("2.7/itsDeadJim.d2s"));
         assertThat(deadBody.died()).isTrue();
         assertThat(deadBody.deadBodyItems()).hasSize(1); // the staff is the only item on your dead body
-        assertThat(deadBody.deadBodyItems().get(0).type()).isEqualTo("staf");
+        assertThat(deadBody.deadBodyItems().getFirst().type()).isEqualTo("staf");
         assertThat(deadBody.items()).hasSize(6); // items still left on your character (pots, scrolls)
     }
 
     @Test
     void anyaScroll() {
         D2Character scrollActive = cut.parse(TestCommons.getBuffer("2.7/Wandelaar-anya.d2s"));
-        assertThat(scrollActive.questDataPerDifficulty().get(0).resistanceScrollRead()).isTrue();
+        assertThat(scrollActive.questDataPerDifficulty().getFirst().resistanceScrollRead()).isTrue();
     }
 
     @Test
