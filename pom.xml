@@ -47,20 +47,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit.version>5.10.2</junit.version>
-        <logback.version>1.5.3</logback.version>
-        <slf4j.version>2.0.9</slf4j.version>
+        <logback.version>1.5.6</logback.version>
+        <slf4j.version>2.0.12</slf4j.version>
         <assertj.version>3.25.3</assertj.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-gpg-plugin.version>3.2.2</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.4</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.0.1</maven-release-plugin.version>
         <nexus-staging-plugin.version>1.6.13</nexus-staging-plugin.version>
-        <central-publishing-plugin.version>0.1.6</central-publishing-plugin.version>
+        <central-publishing-plugin.version>0.4.0</central-publishing-plugin.version>
 
-        <openrewrite-plugin.version>5.27.0</openrewrite-plugin.version>
-        <openrewrite-migrate-java.version>2.11.0</openrewrite-migrate-java.version>
+        <openrewrite-plugin.version>5.29.0</openrewrite-plugin.version>
+        <openrewrite-migrate-java.version>2.12.0</openrewrite-migrate-java.version>
     </properties>
 
     <dependencies>
