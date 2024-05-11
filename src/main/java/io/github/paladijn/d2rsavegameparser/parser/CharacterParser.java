@@ -161,7 +161,7 @@ public final class CharacterParser {
 
         byte[] skillBytes = new byte[30];
         buffer.get(skillIndex + 2, skillBytes, 0, 30);
-        characterBuilder.skills(parseSkills(characterType, skillBytes));
+        List<Skill> skills = parseSkills(characterType, skillBytes);
 
         // (available) skills are 30 bytes after the skillindex plus the 2 header bytes
         int itemIndex = skillIndex + 32;
@@ -171,9 +171,14 @@ public final class CharacterParser {
         // adjusting sets
         final HashMap<String, Integer> setCounts = getSetCounts(getEquippedSetItems(items));
         final List<Item> adjustedItems = removeSetBonuses(items, setCounts);
+        final List<ItemProperty> activeSetBenefits = getActiveSetBenefits(setCounts);
         characterBuilder
                 .items(adjustedItems)
-                .equippedSetBenefits(getActiveSetBenefits(setCounts));
+                .equippedSetBenefits(activeSetBenefits);
+
+        // adjusting passive skill benefits
+        characterBuilder.skills(adjustSkillsForPassives(skills, getEquippedItems(adjustedItems), activeSetBenefits));
+
 
         // for iron lem and merc we'll search backwards as that is faster.
         // iron golem starts with kf and in case the following byte is 1 the item will follow without a JM prefix
@@ -245,22 +250,53 @@ public final class CharacterParser {
         for(SkillType skillType: SkillType.getSkillListForCharacter(characterType)) {
             byte level = skillBytes[index];
             index++;
-            List<ItemProperty> passiveBonuses =
-            switch (skillType) {
-                case RESIST_FIRE -> List.of(new ItemProperty(40, "maxfireresist", new int[]{(level / 2), 0, 0}, 0, 0));
-                case RESIST_COLD -> List.of(new ItemProperty(44, "maxcoldresist", new int[]{(level / 2), 0, 0}, 0, 0));
-                case RESIST_LIGHTNING -> List.of(new ItemProperty(42, "maxlightresist", new int[]{(level / 2), 0, 0}, 0, 0));
-                case NATURAL_RESISTANCE -> getBarbNaturalResistanceStatsByLevel(level); // this should be extended with the +skills and +skilltrees after we have all items
-                default -> List.of();
-            };
 
-            skills.add(new Skill(skillType, level, passiveBonuses));
+            skills.add(new Skill(skillType, level, List.of()));
         }
 
         return List.copyOf(skills);
     }
 
-    private List<ItemProperty> getBarbNaturalResistanceStatsByLevel(byte skillLevel) {
+    private List<Skill> adjustSkillsForPassives(final List<Skill> skills, final List<Item> equippedItems, final List<ItemProperty> equippedSetBenefits) {
+        List<Skill> adjusted = new ArrayList<>();
+        for (Skill skill: skills) {
+            byte level = skill.level();
+            List<ItemProperty> passiveBonuses =
+                    switch (skill.skillType()) {
+                        case RESIST_FIRE -> List.of(new ItemProperty(40, "maxfireresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                        case RESIST_COLD -> List.of(new ItemProperty(44, "maxcoldresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                        case RESIST_LIGHTNING -> List.of(new ItemProperty(42, "maxlightresist", new int[]{(level / 2), 0, 0}, 0, 0));
+                        case NATURAL_RESISTANCE -> getBarbNaturalResistanceStats(level, equippedItems, equippedSetBenefits);
+                        default -> List.of();
+                    };
+            adjusted.add(new Skill(skill.skillType(), level, passiveBonuses));
+        }
+        return List.copyOf(adjusted);
+    }
+
+    private List<ItemProperty> getBarbNaturalResistanceStats(final byte skillLevel, final List<Item> equippedItems, final List<ItemProperty> equippedSetBenefits) {
+        int equippedBonusLevels = 0;
+        for (Item item: equippedItems) {
+            equippedBonusLevels += getEquippedBonusLevelsForBarbCombatMasteries(item.properties());
+        }
+        equippedBonusLevels += getEquippedBonusLevelsForBarbCombatMasteries(equippedSetBenefits);
+        return getBarbNaturalResistanceStatsByLevel(skillLevel + equippedBonusLevels);
+    }
+
+    private static int getEquippedBonusLevelsForBarbCombatMasteries(List<ItemProperty> itemProperties) {
+        int equippedBonusLevels = 0;
+        for(ItemProperty itemProperty: itemProperties) {
+           if(itemProperty.name().equals("item_allskills")) {
+               equippedBonusLevels += itemProperty.values()[0];
+           } else if (itemProperty.name().equals("item_addskill_tab")
+                   && itemProperty.values()[0] == 13) { // Barb combat masteries tab
+               equippedBonusLevels += itemProperty.values()[1];
+           }
+        }
+        return equippedBonusLevels;
+    }
+
+    private List<ItemProperty> getBarbNaturalResistanceStatsByLevel(final int skillLevel) {
         // source https://diablo2.io/skills/natural-resistance-t4125.html
         int[] resistancePerLevel = {0, 12, 21, 28, 35, 40, 44, 47, 49, 52, 54,
                                     56, 58, 60, 61, 62, 64, 64, 65, 66, 67,
@@ -268,13 +304,13 @@ public final class CharacterParser {
                                     73, 73, 74, 74, 75, 75, 75, 76, 76, 76,
                                     76, 76, 76, 76, 77, 77, 77, 77, 78, 78,
                                     78, 78, 78, 79, 79, 79, 79, 79, 79, 80};
-        final int resistance = resistancePerLevel[Math.max(skillLevel, 60)];
+        final int resistance = resistancePerLevel[Math.min(skillLevel, 60)];
 
         return List.of(
-                new ItemProperty(40, "maxfireresist", new int[]{resistance, 0, 0}, 0, 0),
-                new ItemProperty(42, "maxlightresist", new int[]{resistance, 0, 0}, 0, 0),
-                new ItemProperty(44, "maxcoldresist", new int[]{resistance, 0, 0}, 0, 0),
-                new ItemProperty(44, "maxpoisonresist", new int[]{resistance, 0, 0}, 0, 0)
+                new ItemProperty(39, "fireresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(41, "lightresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(43, "coldresist", new int[]{resistance, 0, 0}, 0, 0),
+                new ItemProperty(45, "poisonresist", new int[]{resistance, 0, 0}, 0, 0)
         );
     }
 
@@ -453,6 +489,12 @@ public final class CharacterParser {
     private List<Item> getEquippedSetItems(List<Item> items) {
         return items.stream()
                 .filter(item -> item.location() == ItemLocation.EQUIPPED && item.quality() == ItemQuality.SET)
+                .toList();
+    }
+
+    private List<Item> getEquippedItems(List<Item> items) {
+        return items.stream()
+                .filter(item -> item.location() == ItemLocation.EQUIPPED)
                 .toList();
     }
 }

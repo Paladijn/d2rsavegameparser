@@ -22,6 +22,7 @@ import io.github.paladijn.d2rsavegameparser.model.D2Character;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.Skill;
+import io.github.paladijn.d2rsavegameparser.model.SkillType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -313,7 +314,7 @@ class CharacterParserTest {
     }
 
     @Test
-    void testPassiveBonusesFromSkills() {
+    void testPaladinPassiveBonusesFromSkills() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Fjoerich-max-res.d2s"));
 
         List<Skill> skillsWithBenefits = d2Character.skills().stream().filter(skill -> !skill.passiveBonuses().isEmpty()).toList();
@@ -327,5 +328,29 @@ class CharacterParserTest {
 
         assertThat(skillsWithBenefits.getLast().passiveBonuses().getFirst().name()).isEqualTo("maxlightresist");
         assertThat(skillsWithBenefits.getLast().passiveBonuses().getFirst().values()[0]).isEqualTo(4);
+    }
+
+    @Test
+    void testNaturalResistanceBonuses() {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Schreeuw.d2s"));
+
+        List<Skill> skillsWithBenefits = d2Character.skills().stream().filter(skill -> !skill.passiveBonuses().isEmpty()).toList();
+        assertThat(skillsWithBenefits).hasSize(1);
+        assertThat(skillsWithBenefits.getFirst().skillType()).isEqualTo(SkillType.NATURAL_RESISTANCE);
+        assertThat(skillsWithBenefits.getFirst().level()).isEqualTo((byte) 1); // base level, +2 from items
+
+        final List<ItemProperty> naturalRes = skillsWithBenefits.getFirst().passiveBonuses();
+        assertThat(naturalRes).hasSize(4);
+        assertThat(naturalRes.getFirst().name()).isEqualTo("fireresist");
+        assertThat(naturalRes.getFirst().values()[0]).isEqualTo(28);
+
+        assertThat(naturalRes.get(1).name()).isEqualTo("lightresist");
+        assertThat(naturalRes.get(1).values()[0]).isEqualTo(28);
+
+        assertThat(naturalRes.get(2).name()).isEqualTo("coldresist");
+        assertThat(naturalRes.get(2).values()[0]).isEqualTo(28);
+
+        assertThat(naturalRes.get(3).name()).isEqualTo("poisonresist");
+        assertThat(naturalRes.get(3).values()[0]).isEqualTo(28);
     }
 }
