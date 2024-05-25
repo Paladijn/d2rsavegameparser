@@ -1,7 +1,7 @@
 # Savegame parser for Diablo II: Resurrected
 This library started as an attempt to read Diablo II: Resurrected savegame files to display current statistics on stream by exporting them to a html file.
 
-Version 2.8 (patch 1.6.77312) which was released November 14th, 2023 is currently supported. The library will target the latest available version (as the game requires to be patched) and will only parse, not write savegames.
+Version 2.8 (patch 1.6.80273) which was released May 23rd, 2024 is currently supported. The library will target the latest available version (as the game requires to be patched) and will only parse, not write savegames.
 
 ### Functionality
 * Parse full character file
@@ -22,7 +22,7 @@ Other applications of the library may include:
 
 ### How to use
 Minimal Java version: 21  
-Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.6.77312 ones from the txt folder in this project.
+Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.6.80273 ones from the txt folder in this project.
 
 Dependency:
 ```xml
