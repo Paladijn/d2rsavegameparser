@@ -202,6 +202,7 @@
                         <version>${central-publishing-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
+                            <deploymentName>${name} ${version}</deploymentName> <!-- the version will probably list as -SNAPSHOT, but at least we'll have an indication which verion it was -->
                             <publishingServerId>central</publishingServerId>
                             <tokenEnabled>true</tokenEnabled>
                         </configuration>
