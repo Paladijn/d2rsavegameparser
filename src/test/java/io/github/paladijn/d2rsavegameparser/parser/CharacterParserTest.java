@@ -353,4 +353,15 @@ class CharacterParserTest {
         assertThat(naturalRes.get(3).name()).isEqualTo("poisonresist");
         assertThat(naturalRes.get(3).values()[0]).isEqualTo(28);
     }
+
+    @Test
+    void shouldParseIncorrectPrefix() {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.80273/Assassin.d2s"));
+
+        List<Item> brokenJewels = d2Character.items().stream().filter(item -> item.itemName().equals("Jewel")).toList();
+
+        assertThat(brokenJewels).hasSize(6);
+        assertThat(brokenJewels.getFirst().prefixIds().getFirst()).isEqualTo((short)2047);
+        assertThat(brokenJewels.getFirst().suffixIds().getFirst()).isEqualTo((short)2047);
+    }
 }

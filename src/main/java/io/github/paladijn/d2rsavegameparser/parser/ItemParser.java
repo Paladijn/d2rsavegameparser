@@ -192,10 +192,25 @@ final class ItemParser {
         }
         br.moveToNextByteBoundary();
 
-        if (printItemBytes) {
-            br.printBytes(itemBuilder.build(), startIndex);
+        final Item result = itemBuilder.build();
+        boolean printBytesDueToError = false;
+
+        if (result.prefixIds().stream().anyMatch(id -> id == 2047)) {
+            log.error("Item has at least one unknown prefixId at 2047, likely an adjusted or hacked item!");
+            printBytesDueToError = true;
         }
-        return itemBuilder.build();
+
+        if (result.suffixIds().stream().anyMatch(id -> id == 2047)) {
+            log.error("Item has at least one unknown suffixId at 2047, likely an adjusted or hacked item!");
+            printBytesDueToError = true;
+        }
+
+        if (printItemBytes || printBytesDueToError) {
+            br.printBytes(result, startIndex);
+        }
+
+
+        return result;
     }
 
     private void parseEar(BitReader br) {
@@ -579,10 +594,14 @@ final class ItemParser {
         if (prefix != 0) {
             itemBuilder.addPrefixId(prefix);
             itemScaffolding.setPrefixIdSize(itemScaffolding.getPrefixIdSize() + 1);
-            final MagicAffix magicPrefix = txtProperties.getMagicPrefix(prefix);
-            if (magicPrefix.getReqLvl() > reqLvl) {
-                log.debug("new reqLvl {} due to prefix {}", reqLvl, magicPrefix);
-                reqLvl = magicPrefix.getReqLvl();
+            if (prefix == 2047) {
+                log.error("Rare prefix (2047) too high! Very likely an adjusted/hacked item that lacks a prefix ingame.");
+            } else {
+                final MagicAffix magicPrefix = txtProperties.getMagicPrefix(prefix);
+                if (magicPrefix.getReqLvl() > reqLvl) {
+                    log.debug("new reqLvl {} due to prefix {}", reqLvl, magicPrefix);
+                    reqLvl = magicPrefix.getReqLvl();
+                }
             }
         }
         return reqLvl;
@@ -593,10 +612,14 @@ final class ItemParser {
         if (suffix != 0) {
             itemBuilder.addSuffixId(suffix);
             itemScaffolding.setSuffixIdSize(itemScaffolding.getSuffixIdSize() + 1);
-            final MagicAffix magicSuffix = txtProperties.getMagicSuffix(suffix);
-            if (magicSuffix.getReqLvl() > reqLvl) {
-                log.debug("new reqLvl {} due to suffix {}", reqLvl, magicSuffix);
-                reqLvl = magicSuffix.getReqLvl();
+            if (suffix == 2047) {
+                log.error("Rare suffix (2047) too high! Very likely an adjusted/hacked item that lacks a suffix ingame.");
+            } else {
+                final MagicAffix magicSuffix = txtProperties.getMagicSuffix(suffix);
+                if (magicSuffix.getReqLvl() > reqLvl) {
+                    log.debug("new reqLvl {} due to suffix {}", reqLvl, magicSuffix);
+                    reqLvl = magicSuffix.getReqLvl();
+                }
             }
         }
         return reqLvl;
@@ -642,23 +665,31 @@ final class ItemParser {
         CharacterType restricted = null;
         if (prefix != 0) {
             itemBuilder.addPrefixId(prefix);
-            final MagicAffix magicPrefix = txtProperties.getMagicPrefix(prefix);
-            itemName = "%s %s".formatted(magicPrefix.getName(), itemName);
-            if (magicPrefix.getReqLvl() > reqLvl) {
-                reqLvl = magicPrefix.getReqLvl();
+            if (prefix == 2047) {
+                log.error("Prefix (2047) too high! Very likely an adjusted/hacked item that lacks a prefix ingame.");
+            } else {
+                final MagicAffix magicPrefix = txtProperties.getMagicPrefix(prefix);
+                itemName = "%s %s".formatted(magicPrefix.getName(), itemName);
+                if (magicPrefix.getReqLvl() > reqLvl) {
+                    reqLvl = magicPrefix.getReqLvl();
+                }
+                restricted = magicPrefix.getRestrictedToClass();
             }
-            restricted = magicPrefix.getRestrictedToClass();
         }
         short suffix = br.readShort(11);
         if (suffix != 0) {
             itemBuilder.addSuffixId(suffix);
-            final MagicAffix magicSuffix = txtProperties.getMagicSuffix(suffix);
-            itemName = "%s %s".formatted(itemName, magicSuffix.getName());
-            if (magicSuffix.getReqLvl()> reqLvl) {
-                reqLvl = magicSuffix.getReqLvl();
-            }
-            if (restricted != null) {
-                restricted = magicSuffix.getRestrictedToClass();
+            if (suffix == 2047) {
+                log.error("Suffix (2047) too high! Very likely an adjusted/hacked item that lacks a suffix ingame.");
+            } else {
+                final MagicAffix magicSuffix = txtProperties.getMagicSuffix(suffix);
+                itemName = "%s %s".formatted(itemName, magicSuffix.getName());
+                if (magicSuffix.getReqLvl()> reqLvl) {
+                    reqLvl = magicSuffix.getReqLvl();
+                }
+                if (restricted != null) {
+                    restricted = magicSuffix.getRestrictedToClass();
+                }
             }
         }
 
