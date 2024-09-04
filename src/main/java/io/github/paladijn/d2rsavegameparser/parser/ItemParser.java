@@ -448,7 +448,6 @@ final class ItemParser {
 
     private void parseSocketedItems(Item.ItemBuilder itemBuilder, ItemScaffolding itemScaffolding, BitReader br) {
         log.debug("parsing {} filled sockets", itemScaffolding.getCntFilledSockets());
-        int reqLevel = itemScaffolding.getReqLvl();
         List<Item> socketedItems = new ArrayList<>();
 
         br.moveToNextByteBoundary();
@@ -465,10 +464,6 @@ final class ItemParser {
                 } else {
                     itemBuilder.addProperties(filterPropertiesByQuality(socketedItem.properties(), 9));
                 }
-            }
-
-            if (socketedItem.reqLvl() > reqLevel) {
-                reqLevel = socketedItem.reqLvl();
             }
 
             itemBuilder.addSocketedItem(socketedItem);

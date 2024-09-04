@@ -672,11 +672,13 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
 
         /**
          * Adds a socketed item to the item.
+         * Will update the {@link #reqLvl} in case the reqLvl of the socketed item is higher than the current value.
          *
-         * @param socketedItem The socketed item to be added.
+         * @param socketedItem The socketed {@link Item} to be added.
          * @return The current ItemBuilder instance.
          */
         public ItemBuilder addSocketedItem(Item socketedItem) {
+            this.reqLvl = Math.max(socketedItem.reqLvl, this.reqLvl);
             this.socketedItems.add(socketedItem);
             return this;
         }
