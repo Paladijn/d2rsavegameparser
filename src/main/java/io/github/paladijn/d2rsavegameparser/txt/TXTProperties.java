@@ -63,8 +63,6 @@ public final class TXTProperties {
     private final HashMap<String, SetData> setData = new HashMap<>();
     private final HashMap<Integer, ItemStatCost> itemStatcosts = new HashMap<>();
     private final HashMap<String, ItemStatCost> itemStatcostsByCode = new HashMap<>();
-    private final HashMap<String, String> propertyTooltipByStat = new HashMap<>();
-    private final HashMap<String, String> propertyParameterByStat = new HashMap<>();
 
     private final List<Runeword> runewords = new ArrayList<>();
 
@@ -413,12 +411,6 @@ public final class TXTProperties {
                 String[] blocks = line.split("\t");
                 if (blocks.length > 1 && !"code".equals(blocks[0])) {
                     genericPropertiesByCode.put(blocks[0], line);
-                    String statname = blocks[3];
-                    if (blocks[3].isBlank() || !blocks[7].isBlank()) { // either stat1 is filled, or we've received multiple stats
-                        statname = blocks[0];
-                    }
-                    propertyTooltipByStat.put(statname, blocks[30]);
-                    propertyParameterByStat.put(statname, blocks[31]);
                 }
             });
         } catch (IOException | NullPointerException e) {
