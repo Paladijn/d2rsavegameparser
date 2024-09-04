@@ -1,7 +1,7 @@
 # Savegame parser for Diablo II: Resurrected
 This library started as an attempt to read Diablo II: Resurrected savegame files to display current statistics on stream by exporting them to a html file.
 
-Version 2.8 (patch 1.6.80273) which was released May 23rd, 2024 is currently supported. The library will target the latest available version (as the game requires to be patched) and will only parse, not write savegames.
+Version 2.8 (patch 1.6.81914) which was released August 20th, 2024 is currently supported. The library will target the latest available version (as the game requires to be patched) and will only parse, not write savegames.
 
 ### Functionality
 * Parse full character file
@@ -29,10 +29,10 @@ Dependency:
 <dependency>
   <groupId>io.github.paladijn</groupId>
   <artifactId>d2rsavegameparser</artifactId>
-  <version>1.3.0</version>
+  <version>1.3.3</version>
 </dependency>
 ```
-Required dependencies: org.slf4j:org.slf4j-api:2.0.9+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
+Required dependencies: org.slf4j:org.slf4j-api:2.0.16+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
 
 Example projects:
 * [My own example project](https://github.com/Paladijn/d2rsavegameparser-examples) includes socket reward available, list specific items (Sets) and translations.
