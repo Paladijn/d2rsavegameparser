@@ -1,4 +1,9 @@
 # Savegame parser for Diablo II: Resurrected release notes
+## [1.3.4](https://github.com/Paladijn/d2rsavegameparser/releases/tag/d2rsavegameparser-1.3.4)
+2024-09-21
+* Throw ParseException on savegames < 335 bytes (for example when 0 bytes were read)
+* Extended looking for skills byte, and throw ParseException if not found
+* Updated dependencies
 
 ## [1.3.3](https://github.com/Paladijn/d2rsavegameparser/releases/tag/d2rsavegameparser-1.3.3)
 2024-09-04
