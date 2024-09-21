@@ -144,16 +144,20 @@ public final class CharacterParser {
             throw new ParseException("Could not find stat header");
         }
 
-        // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 40 which so far seems to work
+        // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 60 which so far seems to work (it should be < 36, but we've encountered one crash on >= 40 so far)
         byte[] skillHeaderBytes = new byte[2];
         int skillIndex = -1;
-        for(int i = 800; i < 840; i++) {
+        for(int i = 800; i < 860; i++) {
             buffer.get(i, skillHeaderBytes, 0, 2);
             if("if".equals(new String(skillHeaderBytes))) {
                 skillIndex = i;
                 break;
             }
         }
+        if (skillIndex == -1) {
+            throw new ParseException("Could not find skill header 'if' below index 860");
+        }
+
         int statLength = skillIndex - 767;
         byte[] statBytes = new byte[statLength];
         buffer.get(767, statBytes, 0, statLength);
