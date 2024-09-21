@@ -199,6 +199,9 @@ public final class CharacterParser {
                 break;
             }
         }
+        if (ironIndex == -1) {
+            throw new ParseException("Could not find iron golem header 'kf'");
+        }
 
         // merc items are at "jf"
         byte[] mercItemHeaderBytes = new byte[2];
