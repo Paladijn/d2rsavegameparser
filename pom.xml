@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.paladijn</groupId>
     <artifactId>d2rsavegameparser</artifactId>
-    <version>1.3.4-SNAPSHOT</version>
+    <version>1.3.4</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A library to parse savegame files of the 2021 Diablo II: Resurrected game.</description>
@@ -27,7 +27,7 @@
         <connection>scm:git:git://github.com/Paladijn/d2rsavegameparser.git</connection>
         <developerConnection>scm:git:ssh://github.com/Paladijn/d2rsavegameparser.git</developerConnection>
         <url>https://github.com/Paladijn/d2rsavegameparser/tree/main</url>
-        <tag>d2rsavegameparser-1.2.0</tag>
+        <tag>d2rsavegameparser-1.3.4</tag>
     </scm>
 
     <distributionManagement>
@@ -202,7 +202,7 @@
                         <version>${central-publishing-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <deploymentName>${name} ${version}</deploymentName> <!-- the version will probably list as -SNAPSHOT, but at least we'll have an indication which verion it was -->
+                            <deploymentName>${project.name} ${project.version}</deploymentName> <!-- the version will probably list as -SNAPSHOT, but at least we'll have an indication which verion it was -->
                             <publishingServerId>central</publishingServerId>
                         </configuration>
                     </plugin>
