@@ -8,4 +8,5 @@
     <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
+    <!-- this file is also used as a fake .d2s file during tests, so it has to have at least 335 bytes in content -->
 </configuration>

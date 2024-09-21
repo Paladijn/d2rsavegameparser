@@ -83,11 +83,15 @@ public final class CharacterParser {
 
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        int header = buffer.getInt(0);
+        if (buffer.limit() < 335) {
+            throw new ParseException("Less than 335 bytes read (%d), either the file is locked, or this is not a valid .d2s file".formatted(buffer.limit()));
+        }
+
+        final int header = buffer.getInt(0);
         if (header != 0xaa55aa55) {
             throw new ParseException("Wrong fileHeader %d, this is not a Diablo II saveGame file".formatted(header));
         }
-        FileData fileData = getFileData(buffer);
+        final FileData fileData = getFileData(buffer);
 
         D2Character.D2CharacterBuilder characterBuilder = new D2Character.D2CharacterBuilder().fileData(fileData);
 
