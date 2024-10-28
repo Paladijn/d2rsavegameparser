@@ -109,7 +109,7 @@
                     <artifactId>versions-maven-plugin</artifactId>
                     <version>${maven.versions.plugin}</version>
                     <configuration>
-                        <ignoredVersions>.*-M.*,.*-alpha.*</ignoredVersions>
+                        <ignoredVersions>.*-M.*,.*-alpha.*,.*-beta.*</ignoredVersions>
                     </configuration>
                 </plugin>
             </plugins>
@@ -215,7 +215,7 @@
                         <version>${central-publishing-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <deploymentName>${project.name} ${project.version}</deploymentName> <!-- the version will probably list as -SNAPSHOT, but at least we'll have an indication which verion it was -->
+                            <deploymentName>${project.name} ${project.version}</deploymentName>
                             <publishingServerId>central</publishingServerId>
                         </configuration>
                     </plugin>
