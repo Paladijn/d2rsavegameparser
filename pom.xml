@@ -55,6 +55,7 @@
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>3.2.6</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
+        <maven.versions.plugin>2.17.1</maven.versions.plugin>
         <central-publishing-plugin.version>0.5.0</central-publishing-plugin.version>
 
         <openrewrite-plugin.version>5.40.2</openrewrite-plugin.version>
@@ -101,6 +102,18 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>${maven.versions.plugin}</version>
+                    <configuration>
+                        <ignoredVersions>.*-M.*,.*-alpha.*,.*-beta.*</ignoredVersions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -202,7 +215,7 @@
                         <version>${central-publishing-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <deploymentName>${project.name} ${project.version}</deploymentName> <!-- the version will probably list as -SNAPSHOT, but at least we'll have an indication which verion it was -->
+                            <deploymentName>${project.name} ${project.version}</deploymentName>
                             <publishingServerId>central</publishingServerId>
                         </configuration>
                     </plugin>
