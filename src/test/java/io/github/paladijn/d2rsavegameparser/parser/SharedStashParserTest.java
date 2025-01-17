@@ -73,4 +73,21 @@ class SharedStashParserTest {
         assertThat(tab3.gold()).isZero();
         assertThat(tab3.items()).isEmpty();
     }
+
+    @Test
+    void brokenStash() throws IOException {
+        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("1.6.84219/BrokenNecroNGPlusStash.d2i").readAllBytes());
+
+        final List<SharedStashTab> result = cut.parse(buffer);
+
+        assertThat(result).hasSize(3);
+
+        SharedStashTab tab1 = result.getFirst();
+        assertThat(tab1.gold()).isEqualTo(2500000);
+        assertThat(tab1.lengthInBytes()).isEqualTo(2790);
+        assertThat(tab1.items()).hasSize(46);
+
+        assertThat(tab1.items().get(12).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
+        assertThat(tab1.items().get(35).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
+    }
 }
