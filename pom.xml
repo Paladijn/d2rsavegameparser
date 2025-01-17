@@ -45,21 +45,21 @@
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <junit.version>5.11.0</junit.version>
-        <logback.version>1.5.8</logback.version>
+        <junit.version>5.11.4</junit.version>
+        <logback.version>1.5.16</logback.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <assertj.version>3.26.3</assertj.version>
+        <assertj.version>3.27.2</assertj.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-gpg-plugin.version>3.2.6</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
-        <maven.versions.plugin>2.17.1</maven.versions.plugin>
-        <central-publishing-plugin.version>0.5.0</central-publishing-plugin.version>
+        <maven.versions.plugin>2.18.0</maven.versions.plugin>
+        <central-publishing-plugin.version>0.6.0</central-publishing-plugin.version>
 
-        <openrewrite-plugin.version>5.40.2</openrewrite-plugin.version>
-        <openrewrite-migrate-java.version>2.25.1</openrewrite-migrate-java.version>
+        <openrewrite-plugin.version>6.0.3</openrewrite-plugin.version>
+        <openrewrite-migrate-java.version>3.0.1</openrewrite-migrate-java.version>
     </properties>
 
     <dependencies>
