@@ -162,19 +162,20 @@ public final class CharacterParser {
             throw new ParseException("Could not find skill header 'if' below index 860");
         }
 
-        int statLength = skillIndex - 767;
+        final int statLength = skillIndex - 767;
         byte[] statBytes = new byte[statLength];
         buffer.get(767, statBytes, 0, statLength);
         characterBuilder.attributes(attributeParser.parse(statBytes));
 
         byte[] skillBytes = new byte[30];
         buffer.get(skillIndex + 2, skillBytes, 0, 30);
-        List<Skill> skills = parseSkills(characterType, skillBytes);
+        final List<Skill> skills = parseSkills(characterType, skillBytes);
 
         // (available) skills are 30 bytes after the skillindex plus the 2 header bytes
         int itemIndex = skillIndex + 32;
         log.debug("parsing character items");
         final List<Item> items = itemParser.parseItems(buffer, itemIndex, buffer.limit());
+        final int minimalItemBytes = 9 * items.size(); // items have a minimum length of 9 bytes.
 
         // adjusting sets
         final HashMap<String, Integer> setCounts = getSetCounts(getEquippedSetItems(items));
@@ -187,60 +188,71 @@ public final class CharacterParser {
         // adjusting passive skill benefits
         characterBuilder.skills(adjustSkillsForPassives(skills, getEquippedItems(adjustedItems), activeSetBenefits));
 
+        if(characterBuilder.isExpansion()) {
+            // the Classic characters don't have merc items, and don't store the iron golem item in the savegame file (it even disappears when switching acts!)
 
-        // for iron lem and merc we'll search backwards as that is faster.
-        // iron golem starts with kf and in case the following byte is 1 the item will follow without a JM prefix
-        byte[] ironLemHeaderBytes = new byte[2];
-        int ironIndex = -1;
-        for (int i = buffer.limit() - 3; i > itemIndex; i--) {
-            buffer.get(i, ironLemHeaderBytes, 0, 2);
-            if("kf".equals(new String(ironLemHeaderBytes))) {
-                ironIndex = i;
-                break;
+            // for iron lem and merc we'll search backwards as that is faster.
+            // iron golem starts with kf and in case the following byte is 1 the item will follow without a JM prefix
+            byte[] ironLemHeaderBytes = new byte[2];
+            int ironIndex = -1;
+            for (int i = buffer.limit() - 3; i > itemIndex + minimalItemBytes; i--) {
+                buffer.get(i, ironLemHeaderBytes, 0, 2);
+                if("kf".equals(new String(ironLemHeaderBytes))) {
+                    ironIndex = i;
+                    break;
+                }
+            }
+            if (ironIndex == -1) {
+                throw new ParseException("Could not find iron golem header 'kf'");
+            }
+
+            // merc items are at "jf"
+            byte[] mercItemHeaderBytes = new byte[2];
+            int mercItemIndex = -1;
+            for (int i = ironIndex; i > itemIndex + minimalItemBytes; i--) {
+                buffer.get(i, mercItemHeaderBytes, 0, 2);
+                if("jf".equals(new String(mercItemHeaderBytes))) {
+                    mercItemIndex = i + 2;
+                    break;
+                }
+            }
+
+            if (ironIndex > mercItemIndex) {
+                log.debug("parsing mercenary at index {}", mercItemIndex);
+                final List<Item> mercItems = itemParser.parseItems(buffer, mercItemIndex, ironIndex);
+                final HashMap<String, Integer> mercSetCounts = getSetCounts(getEquippedSetItems(mercItems));
+                final List<Item> mercAdjustedItems = removeSetBonuses(mercItems, mercSetCounts);
+                mercenaryBuilder.items(mercAdjustedItems);
+                characterBuilder.mercenary(mercenaryBuilder.build());
+            } else {
+                log.debug("No mercenary found");
+            }
+
+            // parse the iron golem item
+            if (buffer.get(ironIndex + 2) == 1) {
+                final int ironItemLength = buffer.limit() - ironIndex - 3;
+                byte[] ironBytes = new byte[ironItemLength];
+                buffer.get(ironIndex + 3, ironBytes, 0, ironItemLength);
+                BitReader igBR = new BitReader(ironBytes);
+                characterBuilder.golemItem(itemParser.parseItem(igBR));
             }
         }
-        if (ironIndex == -1) {
-            throw new ParseException("Could not find iron golem header 'kf'");
-        }
 
-        // merc items are at "jf"
-        byte[] mercItemHeaderBytes = new byte[2];
-        int mercItemIndex = -1;
-        for (int i = ironIndex; i > itemIndex; i--) {
-            buffer.get(i, mercItemHeaderBytes, 0, 2);
-            if("jf".equals(new String(mercItemHeaderBytes))) {
-                mercItemIndex = i+2;
-                break;
-            }
-        }
-
-        if (ironIndex > mercItemIndex) {
-            log.debug("parsing mercenary at index {}", mercItemIndex);
-            final List<Item> mercItems = itemParser.parseItems(buffer, mercItemIndex, ironIndex);
-            final HashMap<String, Integer> mercSetCounts = getSetCounts(getEquippedSetItems(mercItems));
-            final List<Item> mercAdjustedItems = removeSetBonuses(mercItems, mercSetCounts);
-            mercenaryBuilder.items(mercAdjustedItems);
-            characterBuilder.mercenary(mercenaryBuilder.build());
-        } else {
-            log.debug("No mercenary found");
-        }
-
-        // parse the iron golem
-        if (buffer.get(ironIndex + 2) != 0) {
-            int ironItemLength = buffer.limit() - ironIndex - 3;
-            byte[] ironBytes = new byte[ironItemLength];
-            buffer.get(ironIndex + 3, ironBytes, 0, ironItemLength);
-            BitReader igBR = new BitReader(ironBytes);
-            characterBuilder.golemItem(itemParser.parseItem(igBR));
-        }
-
-        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here. Skip 12 bytes -> JM items on body. So we'll look for the JM before jf, if it's nearby with count 0 => we're alive.
+        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here.
+        // Skip 16 bytes -> JM items on body. So we'll look for the next JM, if it's nearby with count 0 => we're alive.
         byte[] deadBodyBytes = new byte[2];
-        for (int i = mercItemIndex - 2; i > mercItemIndex - 100; i--) { // 100 bytes should be more than enough
+
+        final int deadBodySearchStart = itemIndex + minimalItemBytes;
+        for (int i = deadBodySearchStart; i < buffer.limit(); i++) {
             buffer.get(i, deadBodyBytes, 0, 2);
             if ("JM".equals(new String(deadBodyBytes))) {
-                log.debug("dead body items found at index {}", i);
-                characterBuilder.deadBodyItems(itemParser.parseItems(buffer, i, mercItemIndex - 2));
+                final short deadIndicator = buffer.getShort(i + 2);
+                if (deadIndicator == 1) {
+                    log.debug("dead body items found at index {}", i);
+                    characterBuilder.deadBodyItems(itemParser.parseItems(buffer, i + 16, buffer.limit()));
+                } else {
+                    log.debug("No dead body items found");
+                }
                 break;
             }
         }

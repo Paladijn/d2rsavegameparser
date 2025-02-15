@@ -257,6 +257,15 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         }
 
         /**
+         * Indication whether this is an expansion character. Classic characters don't have an iron golem or mercenary items stored in the savegame.
+         *
+         * @return true if this is an expansion character, false if it's classic.
+         */
+        public boolean isExpansion() {
+            return expansion;
+        }
+
+        /**
          * Build the {@link D2Character} instance with the configured values.
          *
          * @return The constructed {@link D2Character} instance.

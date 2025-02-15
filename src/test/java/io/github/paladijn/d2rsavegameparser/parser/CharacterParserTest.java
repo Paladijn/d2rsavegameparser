@@ -110,6 +110,23 @@ class CharacterParserTest {
         assertThat(deadBody.deadBodyItems()).hasSize(1); // the staff is the only item on your dead body
         assertThat(deadBody.deadBodyItems().getFirst().type()).isEqualTo("staf");
         assertThat(deadBody.items()).hasSize(6); // items still left on your character (pots, scrolls)
+        // no merc as this is a new character
+        assertThat(deadBody.mercenary()).isNull();
+    }
+
+    @Test
+    void deadWithMerc() {
+        D2Character deadBody = cut.parse(TestCommons.getBuffer("1.6.84219/DeadWithMerc.d2s"));
+        assertThat(deadBody.died()).isTrue();
+        assertThat(deadBody.deadBodyItems()).hasSize(4);
+        assertThat(deadBody.deadBodyItems().getFirst().type()).isEqualTo("helm");
+        assertThat(deadBody.items()).hasSize(15); // items still left on your character (pots, scrolls, inventory)
+
+        // and validate the Merc items were parsed correctly as well:
+        assertThat(deadBody.mercenary().items()).hasSize(2);
+        // with a socketed bow
+        assertThat(deadBody.mercenary().items().getLast().socketedItems()).hasSize(3);
+        assertThat(deadBody.mercenary().items().getLast().properties()).hasSize(10);
     }
 
     @Test
@@ -363,5 +380,23 @@ class CharacterParserTest {
         assertThat(brokenJewels).hasSize(6);
         assertThat(brokenJewels.getFirst().prefixIds().getFirst()).isEqualTo((short)2047);
         assertThat(brokenJewels.getFirst().suffixIds().getFirst()).isEqualTo((short)2047);
+    }
+
+    @Test
+    void shouldParseClassicCharacter() {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.84219/Classic.d2s"));
+
+        assertThat(d2Character.attributes().hp()).isEqualTo(72);
+        assertThat(d2Character.attributes().maxHP()).isEqualTo(74);
+        assertThat(d2Character.items()).hasSize(20);
+        assertThat(d2Character.golemItem()).isNull();
+    }
+
+    @Test
+    void shouldParseClassicDeadChar() {
+        D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.84219/RIPClassic.d2s"));
+
+        assertThat(d2Character.died()).isTrue();
+        assertThat(d2Character.deadBodyItems()).hasSize(3);
     }
 }
