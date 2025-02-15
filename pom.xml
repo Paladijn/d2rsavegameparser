@@ -51,12 +51,12 @@
         <assertj.version>3.27.3</assertj.version>
 
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-javadoc-plugin.version>3.11.1</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
-        <central-publishing-plugin.version>0.6.0</central-publishing-plugin.version>
+        <central-publishing-plugin.version>0.7.0</central-publishing-plugin.version>
 
         <openrewrite-plugin.version>6.1.3</openrewrite-plugin.version>
         <openrewrite-migrate-java.version>3.2.0</openrewrite-migrate-java.version>
@@ -217,6 +217,7 @@
                         <configuration>
                             <deploymentName>${project.name} ${project.version}</deploymentName>
                             <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
                         </configuration>
                     </plugin>
                     <plugin>
