@@ -32,6 +32,8 @@ public final class ArmorStats {
     private int reqStr;
     private int reqDex;
     private final int reqLvl;
+    private final int invWidth;
+    private final int invHeight;
 
     /**
      * Constructor which parses a tab-separated line from armor.txt
@@ -43,6 +45,9 @@ public final class ArmorStats {
         type = blocks[51];
         type2 = blocks[52];
         code = blocks[18];
+
+        invWidth = Integer.parseInt(blocks[27]);
+        invHeight = Integer.parseInt(blocks[28]);
 
         if (ParseHelper.isNumeric(blocks[8])) {
             reqStr = Integer.parseInt(blocks[8]);
@@ -116,5 +121,23 @@ public final class ArmorStats {
      */
     public int getReqLvl() {
         return reqLvl;
+    }
+
+    /**
+     * the inventory width this item uses
+     *
+     * @return the inventory width of this item.
+     */
+    public int getInvWidth() {
+        return invWidth;
+    }
+
+    /**
+     * the inventory height this item uses
+     *
+     * @return the inventory height of this item.
+     */
+    public int getInvHeight() {
+        return invHeight;
     }
 }

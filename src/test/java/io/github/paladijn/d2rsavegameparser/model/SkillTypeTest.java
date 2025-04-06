@@ -13,13 +13,13 @@ class SkillTypeTest {
     void validateCorrectOffsetsForPaladin() {
         final List<SkillType> paladinSkills = SkillType.getSkillListForCharacter(CharacterType.PALADIN);
         assertThat(paladinSkills.getFirst().getOffset()).isZero();
-        assertThat(paladinSkills.getFirst().getId()).isEqualTo((byte)96);
+        assertThat(paladinSkills.getFirst().getId()).isEqualTo(96);
 
         assertThat(paladinSkills.get(16).getOffset()).isEqualTo(16);
-        assertThat(paladinSkills.get(16).getId()).isEqualTo((byte)112);
+        assertThat(paladinSkills.get(16).getId()).isEqualTo(112);
 
         assertThat(paladinSkills.getLast().getOffset()).isEqualTo(29);
-        assertThat(paladinSkills.getLast().getId()).isEqualTo((byte)125);
+        assertThat(paladinSkills.getLast().getId()).isEqualTo(125);
 
         for(int offset = 0; offset < 30; offset++) {
             assertThat(paladinSkills.get(offset).getOffset()).isEqualTo(offset);
@@ -70,6 +70,7 @@ class SkillTypeTest {
         for(int offset = 0; offset < 30; offset++) {
             assertThat(druidSkills.get(offset).getOffset()).isEqualTo(offset);
         }
+        assertThat(druidSkills.get(16).getId()).isEqualTo(237);
     }
 
     @Test

@@ -25,6 +25,7 @@ import io.github.paladijn.d2rsavegameparser.model.Difficulty;
 import io.github.paladijn.d2rsavegameparser.model.FileData;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
+import io.github.paladijn.d2rsavegameparser.model.ItemPosition;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.Location;
@@ -43,6 +44,7 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -178,7 +180,7 @@ public final class CharacterParser {
         final int minimalItemBytes = 9 * items.size(); // items have a minimum length of 9 bytes.
 
         // adjusting sets
-        final HashMap<String, Integer> setCounts = getSetCounts(getEquippedSetItems(items));
+        final HashMap<String, Integer> setCounts = getEquippedSetCounts(getEquippedSetItems(items));
         final List<Item> adjustedItems = removeSetBonuses(items, setCounts);
         final List<ItemProperty> activeSetBenefits = getActiveSetBenefits(setCounts);
         characterBuilder
@@ -220,7 +222,7 @@ public final class CharacterParser {
             if (ironIndex > mercItemIndex) {
                 log.debug("parsing mercenary at index {}", mercItemIndex);
                 final List<Item> mercItems = itemParser.parseItems(buffer, mercItemIndex, ironIndex);
-                final HashMap<String, Integer> mercSetCounts = getSetCounts(getEquippedSetItems(mercItems));
+                final HashMap<String, Integer> mercSetCounts = getEquippedSetCounts(getEquippedSetItems(mercItems));
                 final List<Item> mercAdjustedItems = removeSetBonuses(mercItems, mercSetCounts);
                 mercenaryBuilder.items(mercAdjustedItems);
                 characterBuilder.mercenary(mercenaryBuilder.build());
@@ -445,11 +447,22 @@ public final class CharacterParser {
         return result;
     }
 
-    private HashMap<String, Integer> getSetCounts(List<Item> setItems) {
-        HashMap<String, Integer> setCounts = new HashMap<>();
+    private HashMap<String, Integer> getEquippedSetCounts(List<Item> setItems) {
+        final HashMap<String, List<String>> uniqueSetItems = new HashMap<>();
         for(Item item: setItems) {
-            int count = setCounts.getOrDefault(item.setName(), 0);
-            setCounts.put(item.setName(), ++count);
+            List<String> names = uniqueSetItems.getOrDefault(item.setName(), new ArrayList<>());
+            if (!names.contains(item.itemName())
+                    && item.location() == ItemLocation.EQUIPPED // we only get the bonus when equipped... but rings can be equipped twice
+                    && item.position() != ItemPosition.LEFT_SWAP && item.position() != ItemPosition.RIGHT_SWAP // we also ignored any items on swap
+            ) {
+                names.add(item.itemName());
+            }
+            uniqueSetItems.put(item.setName(), names);
+        }
+
+        final HashMap<String, Integer> setCounts = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : uniqueSetItems.entrySet()) {
+            setCounts.put(entry.getKey(), entry.getValue().size());
         }
         return setCounts;
     }
@@ -476,15 +489,15 @@ public final class CharacterParser {
                     .toList();
             log.debug("adjusting set {} item {}, remaining properties: {}", item.setName(), item.itemName(), keepThese.size());
 
-            adjustedItems.add(new Item(item.isIdentified(), item.isSocketed(), item.isNew(), item.isEar(), item.isStarter(),
+            adjustedItems.add(new Item(item.isIdentified(), item.isSocketed(), item.isEar(),
                     item.isSimple(), item.isEthereal(), item.isPersonalized(), item.isRuneword(), item.isThrown(), item.isTwoHanded(),
-                    item.version(), item.x(), item.y(), item.altPosition(), item.code(), item.type(), item.type2(), item.itemType(),
+                    item.version(), item.x(), item.y(), item.code(), item.type(), item.type2(), item.itemType(),
                     item.cntSockets(), item.cntFilledSockets(), item.fingerPrint(), item.guid(), item.level(), item.pictureId(),
                     item.prefixIds(), item.suffixIds(), item.setItemId(), item.uniqueId(), item.rareNameId1(), item.rareNameId2(),
                     item.itemName(), item.setName(), item.personalizedName(), item.baseDefense(), item.maxDurability(), item.durability(),
                     item.stacks(), item.reqStr(), item.reqDex(), item.reqLvl(), item.restrictedToClass(), keepThese,
                     item.socketedItems(), item.location(), item.quality(), item.position(), item.container(), item.treasureClass(),
-                    item.tomeId()));
+                    item.tomeId(), item.invWidth(), item.invHeight()));
         }
         return adjustedItems;
     }
