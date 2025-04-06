@@ -45,6 +45,10 @@ public final class WeaponStats {
 
     private final int reqLvl;
 
+    private final int invWidth;
+
+    private final int invHeight;
+
     /**
      * Constructor which parses a tab-separated line from weapons.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -57,6 +61,9 @@ public final class WeaponStats {
         code = blocks[3];
 
         isTwoHanded = blocks[17].equals("1");
+
+        invWidth = Integer.parseInt(blocks[44]);
+        invHeight = Integer.parseInt(blocks[45]);
 
         if (ParseHelper.isNumeric(blocks[26])) {
             reqStr = Integer.parseInt(blocks[26]);
@@ -159,5 +166,23 @@ public final class WeaponStats {
      */
     public boolean isTwoHanded() {
         return isTwoHanded;
+    }
+
+    /**
+     * the inventory width this item uses
+     *
+     * @return the inventory width of this item.
+     */
+    public int getInvWidth() {
+        return invWidth;
+    }
+
+    /**
+     * the inventory height this item uses
+     *
+     * @return the inventory height of this item.
+     */
+    public int getInvHeight() {
+        return invHeight;
     }
 }

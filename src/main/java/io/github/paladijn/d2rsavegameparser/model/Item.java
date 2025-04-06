@@ -27,15 +27,37 @@ import java.util.List;
  *
  * @author Paladijn
  */
-public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, boolean isEar, boolean isStarter,
+public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                    boolean isSimple, boolean isEthereal, boolean isPersonalized, boolean isRuneword, boolean isThrown, boolean isTwoHanded,
-                   int version, short x, short y, byte altPosition, String code, String type, String type2, ItemType itemType,
+                   int version, short x, short y, String code, String type, String type2, ItemType itemType,
                    short cntSockets, short cntFilledSockets, String fingerPrint, String guid, short level,
                    short pictureId, List<Short> prefixIds, List<Short> suffixIds, short setItemId, short uniqueId, short rareNameId1,
                    short rareNameId2, String itemName, String setName, String personalizedName, int baseDefense, short maxDurability,
                    short durability, short stacks, int reqStr, int reqDex, int reqLvl, CharacterType restrictedToClass,
                    List<ItemProperty> properties, List<Item> socketedItems, ItemLocation location, ItemQuality quality, ItemPosition position,
-                   ItemContainer container, int treasureClass, short tomeId) {
+                   ItemContainer container, int treasureClass, short tomeId, int invWidth, int invHeight) {
+
+    public Item {
+        try {
+            prefixIds.addAll(List.of());
+            throw new IllegalArgumentException("prefixIds should be an immutable list");
+        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+
+        try {
+            suffixIds.addAll(List.of());
+            throw new IllegalArgumentException("suffixIds should be an immutable list");
+        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+
+        try {
+            properties.addAll(List.of());
+            throw new IllegalArgumentException("properties should be an immutable list");
+        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+
+        try {
+            socketedItems.addAll(List.of());
+            throw new IllegalArgumentException("socketedItems should be an immutable list");
+        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+    }
 
     /**
      * Indicator whether this item is a charm or not
@@ -133,9 +155,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
     public static final class ItemBuilder {
         private boolean isIdentified;
         private boolean isSocketed;
-        private boolean isNew;
         private boolean isEar;
-        private boolean isStarter;
         private boolean isSimple;
         private boolean isEthereal;
         private boolean isPersonalized;
@@ -145,7 +165,6 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         private int version;
         private short x;
         private short y;
-        private byte altPosition;
         private String code;
         private String type;
         private String type2;
@@ -156,8 +175,8 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         private String guid;
         private short level;
         private short pictureId;
-        private List<Short> prefixIds = new ArrayList<>();
-        private List<Short> suffixIds = new ArrayList<>();
+        private final List<Short> prefixIds = new ArrayList<>();
+        private final List<Short> suffixIds = new ArrayList<>();
         private short setItemId;
         private short uniqueId;
         private short rareNameId1;
@@ -172,10 +191,12 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         private int reqStr;
         private int reqDex;
         private int reqLvl;
+        private int invWidth;
+        private int invHeight;
         private CharacterType restrictedToClass;
 
-        private List<ItemProperty> properties = new ArrayList<>();
-        private List<Item> socketedItems = new ArrayList<>();
+        private final List<ItemProperty> properties = new ArrayList<>();
+        private final List<Item> socketedItems = new ArrayList<>();
 
         private ItemLocation location;
         private ItemQuality quality = ItemQuality.NONE;
@@ -209,17 +230,6 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         }
 
         /**
-         * Sets the new item status.
-         *
-         * @param newItem True if the item is new, false otherwise.
-         * @return The current ItemBuilder instance.
-         */
-        public ItemBuilder newItem(boolean newItem) {
-            this.isNew = newItem;
-            return this;
-        }
-
-        /**
          * Sets the ear status of the item.
          *
          * @param isEar True if the item is an ear, false otherwise.
@@ -227,17 +237,6 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
          */
         public ItemBuilder ear(boolean isEar) {
             this.isEar = isEar;
-            return this;
-        }
-
-        /**
-         * Sets the starter status of the item.
-         *
-         * @param isStarter True if the item is a starter, false otherwise.
-         * @return The current ItemBuilder instance.
-         */
-        public ItemBuilder starter(boolean isStarter) {
-            this.isStarter = isStarter;
             return this;
         }
 
@@ -337,17 +336,6 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
          */
         public ItemBuilder y(short y) {
             this.y = y;
-            return this;
-        }
-
-        /**
-         * Sets the alternate position of the item.
-         *
-         * @param altPosition The alternate position byte value.
-         * @return The current ItemBuilder instance.
-         */
-        public ItemBuilder altPosition(byte altPosition) {
-            this.altPosition = altPosition;
             return this;
         }
 
@@ -638,6 +626,28 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         }
 
         /**
+         * Sets the inventory width this item uses
+         *
+         * @param invWidth The inventory width
+         * @return The current ItemBuilder instance.
+         */
+        public ItemBuilder invWidth(int invWidth) {
+            this.invWidth = invWidth;
+            return this;
+        }
+
+        /**
+         * Sets the inventory height this item uses
+         *
+         * @param invHeight The inventory height
+         * @return The current ItemBuilder instance.
+         */
+        public ItemBuilder invHeight(int invHeight) {
+            this.invHeight = invHeight;
+            return this;
+        }
+
+        /**
          * Sets the character class restriction for the item.
          *
          * @param restrictedToClass The character class restriction.
@@ -750,7 +760,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
         }
 
         /**
-         * Build the {@link Item} instance with the configured values.
+         * Build the {@link Item} instance with the configured values. This will also sort the properties in the correct display order.
          *
          * @return The constructed {@link Item} instance.
          */
@@ -758,12 +768,12 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isNew, bool
             // ensure the properties are stored in the correct order (high -> low) for display purposes
             this.properties.sort(new ReverseItemPropertyOrderComparator());
 
-            return new Item(isIdentified, isSocketed, isNew, isEar, isStarter, isSimple, isEthereal, isPersonalized, isRuneword, isThrown, isTwoHanded,
-                    version, x, y, altPosition, code, type, type2, itemType, cntSockets, cntFilledSockets, fingerPrint,
+            return new Item(isIdentified, isSocketed, isEar, isSimple, isEthereal, isPersonalized, isRuneword, isThrown, isTwoHanded,
+                    version, x, y, code, type, type2, itemType, cntSockets, cntFilledSockets, fingerPrint,
                     guid, level, pictureId, List.copyOf(prefixIds), List.copyOf(suffixIds),
                     setItemId, uniqueId, rareNameId1, rareNameId2, itemName, setName, personalizedName, baseDefense, maxDurability,
                     durability, stacks, reqStr, reqDex, reqLvl, restrictedToClass, List.copyOf(properties),
-                    List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId);
+                    List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId, invWidth, invHeight);
         }
     }
 }

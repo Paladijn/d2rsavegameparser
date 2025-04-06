@@ -20,6 +20,7 @@ package io.github.paladijn.d2rsavegameparser.parser;
 import io.github.paladijn.d2rsavegameparser.TestCommons;
 import io.github.paladijn.d2rsavegameparser.model.D2Character;
 import io.github.paladijn.d2rsavegameparser.model.Item;
+import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.Skill;
 import io.github.paladijn.d2rsavegameparser.model.SkillType;
@@ -32,7 +33,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class CharacterParserTest {
@@ -52,17 +53,18 @@ class CharacterParserTest {
     void doNotParseOlderVersion() {
         final ByteBuffer buffer = TestCommons.getBuffer("2.4/Dierentuin.d2s");
 
-        final ParseException exception = assertThrows(ParseException.class, () -> cut.parse(buffer));
-        assertThat(exception.getMessage()).isEqualTo("Unsupported version: 98");
+        assertThatExceptionOfType(ParseException.class)
+                .isThrownBy(() -> cut.parse(buffer))
+                .withMessage("Unsupported version: 98");
     }
 
     @Test
     void throwExceptionOnWrongFileHeader() {
         final ByteBuffer buffer = TestCommons.getBuffer("logback.xml");
 
-        final ParseException exception = assertThrows(ParseException.class, () -> cut.parse(buffer));
-        assertThat(exception.getMessage())
-                .isEqualTo("Wrong fileHeader 1852793660, this is not a Diablo II saveGame file");
+        assertThatExceptionOfType(ParseException.class)
+                .isThrownBy(() -> cut.parse(buffer))
+                .withMessage("Wrong fileHeader 1852793660, this is not a Diablo II saveGame file");
     }
 
     @Test
@@ -398,5 +400,17 @@ class CharacterParserTest {
 
         assertThat(d2Character.died()).isTrue();
         assertThat(d2Character.deadBodyItems()).hasSize(3);
+    }
+
+    @Test
+    void shouldIgnoreDoubleEquippedSetItems() {
+        final D2Character fourHsarus = cut.parse(TestCommons.getBuffer("2.8/Sparkles-above75percent.d2s"));
+
+        assertThat(fourHsarus.equippedSetBenefits()).hasSize(3); // we received three benefits from the fully equipped set
+
+        // the iron fist is equipped twice
+        assertThat(fourHsarus.items().stream()
+                .filter(item -> item.location() == ItemLocation.EQUIPPED && item.itemName().equals("Hsarus' Iron Fist"))
+                .count()).isEqualTo(2);
     }
 }

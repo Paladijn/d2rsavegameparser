@@ -25,107 +25,107 @@ public enum SkillTree {
     /**
      * Skill tree for Bow and Crossbow skills (Amazon Only).
      */
-    BOW(0, CharacterType.AMAZON, "Bow and Crossbow Skills (Amazon Only)"),
+    BOW(0, CharacterType.AMAZON, "SkillCategoryAm3"),
 
     /**
      * Skill tree for Passive and Magic skills (Amazon Only).
      */
-    PASSIVE(1, CharacterType.AMAZON, "Passive and Magic Skills (Amazon Only)"),
+    PASSIVE(1, CharacterType.AMAZON, "SkillCategoryAm2"),
 
     /**
      * Skill tree for Javelin and Spear skills (Amazon Only).
      */
-    JAVELIN(2, CharacterType.AMAZON, "Javelin and Spear Skills (Amazon Only)"),
+    JAVELIN(2, CharacterType.AMAZON, "SkillCategoryAm1"),
 
     /**
      * Skill tree for Fire skills (Sorceress Only).
      */
-    FIRE(8, CharacterType.SORCERESS, "Fire Skills (Sorceress Only)"),
+    FIRE(8, CharacterType.SORCERESS, "SkillCategorySo3"),
 
     /**
      * Skill tree for Lightning skills (Sorceress Only).
      */
-    LIGHTNING(9, CharacterType.SORCERESS, "Lightning Skills (Sorceress Only)"),
+    LIGHTNING(9, CharacterType.SORCERESS, "SkillCategorySo2"),
 
     /**
      * Skill tree for Cold skills (Sorceress Only).
      */
-    COLD(10, CharacterType.SORCERESS, "Cold Skills (Sorceress Only)"),
+    COLD(10, CharacterType.SORCERESS, "SkillCategorySo1"),
 
     /**
      * Skill tree for Curses (Necromancer Only).
      */
-    CURSES(16, CharacterType.NECROMANCER, "Curses (Necromancer only)"),
+    CURSES(16, CharacterType.NECROMANCER, "SkillCategoryNe3"),
 
     /**
      * Skill tree for Poison and Bone skills (Necromancer Only).
      */
-    POISON_BONE(17, CharacterType.NECROMANCER, "Poison and Bone Skills (Necromancer Only)"),
+    POISON_BONE(17, CharacterType.NECROMANCER, "SkillCategoryNe2"),
 
     /**
      * Skill tree for Summoning skills (Necromancer Only).
      */
-    SUMMON(18, CharacterType.NECROMANCER, "Summoning Skills (Necromancer Only)"),
+    SUMMON(18, CharacterType.NECROMANCER, "SkillCategoryNe1"),
 
     /**
      * Skill tree for Combat skills (Paladin Only).
      */
-    COMBAT(24, CharacterType.PALADIN, "Combat Skills (Paladin Only)"),
+    COMBAT(24, CharacterType.PALADIN, "SkillCategoryPa3"),
 
     /**
      * Skill tree for Offensive Aura skills (Paladin Only).
      */
-    OFFENSIVE(25, CharacterType.PALADIN, "Offensive Aura Skills (Paladin Only)"),
+    OFFENSIVE(25, CharacterType.PALADIN, "SkillCategoryPa2"),
 
     /**
      * Skill tree for Defensive Aura skills (Paladin Only).
      */
-    DEFENSIVE(26, CharacterType.PALADIN, "Defensive Aura Skills (Paladin Only)"),
+    DEFENSIVE(26, CharacterType.PALADIN, "SkillCategoryPa1"),
 
     /**
      * Skill tree for Combat skills (Barbarian Only).
      */
-    COMBAT_BARB(32, CharacterType.BARBARIAN, "Combat Skills (Barbarian Only)"),
+    COMBAT_BARB(32, CharacterType.BARBARIAN, "SkillCategoryBa3"),
 
     /**
      * Skill tree for Masteries skills (Barbarian Only).
      */
-    MASTERIES(33, CharacterType.BARBARIAN, "Masteries Skills (Barbarian Only)"),
+    MASTERIES(33, CharacterType.BARBARIAN, "SkillCategoryBa2"),
 
     /**
      * Skill tree for Warcry skills (Barbarian Only).
      */
-    SHOUT(34, CharacterType.BARBARIAN, "Warcry Skills (Barbarian Only)"),
+    SHOUT(34, CharacterType.BARBARIAN, "SkillCategoryBa1"),
 
     /**
      * Skill tree for Summoning skills (Druid Only).
      */
-    SUMMON_DRUID(40, CharacterType.DRUID, "Summoning Skills (Druid Only)"),
+    SUMMON_DRUID(40, CharacterType.DRUID, "SkillCategoryDr3"),
 
     /**
      * Skill tree for Shape-Shifting skills (Druid Only).
      */
-    SHAPESHIFT(41, CharacterType.DRUID, "Shape-Shifting Skills (Druid Only)"),
+    SHAPESHIFT(41, CharacterType.DRUID, "SkillCategoryDr2"),
 
     /**
      * Skill tree for Elemental skills (Druid Only).
      */
-    ELEMENTAL(42, CharacterType.DRUID, "Elemental Skills (Druid Only)"),
+    ELEMENTAL(42, CharacterType.DRUID, "SkillCategoryDr1"),
 
     /**
      * Skill tree for Trap skills (Assassin Only).
      */
-    TRAPS(48, CharacterType.ASSASSIN, "Trap Skills (Assassin Only)"),
+    TRAPS(48, CharacterType.ASSASSIN, "SkillCategoryAs3"),
 
     /**
      * Skill tree for Shadow Discipline skills (Assassin Only).
      */
-    SHADOW(49, CharacterType.ASSASSIN, "Shadow Discipline Skills (Assassin Only)"),
+    SHADOW(49, CharacterType.ASSASSIN, "SkillCategoryAs2"),
 
     /**
      * Skill tree for Martial Art skills (Assassin Only).
      */
-    MARTIAL(50, CharacterType.ASSASSIN, "Martial Art Skills (Assassin Only)"),
+    MARTIAL(50, CharacterType.ASSASSIN, "SkillCategoryAs1"),
 
     /**
      * Unknown skill tree.
@@ -136,12 +136,12 @@ public enum SkillTree {
 
     private final CharacterType characterType;
 
-    private final String description;
+    private final String descriptionKey;
 
-    SkillTree(int index, CharacterType characterType, String description) {
+    SkillTree(int index, CharacterType characterType, String descriptionKey) {
         this.index = index;
         this.characterType = characterType;
-        this.description = description;
+        this.descriptionKey = descriptionKey;
     }
 
     /**
@@ -181,7 +181,7 @@ public enum SkillTree {
      *
      * @return The description of the skill tree.
      */
-    public final String getDescription() {
-        return description;
+    public final String getDescriptionKey() {
+        return descriptionKey;
     }
 }

@@ -271,7 +271,7 @@ public enum SkillType {
     SHADOW_MASTER(279, 28, CharacterType.ASSASSIN, SHADOW),
     ROYAL_STRIKE(280, 29, CharacterType.ASSASSIN, MARTIAL);
 
-    private final byte id;
+    private final int id;
 
     private final int offset;
 
@@ -280,13 +280,27 @@ public enum SkillType {
     private final SkillTree skillTree;
 
     SkillType(int id, int offset, CharacterType characterType, SkillTree skillTree) {
-        this.id = (byte) id;
+        this.id = id;
         this.offset = offset;
         this.characterType = characterType;
         this.skillTree = skillTree;
     }
 
-    public byte getId() {
+    /**
+     * Get the {@link SkillTree} by index id
+     * @param id The id of the {@link SkillTree} you're looking for
+     * @return The {@link SkillTree} element if available, or {@link SkillTree#UNKNOWN} if not found
+     */
+    public static SkillType findSkillById(int id) {
+        for(SkillType skillType: SkillType.values()) {
+            if (skillType.id == id) {
+                return skillType;
+            }
+        }
+        return UNSUMMON;
+    }
+
+    public int getId() {
         return id;
     }
 

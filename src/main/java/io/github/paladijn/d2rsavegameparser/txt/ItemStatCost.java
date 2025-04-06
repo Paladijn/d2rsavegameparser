@@ -31,6 +31,7 @@ public final class ItemStatCost {
     private int saveAdd;
     private int saveParamBits;
     private int descPriority;
+    private String descStrPos;
 
     /**
      * Constructor which parses a tab-separated line from itemstatcost.txt
@@ -48,6 +49,11 @@ public final class ItemStatCost {
             }
             saveParamBits = getInt(blocks[22]);
             descPriority = getInt(blocks[37]);
+            descStrPos = blocks[40];
+            // fix maxdurability
+            if (stat.equals("maxdurability")) {
+                descStrPos = "ModStr2i";
+            }
         }
     }
 
@@ -97,6 +103,14 @@ public final class ItemStatCost {
      */
     public int getDescPriority() {
         return descPriority;
+    }
+
+    /**
+     * Property description label, to be used to map translations
+     * @return a text label as an index to item-modifiers.json
+     */
+    public String getDescStrPos() {
+        return descStrPos;
     }
 
     private int getInt(String block) {

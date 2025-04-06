@@ -41,6 +41,10 @@ public final class MiscStats {
 
     private final int reqLvl;
 
+    private final int invWidth;
+
+    private final int invHeight;
+
     /**
      * Constructor which parses a tab-separated line from misc.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -51,6 +55,8 @@ public final class MiscStats {
         type = blocks[31];
         type2 = blocks[32];
         code = blocks[14];
+        invWidth = Integer.parseInt(blocks[18]);
+        invHeight = Integer.parseInt(blocks[19]);
 
         if (ParseHelper.isNumeric(blocks[6])) {
             reqStr = Integer.parseInt(blocks[6]);
@@ -134,5 +140,23 @@ public final class MiscStats {
      */
     public int getReqLvl() {
         return reqLvl;
+    }
+
+    /**
+     * the inventory width this item uses
+     *
+     * @return the inventory width of this item.
+     */
+    public int getInvWidth() {
+        return invWidth;
+    }
+
+    /**
+     * the inventory height this item uses
+     *
+     * @return the inventory height of this item.
+     */
+    public int getInvHeight() {
+        return invHeight;
     }
 }

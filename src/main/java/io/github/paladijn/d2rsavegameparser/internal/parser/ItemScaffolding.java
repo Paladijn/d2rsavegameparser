@@ -24,19 +24,22 @@ import io.github.paladijn.d2rsavegameparser.model.ItemType;
 import java.util.List;
 
 public final class ItemScaffolding {
-    private String code;
-    private String itemName;
-    private String type;
-    private String type2;
-    private int reqStr;
-    private int reqDex;
-    private int reqLvl;
-    private boolean isPersonalized;
-    private boolean isRuneword;
-    private boolean isSocketed;
-    private boolean isEthereal;
+    private final String code;
+    private final String itemName;
+    private final String type;
+    private final String type2;
+    private final int reqStr;
+    private final int reqDex;
+    private final int reqLvl;
+    private final boolean isPersonalized;
+    private final boolean isRuneword;
+    private final boolean isSocketed;
+    private final boolean isEthereal;
 
-    private ItemType itemType;
+    private final ItemType itemType;
+
+    private final int invWidth;
+    private final int invHeight;
 
     private int suffixIdSize;
     private int prefixIdSize;
@@ -46,7 +49,7 @@ public final class ItemScaffolding {
 
     public ItemScaffolding(String code, String itemName, String type, String type2, int reqStr, int reqDex, int reqLvl,
                            boolean isPersonalized, boolean isRuneword, boolean isSocketed, boolean isEthereal,
-                           ItemType itemType) {
+                           ItemType itemType, int invWidth, int invHeight) {
         this.code = code;
         this.itemName = itemName;
         this.type = type;
@@ -59,6 +62,8 @@ public final class ItemScaffolding {
         this.isSocketed = isSocketed;
         this.isEthereal = isEthereal;
         this.itemType = itemType;
+        this.invWidth = invWidth;
+        this.invHeight = invHeight;
     }
 
     public String getCode() {
@@ -87,6 +92,14 @@ public final class ItemScaffolding {
 
     public int getReqLvl() {
         return reqLvl;
+    }
+
+    public int getInvWidth() {
+        return invWidth;
+    }
+
+    public int getInvHeight() {
+        return invHeight;
     }
 
     public boolean isPersonalized() {
