@@ -77,7 +77,7 @@ public final class MagicAffix {
      * Get the name of the affix.
      * @return the name of the affix
      */
-    public Object getName() {
+    public String getName() {
         return name;
     }
 

@@ -566,7 +566,7 @@ final class ItemParser {
         final short rareId1 = br.readShort(8);
         final short rareId2 = br.readShort(8);
 
-        final String name1 = (rareId1 > 156) ? txtProperties.getRarePrefixById(rareId1 - 156) : "DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV";
+        final String name1 = (rareId1 >= 156) ? txtProperties.getRarePrefixById(rareId1 - 156) : "DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV";
         final String name2 = txtProperties.getRareSuffixById(rareId2 - 1);
 
         // read the pre- and suffixes in order

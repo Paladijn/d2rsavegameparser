@@ -277,4 +277,12 @@ class ItemParserTest {
         assertThat(gemmedSkullCap.socketedItems().getLast().itemName()).isEqualTo("Tal Rune");
         assertThat(gemmedSkullCap.reqLvl()).isEqualTo(19);
     }
+
+    @Test
+    void correctlyNameBeastWrap() {
+        byte[] bytes = {16, 0, -128, 0, -51, 12, -128, 12, 12, 1, 42, 119, 47, 21, -125, 83, 105, 97, -50, -31, 35, -26, 68, -67, 112, 1, -56, 7, 0, 33, 7, 74, 64, 104, 32, 34, 72, -15, -20, 63};
+        Item beastWrap = cut.parseItem(new BitReader(bytes));
+
+        assertThat(beastWrap.itemName()).isEqualTo("Beast wrap");
+    }
 }

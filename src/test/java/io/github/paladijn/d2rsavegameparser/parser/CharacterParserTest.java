@@ -44,9 +44,10 @@ class CharacterParserTest {
     // This is a helper function to debug the contents in case a save game breaks after a patch upgrade or when finding a specific item that we can't parse
     //@Test
     void testCharacterFileForExceptions() {
-        final ByteBuffer buffer = TestCommons.getBuffer("1.6.77312/LongestPossible-Cairn.d2s");
+        final ByteBuffer buffer = TestCommons.getBuffer("1.6.84219/DRUNPala.d2s");
 
-        log.info("output: {}", cut.parse(buffer));
+        CharacterParser parser = new CharacterParser(true);
+        log.info("output: {}", parser.parse(buffer));
     }
 
     @Test
