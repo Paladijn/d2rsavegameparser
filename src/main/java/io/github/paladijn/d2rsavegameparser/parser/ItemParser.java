@@ -404,7 +404,7 @@ final class ItemParser {
                 || "mace".equals(itemScaffolding.getType())
                 || "hamm".equals(itemScaffolding.getType())) {
             final ItemStatCost isc = txtProperties.getItemStatCostsByID(ParseHelper.PROPERTY_UNDEAD_DMG);
-            final ItemProperty bluntProperty = new ItemProperty(isc.getId(), isc.getStat(), new int[]{150}, 0, isc.getDescPriority());
+            final ItemProperty bluntProperty = new ItemProperty(isc.getId(), isc.getStat(), new int[]{50}, 0, isc.getDescPriority());
             itemBuilder.addProperty(bluntProperty);
         }
     }
