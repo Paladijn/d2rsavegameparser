@@ -456,7 +456,7 @@ final class ItemParser {
         for (int i = 0; i < itemScaffolding.getCntFilledSockets(); i++) {
             Item socketedItem = parseItem(br); // read the socketed sub-item
 
-            if (Item.isJewel(itemScaffolding.getCode())) {
+            if (Item.isJewel(socketedItem.code())) {
                 itemBuilder.addProperties(filterPropertiesByQuality(socketedItem.properties(), 1));
             } else if (itemScaffolding.getItemType() == ItemType.WEAPON) {
                 itemBuilder.addProperties(filterPropertiesByQuality(socketedItem.properties(), 7));
