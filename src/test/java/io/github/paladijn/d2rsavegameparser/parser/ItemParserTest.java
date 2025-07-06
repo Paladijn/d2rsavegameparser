@@ -285,4 +285,22 @@ class ItemParserTest {
 
         assertThat(beastWrap.itemName()).isEqualTo("Beast wrap");
     }
+
+    @Test
+    void solRune() {
+        byte[] bytes = {16, 0, -96, 0, 51, 4, -32, 124, -104, 0};
+        Item solRune = cut.parseItem(new BitReader(bytes));
+
+        assertThat(solRune.properties()).hasSize(3);
+        assertThat(solRune.properties().getFirst().name()).isEqualTo("mindamage");
+    }
+
+    @Test
+    void ithRune() {
+        byte[] bytes = {16, 0, -96, 0, 51, 0, -32, 124, -17, 3};
+        Item ithRune = cut.parseItem(new BitReader(bytes));
+
+        assertThat(ithRune.properties()).hasSize(3);
+        assertThat(ithRune.properties().getFirst().name()).isEqualTo("maxdamage");
+    }
 }

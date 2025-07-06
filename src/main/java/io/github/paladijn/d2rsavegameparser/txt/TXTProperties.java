@@ -474,8 +474,12 @@ public final class TXTProperties {
             int checkIndex = 3 + (i * 4); // stat1..8 use four fields each and start at index 3
             String statName = blocks[checkIndex];
             if (statName.isBlank()) {
-                if ("dmg%".equals(name) && i == 0) { // this is a workaround specifically for phys "dmg%" on stat1 as this is not parsed properly from the txt file
+                if ("dmg%".equals(name) && i == 0) { // this is a workaround specifically for phys "dmg%",dmg-max and dmg-min on stat1 as this is not parsed properly from the txt file
                     statName = "item_maxdamage_percent";
+                } else if ("dmg-max".equals(name) && i == 0) {
+                    statName = "maxdamage";
+                } else if ("dmg-min".equals(name) && i == 0) {
+                    statName = "mindamage";
                 } else {
                     break;
                 }
@@ -515,7 +519,7 @@ public final class TXTProperties {
         for(ItemStatCost isc: getStatIndexesByName(name, itemStatCostAndProperties)) {
             int[] copiedValues = {propertyValues[0], propertyValues[1], propertyValues[2]}; // internal loop copy
             // this is... somewhat scary, if there's a min-max we should overwrite propertyValues[0] with propertyValues[1]
-            if (isc.getStat().contains("max")) {
+            if (isc.getStat().contains("max") && !isc.getStat().equals("dmg-max")) { // TODO 20250706 Paladijn: this should be improved, are there other 'max' values now incorrectly parsed?
                 copiedValues[0] = propertyValues[1];
             } else {
                 // and if it contains length _and_ propertyValues[2] is not 0 we should copy that value to propertyValues[0]
