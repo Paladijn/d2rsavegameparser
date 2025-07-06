@@ -29,7 +29,7 @@ Dependency:
 <dependency>
   <groupId>io.github.paladijn</groupId>
   <artifactId>d2rsavegameparser</artifactId>
-  <version>1.4.0</version>
+  <version>1.5.2</version>
 </dependency>
 ```
 Required dependencies: org.slf4j:org.slf4j-api:2.0.16+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
