@@ -407,7 +407,7 @@ class CharacterParserTest {
     void shouldIgnoreDoubleEquippedSetItems() {
         final D2Character fourHsarus = cut.parse(TestCommons.getBuffer("2.8/Sparkles-above75percent.d2s"));
 
-        assertThat(fourHsarus.equippedSetBenefits()).hasSize(3); // we received three benefits from the fully equipped set
+        assertThat(fourHsarus.equippedSetBenefits()).hasSize(4); // we received four benefits from the fully equipped set
 
         // the iron fist is equipped twice
         assertThat(fourHsarus.items().stream()
