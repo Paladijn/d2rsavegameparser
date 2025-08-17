@@ -637,7 +637,9 @@ final class ItemParser {
         final UniqueItem uniqueItem = txtProperties.getUniqueNameById(uniqueId);
 
         if (uniqueItem != null) {
-            itemBuilder.itemName(uniqueItem.getName())
+            itemBuilder
+                    .itemName(uniqueItem.getName())
+                    .reqLvl(uniqueItem.getReqLvl())
                     .treasureClass(txtProperties.getTreasureClass(uniqueItem.getItemName()));
         }
     }

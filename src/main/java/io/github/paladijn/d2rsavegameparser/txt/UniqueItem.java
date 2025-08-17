@@ -30,6 +30,7 @@ public final class UniqueItem {
     private final String ladderLast;
     private final String code;
     private final String itemName;
+    private final int reqLvl;
 
     /**
      * Constructor which parses a tab-separated line from uniqueitems.txt
@@ -41,6 +42,7 @@ public final class UniqueItem {
         id = Short.parseShort(blocks[1]);
         ladderFirst = blocks[4];
         ladderLast = blocks[5];
+        reqLvl = "".equals(blocks[9]) ? 0 : Integer.parseInt(blocks[9]); // some of the not enabled unique items have no requirement set.
         code = blocks[10];
         itemName = blocks[11];
         enabled = "1".equals(blocks[3]) || "2".equals(ladderFirst); // the sunder charms are also enabled in SP. Perhaps this should be a check for non-empty?
@@ -110,6 +112,15 @@ public final class UniqueItem {
     }
 
     /**
+     * Retrieves the required minimum character level to equip the unique item.
+     *
+     * @return The required level to equip the unique item.
+     */
+    public int getReqLvl() {
+        return reqLvl;
+    }
+
+    /**
      * Returns a string representation of the unique item.
      *
      * @return A string representation of the unique item.
@@ -124,6 +135,7 @@ public final class UniqueItem {
                 ", ladderLast='" + ladderLast + '\'' +
                 ", code='" + code + '\'' +
                 ", itemName='" + itemName + '\'' +
+                ", reqLvl='" + reqLvl + '\'' +
                 '}';
     }
 }

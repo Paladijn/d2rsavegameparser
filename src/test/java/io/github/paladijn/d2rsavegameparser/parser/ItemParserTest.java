@@ -71,10 +71,10 @@ class ItemParserTest {
         byte[] bytes = {16, 0, -128, 0, -51, 12, -128, 12, 12, -35, -49, -27, 35, -106, 67, 10, -88, 0, 100, 3, 0, 21, 1, 42, 10, -39, -121, 17, 116, 65, -115, 65, -3, 7};
         Item unique = cut.parseItem(new BitReader(bytes));
 
-        assertThat(unique.isSimple()).isFalse();
-        assertThat(unique.uniqueId()).isEqualTo((short)82);
-        assertThat(unique.itemName()).isEqualTo("Twitchthroe");
-        assertThat(unique.code()).isEqualTo("stu");
+        assertThat(unique)
+                .extracting(Item::isSimple, Item::uniqueId, Item::itemName, Item::code, Item::reqLvl, Item::reqStr)
+                .containsExactly(false, (short)82, "Twitchthroe", "stu", 16, 27);
+
         assertThat(unique.properties()).hasSize(6);
         assertThat(unique.properties().get(2).name()).isEqualTo("toblock");
     }
