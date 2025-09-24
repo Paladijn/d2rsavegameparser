@@ -32,7 +32,7 @@ Dependency:
   <version>1.5.2</version>
 </dependency>
 ```
-Required dependencies: org.slf4j:org.slf4j-api:2.0.16+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
+Required dependencies: org.slf4j:org.slf4j-api:2.0.17+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
 
 Example projects:
 * [My own example project](https://github.com/Paladijn/d2rsavegameparser-examples) includes socket reward available, list specific items (Sets) and translations.
