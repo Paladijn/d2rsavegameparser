@@ -21,7 +21,7 @@ Other applications of the library may include:
 * Etc., etc
 
 ### How to use
-Minimal Java version: 21  
+Minimal Java version: 25  
 Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.6.84219 ones from the txt folder in this project.
 
 Dependency:
