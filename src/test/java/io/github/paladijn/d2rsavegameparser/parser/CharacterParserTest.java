@@ -414,4 +414,11 @@ class CharacterParserTest {
                 .filter(item -> item.location() == ItemLocation.EQUIPPED && item.itemName().equals("Hsarus' Iron Fist"))
                 .count()).isEqualTo(2);
     }
+
+    @Test
+    void verifyMapSeed() {
+        final D2Character wandelaar = cut.parse(TestCommons.getBuffer("1.6.84219/RIPClassic.d2s"));
+
+        assertThat(wandelaar.mapId()).isEqualTo(1453926620L);
+    }
 }

@@ -113,7 +113,8 @@ public final class CharacterParser {
                         parseLocation(Difficulty.NORMAL, buffer.get(168)),
                         parseLocation(Difficulty.NIGHTMARE, buffer.get(169)),
                         parseLocation(Difficulty.HELL, buffer.get(170))
-                ));
+                ))
+                .mapId(buffer.getLong(171));
 
         Mercenary.MercenaryBuilder mercenaryBuilder = new Mercenary.MercenaryBuilder()
                 .id(buffer.getInt(179))

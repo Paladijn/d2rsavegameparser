@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean expansion, byte actProgression,
-                         CharacterType characterType, byte level, List<Location> locations, List<QuestData> questDataPerDifficulty,
+                         CharacterType characterType, byte level, List<Location> locations, long mapId, List<QuestData> questDataPerDifficulty,
                          List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
                          List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
 
@@ -55,6 +55,8 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         private byte level;
 
         private List<Location> locations = new ArrayList<>();
+
+        private long mapId;
 
         private List<QuestData> questDataPerDifficulty = List.of(
                 new QuestData.QuestDataBuilder(Difficulty.NORMAL).build(),
@@ -141,6 +143,11 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
          */
         public D2CharacterBuilder locations(List<Location> locations) {
             this.locations = locations;
+            return this;
+        }
+
+        public D2CharacterBuilder mapId(long mapId) {
+            this.mapId = mapId;
             return this;
         }
 
@@ -272,7 +279,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
          */
         public D2Character build() {
             return new D2Character(fileData, name, hardcore, died, expansion, actProgression, characterType, level,
-                    List.copyOf(locations), List.copyOf(questDataPerDifficulty),
+                    List.copyOf(locations), mapId, List.copyOf(questDataPerDifficulty),
                     List.copyOf(waypoints), mercenary, attributes, List.copyOf(items),
                     List.copyOf(deadBodyItems), golemItem, List.copyOf(skills),
                     List.copyOf(equippedSetBenefits));
