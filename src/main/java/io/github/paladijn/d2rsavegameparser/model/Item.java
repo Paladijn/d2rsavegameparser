@@ -41,22 +41,22 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
         try {
             prefixIds.addAll(List.of());
             throw new IllegalArgumentException("prefixIds should be an immutable list");
-        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
 
         try {
             suffixIds.addAll(List.of());
             throw new IllegalArgumentException("suffixIds should be an immutable list");
-        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
 
         try {
             properties.addAll(List.of());
             throw new IllegalArgumentException("properties should be an immutable list");
-        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
 
         try {
             socketedItems.addAll(List.of());
             throw new IllegalArgumentException("socketedItems should be an immutable list");
-        } catch (UnsupportedOperationException uoe) { /* expected behaviour */ }
+        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
     }
 
     /**

@@ -116,7 +116,8 @@ public final class ItemStatCost {
     private int getInt(String block) {
         try {
             return Integer.parseInt(block);
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException _) {
+            // we may want to log the actual value as a warning, although it always appears to be an empty one so far.
             return -1;
         }
     }

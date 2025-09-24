@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.paladijn</groupId>
     <artifactId>d2rsavegameparser</artifactId>
-    <version>1.5.3-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A library to parse savegame files of the 2021 Diablo II: Resurrected game.</description>
@@ -27,7 +27,7 @@
         <connection>scm:git:git://github.com/Paladijn/d2rsavegameparser.git</connection>
         <developerConnection>scm:git:ssh://github.com/Paladijn/d2rsavegameparser.git</developerConnection>
         <url>https://github.com/Paladijn/d2rsavegameparser/tree/main</url>
-        <tag>d2rsavegameparser-1.2.0</tag>
+        <tag>d2rsavegameparser-2.0.0</tag>
     </scm>
 
     <distributionManagement>
@@ -42,7 +42,7 @@
     </distributionManagement>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit.version>5.11.4</junit.version>
@@ -50,7 +50,7 @@
         <slf4j.version>2.0.16</slf4j.version>
         <assertj.version>3.27.3</assertj.version>
 
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
         <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
         <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
@@ -58,8 +58,8 @@
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
         <central-publishing-plugin.version>0.7.0</central-publishing-plugin.version>
 
-        <openrewrite-plugin.version>6.1.3</openrewrite-plugin.version>
-        <openrewrite-migrate-java.version>3.2.0</openrewrite-migrate-java.version>
+        <openrewrite-plugin.version>6.18.0</openrewrite-plugin.version>
+        <openrewrite-migrate-java.version>3.17.1</openrewrite-migrate-java.version>
     </properties>
 
     <dependencies>
@@ -141,7 +141,7 @@
                 <version>${openrewrite-plugin.version}</version>
                 <configuration>
                     <activeRecipes>
-                        <recipe>org.openrewrite.java.migrate.UpgradeToJava21</recipe>
+                        <recipe>org.openrewrite.java.migrate.UpgradeToJava25</recipe>
                     </activeRecipes>
                 </configuration>
                 <dependencies>

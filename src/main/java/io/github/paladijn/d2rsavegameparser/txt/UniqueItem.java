@@ -62,7 +62,7 @@ public final class UniqueItem {
      *
      * @return The ID of the unique item.
      */
-    public Short getId() {
+    public short getId() {
         return id;
     }
 
