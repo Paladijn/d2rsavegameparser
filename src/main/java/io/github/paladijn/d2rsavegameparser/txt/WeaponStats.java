@@ -49,6 +49,8 @@ public final class WeaponStats {
 
     private final int invHeight;
 
+    private int maxStacks;
+
     /**
      * Constructor which parses a tab-separated line from weapons.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -75,6 +77,9 @@ public final class WeaponStats {
 
         reqLvl = Integer.parseInt(blocks[32]);
         isStackable = blocks[46].equals("1");
+        if (isStackable && ParseHelper.isNumeric(blocks[48])) {
+            maxStacks = Integer.parseInt(blocks[48]);
+        }
         isThrown = "primarily thrown".equals(blocks[57]);
     }
 
@@ -103,6 +108,14 @@ public final class WeaponStats {
      */
     public boolean isStackable() {
         return isStackable;
+    }
+
+    /**
+     * if the item {#isStackable} this will contain the max amount of stacks available for the item
+     * @return the max amount of stacks available for the item
+     */
+    public int getMaxStacks() {
+        return maxStacks;
     }
 
     /**

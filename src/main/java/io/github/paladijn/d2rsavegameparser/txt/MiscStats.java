@@ -45,6 +45,8 @@ public final class MiscStats {
 
     private final int invHeight;
 
+    private int maxStacks;
+
     /**
      * Constructor which parses a tab-separated line from misc.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -68,6 +70,9 @@ public final class MiscStats {
 
         reqLvl = Integer.parseInt(blocks[5]);
         isStackable = blocks[42].equals("1");
+        if (isStackable && ParseHelper.isNumeric(blocks[44])) {
+            maxStacks = Integer.parseInt(blocks[44]);
+        }
     }
 
     /**
@@ -158,5 +163,13 @@ public final class MiscStats {
      */
     public int getInvHeight() {
         return invHeight;
+    }
+
+    /**
+     * if the item {#isStackable} this will contain the max amount of stacks available for the item
+     * @return the max amount of stacks available for the item
+     */
+    public int getMaxStacks() {
+        return maxStacks;
     }
 }
