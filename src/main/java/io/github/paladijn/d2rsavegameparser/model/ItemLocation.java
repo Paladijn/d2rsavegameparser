@@ -20,11 +20,11 @@ package io.github.paladijn.d2rsavegameparser.model;
 import java.util.Arrays;
 
 /**
- * The location of the item on the character display. Check {@link ItemLocation} or {@link ItemPosition} for the specific location.
+ * The location of the item on the character display. Check {@link ItemContainer} or {@link ItemPosition} for the specific location.
  * @author Paladijn
  */
 public enum ItemLocation {
-    /** The item is stored in either a stash, cube or inventory which is indicated by the items {@link ItemLocation}*/
+    /** The item is stored in either a stash, cube or inventory which is indicated by the items {@link ItemContainer}*/
     STORED(0),
     /** The item is equipped, the exact location is specified by {@link ItemPosition} */
     EQUIPPED(1),
