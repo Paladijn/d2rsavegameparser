@@ -33,7 +33,7 @@ class ItemTest {
                     false, false, false, false, 0, (short) 0, (short) 0,"code", "type",
                     "type2", ItemType.MISC, (short) 0, (short) 0, "", "", (short) 1, (short) 1, new ArrayList<>(), List.of(),
                     (short) 0, (short) 0, (short) 0, (short) 0, "itemName", "setName", "", 0, (short) 0,
-                    (short) 0, (short) 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
+                    (short) 0, (short) 0, 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
                     ItemPosition.GLOVES, ItemContainer.INVENTORY, 0, (short) 0, 0, 0))
                 .withMessage("prefixIds should be an immutable list");
     }
@@ -45,7 +45,7 @@ class ItemTest {
                     false, false, false, false, 0, (short) 0, (short) 0,"code", "type",
                     "type2", ItemType.MISC, (short) 0, (short) 0, "", "", (short) 1, (short) 1, List.of(), new ArrayList<>(),
                     (short) 0, (short) 0, (short) 0, (short) 0, "itemName", "setName", "", 0, (short) 0,
-                    (short) 0, (short) 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
+                    (short) 0, (short) 0, 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
                     ItemPosition.GLOVES, ItemContainer.INVENTORY, 0, (short) 0, 0, 0))
                 .withMessage("suffixIds should be an immutable list");
     }
@@ -57,7 +57,7 @@ class ItemTest {
                     false, false, false, false, 0, (short) 0, (short) 0, "code", "type",
                     "type2", ItemType.MISC, (short) 0, (short) 0, "", "", (short) 1, (short) 1, List.of(), List.of(),
                     (short) 0, (short) 0, (short) 0, (short) 0, "itemName", "setName", "", 0, (short) 0,
-                    (short) 0, (short) 0, 0, 0, 0, CharacterType.NECROMANCER, new ArrayList<>(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
+                    (short) 0, (short) 0, 0, 0, 0, 0, CharacterType.NECROMANCER, new ArrayList<>(), List.of(), ItemLocation.BELT, ItemQuality.NONE,
                     ItemPosition.GLOVES, ItemContainer.INVENTORY, 0, (short) 0, 0, 0))
                 .withMessage("properties should be an immutable list");
     }
@@ -69,7 +69,7 @@ class ItemTest {
                     false, false, false, false, 0, (short) 0, (short) 0, "code", "type",
                     "type2", ItemType.MISC, (short) 0, (short) 0, "", "", (short) 1, (short) 1, List.of(), List.of(),
                     (short) 0, (short) 0, (short) 0, (short) 0, "itemName", "setName", "", 0, (short) 0,
-                    (short) 0, (short) 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), new ArrayList<>(), ItemLocation.BELT, ItemQuality.NONE,
+                    (short) 0, (short) 0, 0, 0, 0, 0, CharacterType.NECROMANCER, List.of(), new ArrayList<>(), ItemLocation.BELT, ItemQuality.NONE,
                     ItemPosition.GLOVES, ItemContainer.INVENTORY, 0, (short) 0, 0, 0))
                 .withMessage("socketedItems should be an immutable list");
     }

@@ -397,6 +397,7 @@ final class ItemParser {
 
         if (weaponStats.isStackable()) {
             itemBuilder.stacks(br.readShort(9));
+            itemBuilder.maxStacks(itemScaffolding.getMaxStacks());
         }
 
         if ("club".equals(itemScaffolding.getType())
@@ -540,11 +541,11 @@ final class ItemParser {
                                               final boolean isPersonalized, final boolean isRuneword, final boolean isSocketed, boolean isEthereal) {
         return switch (itemType) {
             case ARMOR -> new ItemScaffolding(code, armorStats.getName(), armorStats.getType(), armorStats.getType2(), armorStats.getReqStr(),
-                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(), armorStats.getInvHeight());
+                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(), armorStats.getInvHeight(), 0);
             case WEAPON -> new ItemScaffolding(code, weaponStats.getName(), weaponStats.getType(), weaponStats.getType2(), weaponStats.getReqStr(),
-                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(), weaponStats.getInvHeight());
+                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(), weaponStats.getInvHeight(), weaponStats.getMaxStacks());
             case MISC -> new ItemScaffolding(code, miscStats.getName(), miscStats.getType(), miscStats.getType2(), miscStats.getReqStr(),
-                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(), miscStats.getInvHeight());
+                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(), miscStats.getInvHeight(), miscStats.getMaxStacks());
         };
     }
 

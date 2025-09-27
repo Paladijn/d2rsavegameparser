@@ -33,7 +33,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                    short cntSockets, short cntFilledSockets, String fingerPrint, String guid, short level,
                    short pictureId, List<Short> prefixIds, List<Short> suffixIds, short setItemId, short uniqueId, short rareNameId1,
                    short rareNameId2, String itemName, String setName, String personalizedName, int baseDefense, short maxDurability,
-                   short durability, short stacks, int reqStr, int reqDex, int reqLvl, CharacterType restrictedToClass,
+                   short durability, short stacks, int maxStacks, int reqStr, int reqDex, int reqLvl, CharacterType restrictedToClass,
                    List<ItemProperty> properties, List<Item> socketedItems, ItemLocation location, ItemQuality quality, ItemPosition position,
                    ItemContainer container, int treasureClass, short tomeId, int invWidth, int invHeight) {
 
@@ -188,6 +188,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
         private short maxDurability;
         private short durability;
         private short stacks;
+        private int maxStacks;
         private int reqStr;
         private int reqDex;
         private int reqLvl;
@@ -593,6 +594,17 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
         }
 
         /**
+         * Sets the number of maximum stacks for the item.
+         *
+         * @param max The maximum number of stacks.
+         * @return The current ItemBuilder instance.
+         */
+        public ItemBuilder maxStacks(int max) {
+            this.maxStacks = max;
+            return this;
+        }
+
+        /**
          * Sets the strength requirement for the item.
          *
          * @param reqStr The strength requirement value.
@@ -772,7 +784,7 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                     version, x, y, code, type, type2, itemType, cntSockets, cntFilledSockets, fingerPrint,
                     guid, level, pictureId, List.copyOf(prefixIds), List.copyOf(suffixIds),
                     setItemId, uniqueId, rareNameId1, rareNameId2, itemName, setName, personalizedName, baseDefense, maxDurability,
-                    durability, stacks, reqStr, reqDex, reqLvl, restrictedToClass, List.copyOf(properties),
+                    durability, stacks, maxStacks, reqStr, reqDex, reqLvl, restrictedToClass, List.copyOf(properties),
                     List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId, invWidth, invHeight);
         }
     }

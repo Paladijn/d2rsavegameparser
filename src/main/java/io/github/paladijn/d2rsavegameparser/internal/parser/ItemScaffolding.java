@@ -44,12 +44,13 @@ public final class ItemScaffolding {
     private int suffixIdSize;
     private int prefixIdSize;
     private short cntFilledSockets;
+    private int maxStacks;
     private ItemQuality quality;
     private List<Item> socketedItems = List.of();
 
     public ItemScaffolding(String code, String itemName, String type, String type2, int reqStr, int reqDex, int reqLvl,
                            boolean isPersonalized, boolean isRuneword, boolean isSocketed, boolean isEthereal,
-                           ItemType itemType, int invWidth, int invHeight) {
+                           ItemType itemType, int invWidth, int invHeight, int maxStacks) {
         this.code = code;
         this.itemName = itemName;
         this.type = type;
@@ -64,6 +65,7 @@ public final class ItemScaffolding {
         this.itemType = itemType;
         this.invWidth = invWidth;
         this.invHeight = invHeight;
+        this.maxStacks = maxStacks;
     }
 
     public String getCode() {
@@ -160,5 +162,9 @@ public final class ItemScaffolding {
 
     public List<Item> getSocketedItems() {
         return socketedItems;
+    }
+
+    public int getMaxStacks() {
+        return maxStacks;
     }
 }
