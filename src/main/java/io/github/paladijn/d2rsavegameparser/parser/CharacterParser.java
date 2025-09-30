@@ -117,6 +117,7 @@ public final class CharacterParser {
                 .mapId(buffer.getLong(171));
 
         Mercenary.MercenaryBuilder mercenaryBuilder = new Mercenary.MercenaryBuilder()
+                .alive(buffer.getShort(177))
                 .id(buffer.getInt(179))
                 .nameId(buffer.getShort(183))
                 .typeId(buffer.getShort(185))

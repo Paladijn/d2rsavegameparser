@@ -81,13 +81,16 @@ class CharacterParserTest {
 
     @Test
     void readHell() {
-        D2Character lohengrin = cut.parse(TestCommons.getBuffer("2.7/Lohengrin.d2s"));
+        final D2Character lohengrin = cut.parse(TestCommons.getBuffer("2.7/Lohengrin.d2s"));
         assertThat(lohengrin.level()).isEqualTo((byte)76);
         assertThat(lohengrin.questDataPerDifficulty().getFirst().socketQuestRewardAvailable()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).socketQuestStarted()).isTrue();
         assertThat(lohengrin.questDataPerDifficulty().get(1).resistanceScrollRead()).isTrue();
         assertThat(lohengrin.actProgression()).isEqualTo((byte)11);
         assertThat(lohengrin.items()).hasSize(123);
+
+        // and the merc is alive
+        assertThat(lohengrin.mercenary().alive()).isTrue();
     }
 
     @Test
@@ -125,7 +128,8 @@ class CharacterParserTest {
         assertThat(deadBody.deadBodyItems().getFirst().type()).isEqualTo("helm");
         assertThat(deadBody.items()).hasSize(15); // items still left on your character (pots, scrolls, inventory)
 
-        // and validate the Merc items were parsed correctly as well:
+        // and validate the Merc items were parsed correctly as well, despite being dead too.
+        assertThat(deadBody.mercenary().alive()).isFalse();
         assertThat(deadBody.mercenary().items()).hasSize(2);
         // with a socketed bow
         assertThat(deadBody.mercenary().items().getLast().socketedItems()).hasSize(3);

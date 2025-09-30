@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author Paladijn
  */
-public record Mercenary (int id, short nameId, short typeId, int experience, List<Item> items) {
+public record Mercenary (int id, short nameId, short typeId, boolean alive, int experience, List<Item> items) {
 
     /**
      * Builder class for creating instances of {@link Mercenary}.
@@ -39,6 +39,7 @@ public record Mercenary (int id, short nameId, short typeId, int experience, Lis
      */
     public static final class MercenaryBuilder {
         private int id;
+        private boolean alive;
         private short nameId;
         private short typeId;
         private int experience;
@@ -52,6 +53,17 @@ public record Mercenary (int id, short nameId, short typeId, int experience, Lis
          */
         public MercenaryBuilder id(int id) {
             this.id = id;
+            return this;
+        }
+
+        /**
+         * marks if the mercenary is alive
+         *
+         * @param dead non-zero if the mercenary died and requires resurrection.
+         * @return The current MercenaryBuilder instance.
+         */
+        public MercenaryBuilder alive(short dead) {
+            this.alive = dead == 0;
             return this;
         }
 
@@ -106,7 +118,7 @@ public record Mercenary (int id, short nameId, short typeId, int experience, Lis
          * @return A new Mercenary instance.
          */
         public Mercenary build() {
-            return new Mercenary(id, nameId, typeId, experience, List.copyOf(items));
+            return new Mercenary(id, nameId, typeId, alive, experience, List.copyOf(items));
         }
     }
 }
