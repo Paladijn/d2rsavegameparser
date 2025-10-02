@@ -338,6 +338,18 @@ class CharacterParserTest {
     }
 
     @Test
+    void maxStacksOnMisc() {
+        final D2Character longestPossible = cut.parse(TestCommons.getBuffer("1.6.77312/LongestPossible.d2s"));
+        final List<Item> stackables = longestPossible.items().stream()
+                .filter(item -> item.maxStacks() > 0)
+                .toList();
+
+        assertThat(stackables).hasSize(3);
+        assertThat(stackables.getFirst().itemName()).isEqualTo("Key");
+        assertThat(stackables.getLast().itemName()).isEqualTo("Tome of Town Portal");
+    }
+
+    @Test
     void testPaladinPassiveBonusesFromSkills() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Fjoerich-max-res.d2s"));
 

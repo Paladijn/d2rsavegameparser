@@ -424,6 +424,7 @@ final class ItemParser {
     private void parseMiscStats(Item.ItemBuilder itemBuilder, BitReader br, MiscStats miscStats) {
         if (miscStats.isStackable()) {
             itemBuilder.stacks(br.readShort(9));
+            itemBuilder.maxStacks(miscStats.getMaxStacks());
         }
     }
 
