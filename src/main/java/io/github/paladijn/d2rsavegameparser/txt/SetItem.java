@@ -23,12 +23,12 @@ package io.github.paladijn.d2rsavegameparser.txt;
  * @author Paladijn
  */
 public final class SetItem {
-    private String name;
-    private int id;
-    private String setName;
-    private boolean cannotLoot;
-    private String code;
-    private String itemName;
+    private final String name;
+    private final int id;
+    private final String setName;
+    private final boolean cannotLoot;
+    private final String code;
+    private final String itemName;
 
     /**
      * Constructor which parses a tab-separated line from uniqueitems.txt

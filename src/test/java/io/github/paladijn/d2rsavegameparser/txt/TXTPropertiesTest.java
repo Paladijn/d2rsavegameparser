@@ -18,14 +18,10 @@
 package io.github.paladijn.d2rsavegameparser.txt;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.slf4j.LoggerFactory.getLogger;
 
 class TXTPropertiesTest {
-    private static final Logger log = getLogger(TXTProperties.class);
-
     private final TXTProperties cut = TXTProperties.getInstance();
 
     @Test
