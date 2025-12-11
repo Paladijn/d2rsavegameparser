@@ -22,14 +22,14 @@ Other applications of the library may include:
 
 ### How to use
 Minimal Java version: 25  
-Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.6.89560 ones from the txt folder in this project.
+Ensure the txt files you wish to use are available in the txt folder of your application. You can copy the supplied patch 1.7.90471 ones from the txt folder in this project.
 
 Dependency:
 ```xml
 <dependency>
   <groupId>io.github.paladijn</groupId>
   <artifactId>d2rsavegameparser</artifactId>
-  <version>1.5.2</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 Required dependencies: org.slf4j:org.slf4j-api:2.0.17+ (this is defined as provided, so you'll need to declare your own version if you didn't already)
