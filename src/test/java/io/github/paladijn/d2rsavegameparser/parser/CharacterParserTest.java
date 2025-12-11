@@ -37,9 +37,9 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.slf4j.LoggerFactory.getLogger;
 
 class CharacterParserTest {
-    private static final Logger log = getLogger(CharacterParser.class);
+    private static final Logger log = getLogger(CharacterParserTest.class);
 
-    private final CharacterParser cut = new CharacterParser(false);
+    private final CharacterParser cut = new CharacterParser(true);
 
     // This is a helper function to debug the contents in case a save game breaks after a patch upgrade or when finding a specific item that we can't parse
     //@Test

@@ -36,4 +36,13 @@ class TXTPropertiesTest {
         final WeaponStats grandScepter = cut.getWeaponStatsByCode("gsc");
         assertThat(grandScepter.isTwoHanded()).isFalse();
     }
+
+    @Test
+    void setItem() {
+        final SetItem ironFist = cut.getSetItemById((short) 4);
+
+        assertThat(ironFist)
+                .extracting(SetItem::getId, SetItem::getSetName, SetItem::getName, SetItem::getCode, SetItem::getItemName, SetItem::cannotLoot)
+                .containsExactly(4, "Hsarus' Defense", "Hsarus' Iron Fist", "buc", "Buckler", false);
+    }
 }

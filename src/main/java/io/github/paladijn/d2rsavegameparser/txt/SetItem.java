@@ -26,6 +26,7 @@ public final class SetItem {
     private String name;
     private int id;
     private String setName;
+    private boolean cannotLoot;
     private String code;
     private String itemName;
 
@@ -38,8 +39,9 @@ public final class SetItem {
         name = blocks[0];
         id = Integer.parseInt(blocks[1]);
         setName = blocks[2];
-        code = blocks[3];
-        itemName = blocks[4];
+        cannotLoot = "1".equals(blocks[3]); // Oddly enough this is only set to 1 for the "Warlord's Glory" items, and "" instead of 0 for the other ones.
+        code = blocks[4];
+        itemName = blocks[5];
     }
 
     /**
@@ -80,5 +82,13 @@ public final class SetItem {
      */
     public String getItemName() {
         return itemName;
+    }
+
+    /**
+     * The set item cannot be looted - actually meaning it cannot drop. This was added in 1.7.90471 for the Chinese-only "Warlord's Glory" set.
+     * @return true if the item cannot be looted (or dropped?) in this version of the game
+     */
+    public boolean cannotLoot() {
+        return cannotLoot;
     }
 }
