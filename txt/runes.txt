@@ -157,7 +157,7 @@ Runeword156	Voice																																																	0
 Runeword157	Void																																																	0
 Runeword158	War																																																	0
 Runeword159	Water																																																	0
-Runeword160	Wealth	1			109	tors									LmKoTir	r20	r18	r03				gold%		250	250	mag%		100	100																					0
+Runeword160	Wealth	1			109	tors									LemKoTir	r20	r18	r03				gold%		250	250	mag%		100	100																					0
 Runeword161	Whisper																																																	0
 Runeword162	White	1			109	wand									DolIo	r14	r16					skilltab	7	3	3	red-mag		4	4	cast2		20	20	mana		13	13	skill	68	3	3	skill	84	2	2	skill	69	4	4	0
 Runeword163	Wind	1			110	mele									SurEl	r29	r01					dmg%		120	160	swing2		40	40	move2		20	20	reduce-ac		50	50	hit-skill	Tornado	10	9	charged	240	127	13	balance2		15	15	0
