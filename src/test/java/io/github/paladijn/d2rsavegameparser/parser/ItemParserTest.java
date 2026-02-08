@@ -22,6 +22,7 @@ import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemContainer;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
 import io.github.paladijn.d2rsavegameparser.model.ItemPosition;
+import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import org.junit.jupiter.api.Test;
 
@@ -238,6 +239,29 @@ class ItemParserTest {
         assertThat(result.maxDurability()).isEqualTo((short)3);
         assertThat(result.durability()).isEqualTo((short)1);
         assertThat(result.baseDefense()).isEqualTo(1);
+    }
+
+    @Test
+    void crackedScepterWithSkills() {
+        byte[] bytes = {16, 0, -128, 0, 5, 0, 4, -48, 12, -53, -127, 67, 81, -106, 32, 46, 30, -84, 97, -109, -1};
+        Item result = cut.parseItem(new BitReader(bytes));
+
+        assertThat(result.quality()).isEqualTo(ItemQuality.INFERIOR);
+        assertThat(result.itemName()).isEqualTo("Cracked War Scepter");
+        assertThat(result.maxDurability()).isEqualTo((short)23);
+        assertThat(result.properties().getLast())
+                .extracting(ItemProperty::index, ItemProperty::name)
+                .containsExactlyInAnyOrder(107, "item_singleskill"); // we just check if the properties were parsed.
+    }
+
+    @Test
+    void etherealWandWithSkills() {
+        byte[] bytes = {16, 0, -64, 0, 5, 8, 68, 1, 27, 56, 81, -61, 63, 45, 2, 4, 4, 107, -104, 108, 77, -109, -84, 113, -110, -1};
+        Item result = cut.parseItem(new BitReader(bytes));
+
+        assertThat(result.quality()).isEqualTo(ItemQuality.NORMAL); // Ethereal items are 'normal', so no lowered durability/requirements.
+        assertThat(result.isEthereal()).isTrue();
+        assertThat(result.properties()).hasSize(3); // validate the three skills were read.
     }
 
     @Test
