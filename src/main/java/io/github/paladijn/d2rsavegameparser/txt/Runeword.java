@@ -57,16 +57,16 @@ public final class Runeword {
         if (!active) {
             return;
         }
-        patch = blocks[5];
-        for (int i = 5; i <=10; i++) { // iType1..6
+        patch = blocks[7];
+        for (int i = 8; i <=13; i++) { // iType1..6
             if (blocks[i].isBlank()) {
                 break;
             }
             supportedTypes.add(blocks[i]);
         }
-        runeString = blocks[15];
+        runeString = blocks[17];
 
-        for (int i = 16; i <= 21; i++) { // Rune1..6
+        for (int i = 18; i <= 23; i++) { // Rune1..6
             if (blocks[i].isBlank()) {
                 break;
             }
