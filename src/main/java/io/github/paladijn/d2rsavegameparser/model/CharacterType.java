@@ -54,6 +54,10 @@ public enum CharacterType {
      */
     ASSASSIN("Assassin"),
     /**
+     * Warlock
+     */
+    WARLOCK("Warlock"),
+    /**
      * None
      */
     NONE("-");
@@ -87,6 +91,7 @@ public enum CharacterType {
             case "nec" -> NECROMANCER;
             case "pal" -> PALADIN;
             case "sor" -> SORCERESS;
+            case "war" -> WARLOCK;
             default -> throw new ParseException("Could not determine CharacterType from String " + shortString);
         };
     }

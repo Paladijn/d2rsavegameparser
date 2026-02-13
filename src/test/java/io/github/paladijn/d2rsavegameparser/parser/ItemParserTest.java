@@ -335,4 +335,11 @@ class ItemParserTest {
         assertThat(ithRune.properties()).hasSize(3);
         assertThat(ithRune.properties().getFirst().name()).isEqualTo("maxdamage");
     }
+
+    @Test
+    void tomeOfTP() {
+        byte[] bytes = {16, 0, -128, 0, 5, 8, -42, -88, 20, -104, 113, 120, -64, 12, 2, 64, -31, 63 };
+        Item tomeOfTP = cut.parseItem(new BitReader(bytes));
+        assertThat(tomeOfTP.stacks()).isEqualTo((short)20);
+    }
 }

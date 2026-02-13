@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SharedStashParserTest {
 
-    private final SharedStashParser cut = new SharedStashParser(false);
+    private final SharedStashParser cut = new SharedStashParser(true);
 
     @Test
     void parseStash() throws IOException {

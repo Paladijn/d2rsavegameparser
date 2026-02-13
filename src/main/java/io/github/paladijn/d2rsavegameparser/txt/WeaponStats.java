@@ -62,25 +62,25 @@ public final class WeaponStats {
         type2 = blocks[2];
         code = blocks[3];
 
-        isTwoHanded = blocks[17].equals("1");
+        isTwoHanded = blocks[18].equals("1");
 
-        invWidth = Integer.parseInt(blocks[44]);
-        invHeight = Integer.parseInt(blocks[45]);
-
-        if (ParseHelper.isNumeric(blocks[26])) {
-            reqStr = Integer.parseInt(blocks[26]);
-        }
+        invWidth = Integer.parseInt(blocks[45]);
+        invHeight = Integer.parseInt(blocks[46]);
 
         if (ParseHelper.isNumeric(blocks[27])) {
-            reqDex = Integer.parseInt(blocks[27]);
+            reqStr = Integer.parseInt(blocks[27]);
         }
 
-        reqLvl = Integer.parseInt(blocks[32]);
-        isStackable = blocks[46].equals("1");
-        if (isStackable && ParseHelper.isNumeric(blocks[48])) {
-            maxStacks = Integer.parseInt(blocks[48]);
+        if (ParseHelper.isNumeric(blocks[28])) {
+            reqDex = Integer.parseInt(blocks[28]);
         }
-        isThrown = "primarily thrown".equals(blocks[57]);
+
+        reqLvl = Integer.parseInt(blocks[31]);
+        isStackable = blocks[47].equals("1");
+        if (isStackable && ParseHelper.isNumeric(blocks[49])) {
+            maxStacks = Integer.parseInt(blocks[49]);
+        }
+        isThrown = "primarily thrown".equals(blocks[58]);
     }
 
     /**

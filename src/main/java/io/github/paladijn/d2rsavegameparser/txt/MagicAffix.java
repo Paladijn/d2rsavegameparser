@@ -88,4 +88,14 @@ public final class MagicAffix {
     public CharacterType getRestrictedToClass() {
         return restrictedToClass;
     }
+
+    @Override
+    public String toString() {
+        return "MagicAffix{" +
+                "index=" + index +
+                ", name='" + name + '\'' +
+                ", reqLvl=" + reqLvl +
+                ", restrictedToClass=" + restrictedToClass +
+                '}';
+    }
 }

@@ -69,7 +69,7 @@ public final class MiscStats {
         }
 
         reqLvl = Integer.parseInt(blocks[5]);
-        isStackable = blocks[42].equals("1");
+        isStackable = blocks[43].equals("1");
         if (isStackable && ParseHelper.isNumeric(blocks[45])) {
             maxStacks = Integer.parseInt(blocks[45]);
         }

@@ -91,9 +91,13 @@ final class ItemParser {
         int cntItems = buffer.getShort(start + 2);
         log.debug("Total items: {}", cntItems);
 
-        final BitReader itemData = new BitReader(itemBytes);
-        for (int i = 0; i < cntItems; i++) {
-            result.add(parseItem(itemData));
+        try {
+            final BitReader itemData = new BitReader(itemBytes);
+            for (int i = 0; i < cntItems; i++) {
+                result.add(parseItem(itemData));
+            }
+        } catch (ParseException e) {
+            log.error(e.getMessage());
         }
 
         return result;
@@ -148,6 +152,7 @@ final class ItemParser {
         WeaponStats weaponStats = txtProperties.getWeaponStatsByCode(code);
         MiscStats miscStats = txtProperties.getMiscItemsByCode(code);
 
+        log.info("code: {}", code);
         ItemType itemType = determineItemType(armorStats, weaponStats, miscStats);
 
         final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal);
@@ -209,6 +214,7 @@ final class ItemParser {
 
         if (printItemBytes || printBytesDueToError) {
             br.printBytes(result, startIndex);
+            br.printHexBytes(result, startIndex);
         }
 
 
@@ -423,7 +429,9 @@ final class ItemParser {
 
     private void parseMiscStats(Item.ItemBuilder itemBuilder, BitReader br, MiscStats miscStats) {
         if (miscStats.isStackable()) {
-            itemBuilder.stacks(br.readShort(9));
+            final short stacks = br.readShort(9);
+            log.debug("Read stacks [{}}/{}}]", stacks, miscStats.getMaxStacks());
+            itemBuilder.stacks(stacks);
             itemBuilder.maxStacks(miscStats.getMaxStacks());
         }
     }
@@ -493,10 +501,7 @@ final class ItemParser {
     private List<ItemProperty> readProperties(BitReader br, int qflag) {
         List<ItemProperty> properties = new ArrayList<>();
         int rootProp = br.readInt(9);
-        if (rootProp == ParseHelper.PROPERTY_END) {
-            log.debug("skipping properties due to value 511");
-        }
-        while (rootProp != ParseHelper.PROPERTY_END) {
+        while (rootProp != ParseHelper.PROPERTY_END && rootProp < 368) {
             ItemProperty itemProperty = parseItemProperty(br, rootProp, qflag);
             log.debug("rootprop: {}, property: {}", rootProp, itemProperty);
             properties.add(itemProperty);

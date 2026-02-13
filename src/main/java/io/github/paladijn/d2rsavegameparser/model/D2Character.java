@@ -17,6 +17,9 @@
  */
 package io.github.paladijn.d2rsavegameparser.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
                          List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
                          List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
 
+    private static final Logger log = LoggerFactory.getLogger(D2Character.class);
 
     /**
      * Builder class for constructing instances of {@link D2Character}.
@@ -260,6 +264,10 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
             hardcore = (0xff & statusBits & 1 << 2) != 0;
             died = (0xff & statusBits & 1 << 3) != 0;
             expansion = (0xff & statusBits & 1 << 5) != 0;
+            if (statusBits == 0) { // TODO RotW Warlock character, figure out where this data went...
+                log.debug("status bits 0, likely a RotW Warlock character");
+                expansion = true;
+            }
             return this;
         }
 

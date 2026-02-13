@@ -213,6 +213,31 @@ public final class BitReader {
         log.info(String.valueOf(sbBytes));
     }
 
+    /**
+     * helper function to print the current item's bytes in hexadecimal format, so they can be used for debugging and unit tests.
+     * @param item The {@link Item} to print.
+     * @param startIndex The start index of the current item in this {@link BitReader} instance.
+     */
+    public void printHexBytes(Item item, int startIndex) {
+        int endIndex = positionInBits / 8;
+        log.debug("printing hex bytes {} -> {} of {}", startIndex, endIndex, item.itemName());
+        StringBuilder sbBytes = new StringBuilder();
+        sbBytes.append(item.itemName())
+                .append(" in Hex\n");
+
+        int displayIndex = 0;
+        for (int i = startIndex; i < endIndex; i++) {
+            if (displayIndex % 16 == 0) {
+                sbBytes.append("\n");
+            }
+            displayIndex++;
+            sbBytes.append(String.format("%02X ", data[i]));
+        }
+
+        sbBytes.append("\n");
+        log.info(String.valueOf(sbBytes));
+    }
+
     public byte getData(int i) {
         return data[i];
     }

@@ -42,10 +42,10 @@ public final class UniqueItem {
         id = Short.parseShort(blocks[1]);
         ladderFirst = blocks[7];
         ladderLast = blocks[8];
-        reqLvl = "".equals(blocks[12]) ? 0 : Integer.parseInt(blocks[9]); // some of the not enabled unique items have no requirement set.
+        reqLvl = "".equals(blocks[12]) ? 0 : Integer.parseInt(blocks[12]); // some of the not enabled unique items have no requirement set.
         code = blocks[13];
         itemName = blocks[14];
-        enabled = "0".equals(blocks[3]) || "2".equals(ladderFirst); // the sunder charms are also enabled in SP. Perhaps this should be a check for non-empty?
+        enabled = "1".equals(blocks[4]) || "2".equals(ladderFirst); // the sunder charms are also enabled in SP. Perhaps this should be a check for non-empty?
     }
 
     /**

@@ -40,8 +40,8 @@ public final class SetItem {
         id = Integer.parseInt(blocks[1]);
         setName = blocks[2];
         cannotLoot = "1".equals(blocks[3]); // Oddly enough this is only set to 1 for the "Warlord's Glory" items, and "" instead of 0 for the other ones.
-        code = blocks[10];
-        itemName = blocks[11];
+        code = blocks[9];
+        itemName = blocks[10];
     }
 
     /**

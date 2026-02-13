@@ -61,6 +61,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class CharacterParser {
     private static final Logger log = getLogger(CharacterParser.class);
+    public static final int QUEST_START_INDEX = 403;
 
     private final ItemParser itemParser;
 
@@ -97,24 +98,24 @@ public final class CharacterParser {
 
         D2Character.D2CharacterBuilder characterBuilder = new D2Character.D2CharacterBuilder().fileData(fileData);
 
-        if (fileData.version() != 99) {
+        if (fileData.version() != 105) {
             throw new ParseException("Unsupported version: " + fileData.version());
         }
         characterBuilder
-                .parseCharacterStatus(buffer.get(36))
-                .actProgression(buffer.get(37));
+                .parseCharacterStatus(buffer.get(20))
+                .actProgression(buffer.get(21));
 
-        final CharacterType characterType = CharacterType.values()[buffer.get(40)];
+        final CharacterType characterType = CharacterType.values()[buffer.get(24)];
 
         characterBuilder.characterType(characterType)
-                .level(buffer.get(43))
+                .level(buffer.get(27))
                 // not bothering to parse the hotkeys and selected left/right click assigned skills. We may in the future.
                 .locations(List.of(
-                        parseLocation(Difficulty.NORMAL, buffer.get(168)),
-                        parseLocation(Difficulty.NIGHTMARE, buffer.get(169)),
-                        parseLocation(Difficulty.HELL, buffer.get(170))
+                        parseLocation(Difficulty.NORMAL, buffer.get(152)),
+                        parseLocation(Difficulty.NIGHTMARE, buffer.get(153)),
+                        parseLocation(Difficulty.HELL, buffer.get(154))
                 ))
-                .mapId(buffer.getLong(171));
+                .mapId(buffer.getLong(155));
 
         Mercenary.MercenaryBuilder mercenaryBuilder = new Mercenary.MercenaryBuilder()
                 .alive(buffer.getShort(177))
@@ -124,7 +125,7 @@ public final class CharacterParser {
                 .experience(buffer.getInt(187));
 
         byte[] nameBytes = new byte[16];
-        buffer.get(267, nameBytes, 0, 16);
+        buffer.get(299, nameBytes, 0, 16);
         characterBuilder.name(new String(nameBytes).trim());
 
         if (buffer.limit() == 335) {
@@ -138,7 +139,7 @@ public final class CharacterParser {
                 .waypoints(parseWaypoints(buffer));
 
         byte[] npcHeaderBytes = new byte[2];
-        buffer.get(714, npcHeaderBytes, 0, 2);
+        buffer.get(782, npcHeaderBytes, 0, 2);
         String npcHeader = new String(npcHeaderBytes); // "w4"
         if (!"w4".equals(npcHeader)) {
             throw new ParseException("Could not find NPC header");
@@ -146,7 +147,7 @@ public final class CharacterParser {
 
         // stats
         byte[] statHeaderBytes = new byte[2];
-        buffer.get(765, statHeaderBytes, 0, 2);
+        buffer.get(833, statHeaderBytes, 0, 2);
         String statHeader = new String(statHeaderBytes); // "gf" until "if"
         if (!"gf".equals(statHeader)) {
             throw new ParseException("Could not find stat header");
@@ -155,7 +156,7 @@ public final class CharacterParser {
         // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 60 which so far seems to work (it should be < 36, but we've encountered one crash on >= 40 so far)
         byte[] skillHeaderBytes = new byte[2];
         int skillIndex = -1;
-        for(int i = 800; i < 860; i++) {
+        for(int i = 870; i < 933; i++) {
             buffer.get(i, skillHeaderBytes, 0, 2);
             if("if".equals(new String(skillHeaderBytes))) {
                 skillIndex = i;
@@ -166,9 +167,9 @@ public final class CharacterParser {
             throw new ParseException("Could not find skill header 'if' below index 860");
         }
 
-        final int statLength = skillIndex - 767;
+        final int statLength = skillIndex - 835;
         byte[] statBytes = new byte[statLength];
-        buffer.get(767, statBytes, 0, statLength);
+        buffer.get(835, statBytes, 0, statLength);
         characterBuilder.attributes(attributeParser.parse(statBytes));
 
         byte[] skillBytes = new byte[30];
@@ -344,7 +345,7 @@ public final class CharacterParser {
     private List<WaypointStatus> parseWaypoints(ByteBuffer buffer) {
         List<WaypointStatus> result = new ArrayList<>();
         byte[] wsHeaderBytes = new byte[2];
-        buffer.get(633, wsHeaderBytes, 0, 2);
+        buffer.get(701, wsHeaderBytes, 0, 2);
         String wsHeader = new String(wsHeaderBytes); // "WS"
         if (!"WS".equals(wsHeader)) {
             throw new ParseException("Could not find Waypoints header");
@@ -352,7 +353,7 @@ public final class CharacterParser {
         // skip 6 unknown bytes to end up at 641 for normal. We read 24 bytes here per difficulty, even though the last 17 are (currently) not used.
         for (Difficulty difficulty : Difficulty.values()) {
             byte[] waypointBytes = new byte[24];
-            int startIndex = 641 + difficulty.ordinal() * 24;
+            int startIndex = 709 + difficulty.ordinal() * 24;
             buffer.get(startIndex, waypointBytes, 0, 24);
             BitReader brWaypoints = new BitReader(waypointBytes);
             brWaypoints.skip(16); // ignore the first two
@@ -417,7 +418,7 @@ public final class CharacterParser {
     private List<QuestData> parseQuestData(ByteBuffer buffer) {
         List<QuestData> result = new ArrayList<>();
         byte[] questHeaderBytes = new byte[4];
-        buffer.get(335, questHeaderBytes, 0, 4);
+        buffer.get(QUEST_START_INDEX, questHeaderBytes, 0, 4);
         String questHeader = new String(questHeaderBytes);
         if (!"Woo!".equals(questHeader)) {
             throw new ParseException("Could not find quest header");
@@ -427,7 +428,7 @@ public final class CharacterParser {
             // for now, we are only interested in Anya's scroll and Larzuk's socket quest reward still available
             QuestData.QuestDataBuilder questDataBuilder = new QuestData.QuestDataBuilder(difficulty);
 
-            int larzukIndex = 345 + 70 + difficulty.ordinal() * 96;
+            int larzukIndex = QUEST_START_INDEX + 10 + 70 + difficulty.ordinal() * 96;
             short larzuk = buffer.getShort(larzukIndex);
             // 01000100 socket reward available
             // 10000100 socket quest used
@@ -439,7 +440,7 @@ public final class CharacterParser {
                     .socketQuestRewardAvailable(bit1 && bit5)
                     .socketQuestUsed(bit0 && bit5);
 
-            int anyaIndex = 345 + 74 + difficulty.ordinal() * 96;
+            int anyaIndex = QUEST_START_INDEX + 10 + 74 + difficulty.ordinal() * 96;
             short anya = buffer.getShort(anyaIndex);
             questDataBuilder.resistanceScrollRead((anya & (1 << 7)) != 0);
 
