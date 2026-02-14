@@ -7,7 +7,7 @@ This overview is partially based on Trevin Beattie's excellent description of th
 | Byte position | Size     | Contents                                                                                                                                                                                                                                                                                                                                                              |
 |---------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | 0             | long     | File Header, must always be 0xAA55AA555                                                                                                                                                                                                                                                                                                                               |
-| 4             | long     | File version, this guide supports only 105, which matches patch 3.1.91636 and higher                                                                                                                                                                                                                                                                                  |
+| 4             | long     | File version, this guide covers 105, which matches patch 3.1.91636 and higher                                                                                                                                                                                                                                                                                         |
 | 8             | long     | file size                                                                                                                                                                                                                                                                                                                                                             |
 | 12            | long     | checksum                                                                                                                                                                                                                                                                                                                                                              |
 | 16            | long     | unknown                                                                                                                                                                                                                                                                                                                                                               |
@@ -24,6 +24,8 @@ This overview is partially based on Trevin Beattie's excellent description of th
 | 155           | long     | Map ID                                                                                                                                                                                                                                                                                                                                                                |
 | 299           | 16 chars | Character name. The name may be up to 15 characters long; the rest of the field must be padded with null bytes. Remember the rules for Diablo II character names: 2-15 characters, containing only upper and lower case letters (A-Z), with the possible addition of one dash ( - ) or underscore ( _ ) as long as it is not the first or last character of the name. |
 
+New character files stop at 403 bytes and don't have the attributes, quest completion data, etc.  
+As soon as the game triggers the first save (5 minutes went by, death, id an item or Save&Exit, whichever comes first) the file will be extended with the values below, even if the character didn't move at all. 
 
 ## Quest completion data
 | Byte position | Size    | Contents                                                         |
@@ -114,26 +116,30 @@ This overview is partially based on Trevin Beattie's excellent description of th
 
 ### Character progression
 
-Character progression.  This number tells (sort of) how many acts you have completed from all difficulty levels.  It appears to be incremented when you kill the final demon in an act -- i.e., Andarial, Duriel, Mephisto, and Diablo / Baal.  There's a catch to that last one: in an Expansion game, the value is not incremented after killing Diablo, but is incremented by 2 after killing Baal.  (The reason is unknown.)  So it skips the values 4, 9, and 14.
+(copy-paste from Trevin)
+Character progression. This number tells (sort of) how many acts you have completed from all difficulty levels. It appears to be incremented when you kill the final demon in an act -- i.e., Andarial, Duriel, Mephisto, and Diablo / Baal. There's a catch to that last one: in an Expansion game, the value is not incremented after killing Diablo, but is incremented by 2 after killing Baal. (The reason is unknown.) So it skips the values 4, 9, and 14.
 
-I believe this value is used in determining your character's title.  The title is one of the following values (depending on the character class' gender):
-Value	Standard	Hardcore	Value	Expansion	Hardcode Exp.
-0-3	(no title)	0-3	(no title)
-4-7	Sir / Dame	Count / Countess	5-8	Slayer	Destroyer
-8-11	Lord / Lady	Duke / Duchess	10-13	Champion	Conqueror
-12	Baron / Baroness	King / Queen	15	Patriarch / Matriarch	Guardian
+I believe this value is used in determining your character's title. The title is one of the following values (depending on the character class' gender):
+
+| Value | Standard          | Hardcore         | Value | Expansion             | Hardcode Exp. |
+|-------|-------------------|------------------|-------|-----------------------|---------------|
+| 0-3   | (no title)        | (no title)       | 0-3   | (no title)            | (no title)    |
+| 4-7   | Sir / Dame        | Count / Countess | 5-8   | Slayer                | Destroyer     |
+| 8-11  | Lord / Lady       | Duke / Duchess   | 10-13 | Champion              | Conqueror     |
+| 12    | Baron / Baroness	 | King / Queen     | 15    | Patriarch / Matriarch | Guardian      |
 
 ### Character class field
 
-Character class. The defined classes are:
-0   Amazon
-1   Sorceress
-2   Necromancer
-3   Paladin
-4   Barbarian
-5   Druid (Expansion character only)
-6   Assassin (Expansion character only)
-7   Warlock (Warlock expansion character only)
+| ID | Class                                                     |
+|----|-----------------------------------------------------------|
+| 0  | Amazon                                                    |
+| 1  | Sorceress                                                 |
+| 2  | Necromancer                                               |
+| 3  | Paladin                                                   |
+| 4  | Barbarian                                                 |
+| 5  | Druid (`Lord of Destruction` Expansion character only)    |
+| 6  | Assassin (`Lord of Destruction` Expansion character only) |
+| 7  | Warlock (`Rise of the Warlock` expansion character only)  |
 
 ### Difficulty field
 
