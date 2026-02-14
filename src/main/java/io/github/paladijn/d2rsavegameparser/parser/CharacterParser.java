@@ -128,7 +128,7 @@ public final class CharacterParser {
         buffer.get(299, nameBytes, 0, 16);
         characterBuilder.name(new String(nameBytes).trim());
 
-        if (buffer.limit() == 335) {
+        if (buffer.limit() == 403) {
             log.info("This is a newly created character, so we'll only supply the starter attributes until the game triggers another save.");
             characterBuilder.attributes(StarterAttributes.getStarterAttributesByClass(characterType));
             return characterBuilder.build();
@@ -179,8 +179,12 @@ public final class CharacterParser {
         // (available) skills are 30 bytes after the skillindex plus the 2 header bytes
         int itemIndex = skillIndex + 32;
         log.debug("parsing character items");
-        final List<Item> items = itemParser.parseItems(buffer, itemIndex, buffer.limit());
-        final int minimalItemBytes = 9 * items.size(); // items have a minimum length of 9 bytes.
+        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here.
+        // Skip 16 bytes -> JM items on body. So we'll look for the next JM, if it's nearby with count 0 => we're alive.
+        int deadBodyIndex = findNextJM(buffer, itemIndex + 2);
+        log.debug("dead body at index {}, items start at {}", deadBodyIndex, itemIndex);
+
+        final List<Item> items = itemParser.parseItems(buffer, itemIndex, deadBodyIndex);
 
         // adjusting sets
         final HashMap<String, Integer> setCounts = getEquippedSetCounts(getEquippedSetItems(items));
@@ -200,7 +204,7 @@ public final class CharacterParser {
             // iron golem starts with kf and in case the following byte is 1 the item will follow without a JM prefix
             byte[] ironLemHeaderBytes = new byte[2];
             int ironIndex = -1;
-            for (int i = buffer.limit() - 3; i > itemIndex + minimalItemBytes; i--) {
+            for (int i = buffer.limit() - 3; i > deadBodyIndex; i--) {
                 buffer.get(i, ironLemHeaderBytes, 0, 2);
                 if("kf".equals(new String(ironLemHeaderBytes))) {
                     ironIndex = i;
@@ -214,7 +218,7 @@ public final class CharacterParser {
             // merc items are at "jf"
             byte[] mercItemHeaderBytes = new byte[2];
             int mercItemIndex = -1;
-            for (int i = ironIndex; i > itemIndex + minimalItemBytes; i--) {
+            for (int i = ironIndex; i > deadBodyIndex; i--) {
                 buffer.get(i, mercItemHeaderBytes, 0, 2);
                 if("jf".equals(new String(mercItemHeaderBytes))) {
                     mercItemIndex = i + 2;
@@ -243,26 +247,27 @@ public final class CharacterParser {
             }
         }
 
-        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here.
-        // Skip 16 bytes -> JM items on body. So we'll look for the next JM, if it's nearby with count 0 => we're alive.
-        byte[] deadBodyBytes = new byte[2];
-
-        final int deadBodySearchStart = itemIndex + minimalItemBytes;
-        for (int i = deadBodySearchStart; i < buffer.limit(); i++) {
-            buffer.get(i, deadBodyBytes, 0, 2);
-            if ("JM".equals(new String(deadBodyBytes))) {
-                final short deadIndicator = buffer.getShort(i + 2);
-                if (deadIndicator == 1) {
-                    log.debug("dead body items found at index {}", i);
-                    characterBuilder.deadBodyItems(itemParser.parseItems(buffer, i + 16, buffer.limit()));
-                } else {
-                    log.debug("No dead body items found");
-                }
-                break;
-            }
+        final short deadIndicator = buffer.getShort(deadBodyIndex + 2);
+        if (deadIndicator == 1) {
+            log.debug("dead body items found at index {}", deadBodyIndex);
+            characterBuilder.deadBodyItems(itemParser.parseItems(buffer, deadBodyIndex + 16, buffer.limit()));
+        } else {
+            log.debug("No dead body items found");
         }
 
         return characterBuilder.build();
+    }
+
+    private int findNextJM(ByteBuffer buffer, int start) {
+        // skip 16 bytes, look for the next one:
+        byte[] nextJM = new byte[2];
+        for (int i = start; i < buffer.limit(); i++) {
+            buffer.get(i, nextJM, 0, 2);
+            if ("JM".equals(new String(nextJM))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static FileData getFileData(ByteBuffer buffer) {

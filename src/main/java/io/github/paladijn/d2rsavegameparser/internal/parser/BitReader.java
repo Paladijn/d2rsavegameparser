@@ -21,6 +21,7 @@ import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.parser.ParseException;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -75,6 +76,7 @@ public final class BitReader {
 
     public BitReader(byte[] data) {
         this.data = data;
+        log.debug("itemData: {}", Arrays.toString(data));
         positionInBits = 0;
     }
 

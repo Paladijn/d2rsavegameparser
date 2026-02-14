@@ -18,6 +18,7 @@
 package io.github.paladijn.d2rsavegameparser.parser;
 
 import io.github.paladijn.d2rsavegameparser.TestCommons;
+import io.github.paladijn.d2rsavegameparser.model.CharacterType;
 import io.github.paladijn.d2rsavegameparser.model.D2Character;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
@@ -42,7 +43,7 @@ class CharacterParserTest {
     private final CharacterParser cut = new CharacterParser(true);
 
     // This is a helper function to debug the contents in case a save game breaks after a patch upgrade or when finding a specific item that we can't parse
-    //@Test
+    @Test
     void testCharacterFileForExceptions() {
         final ByteBuffer buffer = TestCommons.getBuffer("3.1.91636/Nieuw.d2s");
 
@@ -95,18 +96,18 @@ class CharacterParserTest {
 
     @Test
     void readNewChar() {
-        D2Character wandelaar = cut.parse(TestCommons.getBuffer("2.7/Wandelaar.d2s"));
+        final D2Character instant = cut.parse(TestCommons.getBuffer("3.1.91636/instant.d2s"));
 
         // as this character is new it only has the start attributes to display.
-        assertThat(wandelaar.attributes().strength()).isEqualTo(25);
-        assertThat(wandelaar.attributes().dexterity()).isEqualTo(20);
-        assertThat(wandelaar.attributes().energy()).isEqualTo(15);
-        assertThat(wandelaar.attributes().vitality()).isEqualTo(25);
-        assertThat(wandelaar.attributes().hp()).isEqualTo(55);
-        assertThat(wandelaar.attributes().mana()).isEqualTo(15);
-        assertThat(wandelaar.level()).isEqualTo((byte)1);
+        assertThat(instant.attributes().strength()).isEqualTo(15);
+        assertThat(instant.attributes().dexterity()).isEqualTo(20);
+        assertThat(instant.attributes().energy()).isEqualTo(20);
+        assertThat(instant.attributes().vitality()).isEqualTo(25);
+        assertThat(instant.attributes().hp()).isEqualTo(55);
+        assertThat(instant.attributes().mana()).isEqualTo(20);
+        assertThat(instant.level()).isEqualTo((byte)1);
 
-        assertThat(wandelaar.skills()).isEmpty();
+        assertThat(instant.skills()).isEmpty();
     }
 
     @Test
@@ -436,5 +437,18 @@ class CharacterParserTest {
         final D2Character wandelaar = cut.parse(TestCommons.getBuffer("1.6.84219/RIPClassic.d2s"));
 
         assertThat(wandelaar.mapId()).isEqualTo(1453926620L);
+    }
+
+    @Test
+    void testNewWarlock() {
+        final D2Character newLock = cut.parse(TestCommons.getBuffer("3.1.91636/Nieuw.d2s"));
+
+        assertThat(newLock.characterType()).isEqualTo(CharacterType.WARLOCK);
+
+        assertThat(newLock.items()).hasSize(7); // 4 pots, 2 scrolls and a dagger
+        Item dagger = newLock.items().getLast();
+        assertThat(dagger.itemName()).isEqualTo("Dagger");
+        assertThat(dagger.properties()).hasSize(1);
+        // TODO 20260214 this should be +1 to Miasma, it's not parsing correctly yet.
     }
 }

@@ -152,7 +152,7 @@ final class ItemParser {
         WeaponStats weaponStats = txtProperties.getWeaponStatsByCode(code);
         MiscStats miscStats = txtProperties.getMiscItemsByCode(code);
 
-        log.info("code: {}", code);
+        log.debug("code: {}", code);
         ItemType itemType = determineItemType(armorStats, weaponStats, miscStats);
 
         final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal);
@@ -191,10 +191,9 @@ final class ItemParser {
         log.debug("item {} done, moving to the next", itemScaffolding.getItemName());
         // extra skip for special cases
         if (isSimple
-                && "ques".equals(itemScaffolding.getType())
-                && ("j34".equals(code) || "bkd".equals(code))
+                && ("j34".equals(code) || "bkd".equals(code) || "isc".equals(code))
                 && br.bitsToNextBoundary() == 0) {
-            log.info("Skipping 8 extra bits on {} for specific quest items such as a Jade Figurine as they end on a boundary and result in parse errors when not skipping a byte.", itemScaffolding.getItemName());
+            log.info("Skipping 8 extra bits on {} for specific items such as a Jade Figurine and scroll of identify as they end on a boundary and result in parse errors when not skipping a byte.", itemScaffolding.getItemName());
             br.skip(8);
         }
         br.moveToNextByteBoundary();
