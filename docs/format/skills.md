@@ -70,48 +70,48 @@ The other is the skill ID used in some of the magical properties (i.e., "+2 to B
 
 ## Warlock skills
 
-Unlike the other classes the Warlock skills are all over the place in their offset. The ID locations still need to be determined.
+Unlike the other classes the Warlock skills are all over the place in their offset.
 
 ### Chaos
 | offset | ID  | Skill            | level | Prerequisites            |
 |--------|-----|------------------|-------|--------------------------|
-| 22     | tbd | Miasma Bolt      | 1     |                          |
-| 20     | tbd | Sigil: Lethargy  | 6     |                          |
-| 21     | tbd | Ring of Fire     | 6     |                          |
-| 23     | tbd | Sigil: Rancor    | 12    | Sigil: Lethargy          |
-| 26     | tbd | Miasma Chain     | 12    | Miasma Bolt              |
-| 25     | tbd | Flame Wave       | 18    | Ring of Fire             |
-| 27     | tbd | Sigil: Death     | 24    | Sigil: Rancor            |
-| 24     | tbd | Enhanced Entropy | 24    | Miasma Chain             |
-| 28     | tbd | Apocalypse       | 30    | Flame Wave, Sigil: Death |
-| 29     | tbd | Abyss            | 30    | Enhanced Entropy         |
+| 22     | 395 | Miasma Bolt      | 1     |                          |
+| 20     | 393 | Sigil: Lethargy  | 6     |                          |
+| 21     | 394 | Ring of Fire     | 6     |                          |
+| 23     | 396 | Sigil: Rancor    | 12    | Sigil: Lethargy          |
+| 26     | 399 | Miasma Chain     | 12    | Miasma Bolt              |
+| 25     | 398 | Flame Wave       | 18    | Ring of Fire             |
+| 27     | 400 | Sigil: Death     | 24    | Sigil: Rancor            |
+| 24     | 397 | Enhanced Entropy | 24    | Miasma Chain             |
+| 28     | 401 | Apocalypse       | 30    | Flame Wave, Sigil: Death |
+| 29     | 402 | Abyss            | 30    | Enhanced Entropy         |
 
 ### Eldritch
 
 | offset | ID  | Skill              | level | Prerequisites      |
 |--------|-----|--------------------|-------|--------------------|
-| 10     | tbd | Levitation Mastery | 1     |                    |
-| 12     | tbd | Hex: Bane          | 1     |                    |
-| 18     | tbd | Cleave             | 6     | Levitation Mastery |
-| 15     | tbd | Echoing Strike     | 12    | Levitation Mastery |
-| 16     | tbd | Hex: Purge         | 12    | Hex: Bane          |
-| 17     | tbd | Blade Warp         | 18    | Echoing Strike     |
-| 14     | tbd | Psychic Ward       | 18    | Cleave             |
-| 11     | tbd | Eldritch Blast     | 24    | Psychic Ward       |
-| 13     | tbd | Hex: Siphon        | 24    | Hex: Purge         |
-| 19     | tbd | Mirrored Blades    | 30    | Eldritch Blast     |
+| 10     | 383 | Levitation Mastery | 1     |                    |
+| 12     | 385 | Hex: Bane          | 1     |                    |
+| 18     | 391 | Cleave             | 6     | Levitation Mastery |
+| 15     | 388 | Echoing Strike     | 12    | Levitation Mastery |
+| 16     | 390 | Hex: Purge         | 12    | Hex: Bane          |
+| 17     | 380 | Blade Warp         | 18    | Echoing Strike     |
+| 14     | 387 | Psychic Ward       | 18    | Cleave             |
+| 11     | 384 | Eldritch Blast     | 24    | Psychic Ward       |
+| 13     | 386 | Hex: Siphon        | 24    | Hex: Purge         |
+| 19     | 392 | Mirrored Blades    | 30    | Eldritch Blast     |
 
 ### Demon
 
 | offset | ID  | Skill           | level | Prerequisites  |
 |--------|-----|-----------------|-------|----------------|
-| 0      | tbd | Summon Goatman  | 1     |                |
-| 1      | tbd | Demonic Mastery | 1     | Summon Goatman |
-| 5      | tbd | Blood Oath      | 6     |                |
-| 2      | tbd | Death Mark      | 6     | Summon Goatman |
-| 3      | tbd | Summon Tainted  | 12    | Summon Goatman |
-| 7      | tbd | Blood Boil      | 18    | Blood Oath     |
-| 4      | tbd | Summon Defiler  | 18    | Summon Tainted |
-| 6      | tbd | Engorge         | 24    | Blood Boil     |
-| 8      | tbd | Consume         | 30    | Blood Oath     |
-| 9      | tbd | Bind Demon      | 30    | Engorge        |
+| 0      | 373 | Summon Goatman  | 1     |                |
+| 1      | 374 | Demonic Mastery | 1     | Summon Goatman |
+| 5      | 378 | Blood Oath      | 6     |                |
+| 2      | 375 | Death Mark      | 6     | Summon Goatman |
+| 3      | 376 | Summon Tainted  | 12    | Summon Goatman |
+| 7      | 380 | Blood Boil      | 18    | Blood Oath     |
+| 4      | 377 | Summon Defiler  | 18    | Summon Tainted |
+| 6      | 379 | Engorge         | 24    | Blood Boil     |
+| 8      | 381 | Consume         | 30    | Blood Oath     |
+| 9      | 382 | Bind Demon      | 30    | Engorge        |
