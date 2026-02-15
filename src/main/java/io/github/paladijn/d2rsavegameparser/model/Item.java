@@ -133,6 +133,20 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                 && restrictedToClass != yourClass;
     }
 
+    public static boolean isRotWCollectible(String type, String type2, String code) {
+        // these are stored separately in the material stashes and require an extra 0 to be parsed in some cases.
+        return isRune(type)
+                || isGem(type, type2)
+                || type.equals("rpot")
+                || code.equals("pk1") || code.equals("pk2") || code.equals("pk3") // keys
+                || code.equals("dhn") || code.equals("bey") || code.equals("mbr") // uber collectibles
+                || code.equals("toa") || code.equals("tes") || code.equals("ceh") || code.equals("bet") || code.equals("fed") // token of absolution
+                || code.startsWith("xa") // Worldstone shard
+                || code.startsWith("ua") // ancient summon material
+                || code.startsWith("um") // ancient upgrade material
+                ;
+    }
+
     /**
      * Indicator whether this item is a helmet or torso type. This differs from {@link #itemType} since that also includes shield types.
      *

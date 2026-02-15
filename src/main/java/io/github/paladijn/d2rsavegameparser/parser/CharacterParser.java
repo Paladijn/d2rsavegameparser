@@ -186,7 +186,7 @@ public final class CharacterParser {
         int deadBodyIndex = findNextJM(buffer, itemIndex + 2);
         log.debug("dead body at index {}, items start at {}", deadBodyIndex, itemIndex);
 
-        final List<Item> items = itemParser.parseItems(buffer, itemIndex, deadBodyIndex);
+        final List<Item> items = itemParser.parseItems(buffer, itemIndex, buffer.limit());
 
         // adjusting sets
         final HashMap<String, Integer> setCounts = getEquippedSetCounts(getEquippedSetItems(items));

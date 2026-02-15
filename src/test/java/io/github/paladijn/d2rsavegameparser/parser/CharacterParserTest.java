@@ -21,6 +21,7 @@ import io.github.paladijn.d2rsavegameparser.TestCommons;
 import io.github.paladijn.d2rsavegameparser.model.CharacterType;
 import io.github.paladijn.d2rsavegameparser.model.D2Character;
 import io.github.paladijn.d2rsavegameparser.model.Item;
+import io.github.paladijn.d2rsavegameparser.model.ItemContainer;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.Skill;
@@ -45,10 +46,15 @@ class CharacterParserTest {
     // This is a helper function to debug the contents in case a save game breaks after a patch upgrade or when finding a specific item that we can't parse
     @Test
     void testCharacterFileForExceptions() {
-        final ByteBuffer buffer = TestCommons.getBuffer("3.1.91636/Nieuw.d2s");
+        final ByteBuffer buffer = TestCommons.getBuffer("3.1.91636/AllTheSkills-Demon.d2s");
 
-        CharacterParser parser = new CharacterParser(true);
-        log.info("output: {}", parser.parse(buffer));
+        final CharacterParser parser = new CharacterParser(true);
+        final D2Character parsed = parser.parse(buffer);
+
+        final List<Item> itemsInStash = parsed.items().stream()
+                .filter(item -> item.container() == ItemContainer.STASH)
+                .toList();
+        log.info("output: {}", parsed);
     }
 
     @Test
@@ -450,7 +456,10 @@ class CharacterParserTest {
         final Item dagger = newLock.items().getLast();
         assertThat(dagger.itemName()).isEqualTo("Dagger");
         assertThat(dagger.properties()).hasSize(1);
-        // TODO 20260214 this should be +1 to Miasma, it's not parsing correctly yet.
+
+        final ItemProperty starterSkill = dagger.properties().getFirst();
+        assertThat(starterSkill.name()).isEqualTo("item_singleskill");
+        assertThat(starterSkill.values()[0]).isEqualTo(SkillType.MIASMA_BOLT.getId());
     }
 
     @Test
@@ -502,7 +511,7 @@ class CharacterParserTest {
         assertThat(newLock.skills().get(21)).isEqualTo(new Skill(SkillType.RING_OF_FIRE, (byte)2, List.of()));
         assertThat(newLock.skills().get(22)).isEqualTo(new Skill(SkillType.MIASMA_BOLT, (byte)1, List.of()));
         assertThat(newLock.skills().get(23)).isEqualTo(new Skill(SkillType.SIGIL_RANCOR, (byte)4, List.of()));
-        assertThat(newLock.skills().get(24)).isEqualTo(new Skill(SkillType.ENHANCED_ENTROPHY, (byte)3, List.of()));
+        assertThat(newLock.skills().get(24)).isEqualTo(new Skill(SkillType.ENHANCED_ENTROPY, (byte)3, List.of()));
         assertThat(newLock.skills().get(25)).isEqualTo(new Skill(SkillType.FLAME_WAVE, (byte)6, List.of()));
         assertThat(newLock.skills().get(26)).isEqualTo(new Skill(SkillType.MIASMA_CHAIN, (byte)5, List.of()));
         assertThat(newLock.skills().get(27)).isEqualTo(new Skill(SkillType.SIGIL_DEATH, (byte)7, List.of()));

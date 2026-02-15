@@ -91,14 +91,14 @@ final class ItemParser {
         int cntItems = buffer.getShort(start + 2);
         log.debug("Total items: {}", cntItems);
 
-        try {
+        //try {
             final BitReader itemData = new BitReader(itemBytes);
             for (int i = 0; i < cntItems; i++) {
                 result.add(parseItem(itemData));
             }
-        } catch (ParseException e) {
-            log.error(e.getMessage());
-        }
+//        } catch (ParseException e) {
+//            log.error(e.getMessage());
+//        }
 
         return result;
     }
@@ -190,11 +190,14 @@ final class ItemParser {
 
         log.debug("item {} done, moving to the next", itemScaffolding.getItemName());
         // extra skip for special cases
-        if (isSimple
-                && ("j34".equals(code) || "bkd".equals(code) || "isc".equals(code))
-                && br.bitsToNextBoundary() == 0) {
-            log.info("Skipping 8 extra bits on {} for specific items such as a Jade Figurine and scroll of identify as they end on a boundary and result in parse errors when not skipping a byte.", itemScaffolding.getItemName());
-            br.skip(8);
+        if (br.peekTwoBytes() == 0) {
+            if (Item.isRotWCollectible(itemScaffolding.getType(), itemScaffolding.getType2(), itemScaffolding.getCode())) {
+                log.debug("Collectible (Rune, gems, rejuvs, etc.) and boundary on 0, skipping another byte");
+                br.skip(1);
+                br.moveToNextByteBoundary();
+            }
+            log.debug("Skipping an extra bit on {} for specific items that end on a boundary, but have a trailing 0", itemScaffolding.getItemName());
+            br.skip(1);
         }
         br.moveToNextByteBoundary();
 
@@ -215,7 +218,6 @@ final class ItemParser {
             br.printBytes(result, startIndex);
             br.printHexBytes(result, startIndex);
         }
-
 
         return result;
     }
@@ -307,6 +309,9 @@ final class ItemParser {
             log.debug("read total sockets: in item {}", cntSockets);
         }
 
+        // this is new in RotW
+        br.skip(1);
+
         int[] lSet = new int[5];
 
         if (itemScaffolding.getItemQuality() == ItemQuality.SET) {
@@ -323,6 +328,12 @@ final class ItemParser {
 
         if (itemScaffolding.isRuneword()) {
             itemBuilder.addProperties(readProperties(br, 0));
+        }
+
+        if(br.readShort(1) == 1) {
+            // this is a new feature in RotW where the material stash amount is stored in a byte value
+            byte itemStashCount = br.readByte(8);
+            log.debug("item {} has a material stash count of {}", itemScaffolding.getItemName(), itemStashCount);
         }
 
         if (itemScaffolding.getCntFilledSockets() > 0) {

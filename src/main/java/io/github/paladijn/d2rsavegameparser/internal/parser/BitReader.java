@@ -76,8 +76,36 @@ public final class BitReader {
 
     public BitReader(byte[] data) {
         this.data = data;
-        log.debug("itemData: {}", Arrays.toString(data));
+        log.debug("itemData [{}]: {}", data.length, Arrays.toString(data));
         positionInBits = 0;
+    }
+
+    /**
+     * Checking the next two bytes of an item entry. if the item ends on a single 0 we return that, so an extra byte will be skipped in the parser.
+     *
+     * This is somewhat cheating, but we're looking for a single 0 byte at the end of an item.
+     * As this double 0 0 bytes are a legit start of a new item we -1 on those.
+     */
+    public byte peekTwoBytes() {
+        int peekIndex = (positionInBits / 8);
+        log.debug("peeking at bit {} -> index {}", positionInBits, peekIndex);
+        if (peekIndex + 1 >= data.length) {
+            log.debug("peek: no more data available");
+            return -1;
+        }
+        if (data[peekIndex] == 0 && data[peekIndex + 1] == 0) {
+            log.debug("peek: 00000000 00000000, possible start of next item");
+            return -1;
+        }
+        if (data[peekIndex] != 16 && data[peekIndex + 1] == 0) {
+            log.debug("peek: {} 00000000, returning second byte", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
+            return 0;
+        }
+        final byte result = data[peekIndex];
+        if (log.isDebugEnabled()) {
+            log.debug("peek result: {}", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
+        }
+        return result;
     }
 
     public void skip(int bits) {
@@ -96,6 +124,10 @@ public final class BitReader {
 
     public char readChar(int bits) {
         return (char) unflip(read(bits), bits);
+    }
+
+    public byte readByte(int bits) {
+        return (byte) unflip(read(bits), bits);
     }
 
     public short readShort(int bits) {
