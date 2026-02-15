@@ -479,14 +479,14 @@ class CharacterParserTest {
         assertThat(newLock.skills()).hasSize(30);
 
         assertThat(newLock.skills().get(10)).isEqualTo(new Skill(SkillType.LEVITATION_MASTERY, (byte)1, List.of()));
-        assertThat(newLock.skills().get(11)).isEqualTo(new Skill(SkillType.CLEAVE, (byte)3, List.of()));
+        assertThat(newLock.skills().get(11)).isEqualTo(new Skill(SkillType.ELDRITCH_BLAST, (byte)3, List.of()));
         assertThat(newLock.skills().get(12)).isEqualTo(new Skill(SkillType.HEX_BANE, (byte)2, List.of()));
         assertThat(newLock.skills().get(13)).isEqualTo(new Skill(SkillType.HEX_SIPHON, (byte)2, List.of()));
         assertThat(newLock.skills().get(14)).isEqualTo(new Skill(SkillType.PSYCHIC_WARD, (byte)7, List.of()));
         assertThat(newLock.skills().get(15)).isEqualTo(new Skill(SkillType.ECHOING_STRIKE, (byte)4, List.of()));
         assertThat(newLock.skills().get(16)).isEqualTo(new Skill(SkillType.HEX_PURGE, (byte)5, List.of()));
         assertThat(newLock.skills().get(17)).isEqualTo(new Skill(SkillType.BLADE_WARP, (byte)6, List.of()));
-        assertThat(newLock.skills().get(18)).isEqualTo(new Skill(SkillType.ELDRITCH_BLAST, (byte)3, List.of()));
+        assertThat(newLock.skills().get(18)).isEqualTo(new Skill(SkillType.CLEAVE, (byte)3, List.of()));
         assertThat(newLock.skills().get(19)).isEqualTo(new Skill(SkillType.MIRRORED_BLADES, (byte)1, List.of()));
     }
 

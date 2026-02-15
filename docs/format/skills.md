@@ -92,12 +92,12 @@ Unlike the other classes the Warlock skills are all over the place in their offs
 |--------|-----|--------------------|-------|--------------------|
 | 10     | tbd | Levitation Mastery | 1     |                    |
 | 12     | tbd | Hex: Bane          | 1     |                    |
-| 11     | tbd | Cleave             | 6     | Levitation Mastery |
+| 18     | tbd | Cleave             | 6     | Levitation Mastery |
 | 15     | tbd | Echoing Strike     | 12    | Levitation Mastery |
 | 16     | tbd | Hex: Purge         | 12    | Hex: Bane          |
 | 17     | tbd | Blade Warp         | 18    | Echoing Strike     |
 | 14     | tbd | Psychic Ward       | 18    | Cleave             |
-| 18     | tbd | Eldritch Blast     | 24    | Physic Ward        |
+| 11     | tbd | Eldritch Blast     | 24    | Psychic Ward       |
 | 13     | tbd | Hex: Siphon        | 24    | Hex: Purge         |
 | 19     | tbd | Mirrored Blades    | 30    | Eldritch Blast     |
 
