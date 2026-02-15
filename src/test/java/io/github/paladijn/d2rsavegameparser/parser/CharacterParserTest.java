@@ -451,4 +451,61 @@ class CharacterParserTest {
         assertThat(dagger.properties()).hasSize(1);
         // TODO 20260214 this should be +1 to Miasma, it's not parsing correctly yet.
     }
+
+    @Test
+    void demonSkills() {
+        final D2Character newLock = cut.parse(TestCommons.getBuffer("3.1.91636/AllTheSkills-Demon.d2s"));
+
+        assertThat(newLock.characterType()).isEqualTo(CharacterType.WARLOCK);
+        assertThat(newLock.skills()).hasSize(30);
+
+        assertThat(newLock.skills().getFirst()).isEqualTo(new Skill(SkillType.SUMMON_GOATMAN, (byte)2, List.of()));
+        assertThat(newLock.skills().get(1)).isEqualTo(new Skill(SkillType.DEMONIC_MASTERY, (byte)1, List.of()));
+        assertThat(newLock.skills().get(2)).isEqualTo(new Skill(SkillType.DEATH_MARK, (byte)4, List.of()));
+        assertThat(newLock.skills().get(3)).isEqualTo(new Skill(SkillType.SUMMON_TAINTED, (byte)5, List.of()));
+        assertThat(newLock.skills().get(4)).isEqualTo(new Skill(SkillType.SUMMON_DEFILER, (byte)7, List.of()));
+        assertThat(newLock.skills().get(5)).isEqualTo(new Skill(SkillType.BLOOD_OATH, (byte)3, List.of()));
+        assertThat(newLock.skills().get(6)).isEqualTo(new Skill(SkillType.ENGORGE, (byte)4, List.of()));
+        assertThat(newLock.skills().get(7)).isEqualTo(new Skill(SkillType.BLOOD_BOIL, (byte)6, List.of()));
+        assertThat(newLock.skills().get(8)).isEqualTo(new Skill(SkillType.CONSUME, (byte)1, List.of()));
+        assertThat(newLock.skills().get(9)).isEqualTo(new Skill(SkillType.BIND_DEMON, (byte)2, List.of()));
+    }
+
+    @Test
+    void eldritchSkills() {
+        final D2Character newLock = cut.parse(TestCommons.getBuffer("3.1.91636/AllTheSkills-Eldritch.d2s"));
+
+        assertThat(newLock.characterType()).isEqualTo(CharacterType.WARLOCK);
+        assertThat(newLock.skills()).hasSize(30);
+
+        assertThat(newLock.skills().get(10)).isEqualTo(new Skill(SkillType.LEVITATION_MASTERY, (byte)1, List.of()));
+        assertThat(newLock.skills().get(11)).isEqualTo(new Skill(SkillType.CLEAVE, (byte)3, List.of()));
+        assertThat(newLock.skills().get(12)).isEqualTo(new Skill(SkillType.HEX_BANE, (byte)2, List.of()));
+        assertThat(newLock.skills().get(13)).isEqualTo(new Skill(SkillType.HEX_SIPHON, (byte)2, List.of()));
+        assertThat(newLock.skills().get(14)).isEqualTo(new Skill(SkillType.PSYCHIC_WARD, (byte)7, List.of()));
+        assertThat(newLock.skills().get(15)).isEqualTo(new Skill(SkillType.ECHOING_STRIKE, (byte)4, List.of()));
+        assertThat(newLock.skills().get(16)).isEqualTo(new Skill(SkillType.HEX_PURGE, (byte)5, List.of()));
+        assertThat(newLock.skills().get(17)).isEqualTo(new Skill(SkillType.BLADE_WARP, (byte)6, List.of()));
+        assertThat(newLock.skills().get(18)).isEqualTo(new Skill(SkillType.ELDRITCH_BLAST, (byte)3, List.of()));
+        assertThat(newLock.skills().get(19)).isEqualTo(new Skill(SkillType.MIRRORED_BLADES, (byte)1, List.of()));
+    }
+
+    @Test
+    void chaosSkills() {
+        final D2Character newLock = cut.parse(TestCommons.getBuffer("3.1.91636/AllTheSkills-Chaos.d2s"));
+
+        assertThat(newLock.characterType()).isEqualTo(CharacterType.WARLOCK);
+        assertThat(newLock.skills()).hasSize(30);
+
+        assertThat(newLock.skills().get(20)).isEqualTo(new Skill(SkillType.SIGIL_LETHARGY, (byte)3, List.of()));
+        assertThat(newLock.skills().get(21)).isEqualTo(new Skill(SkillType.RING_OF_FIRE, (byte)2, List.of()));
+        assertThat(newLock.skills().get(22)).isEqualTo(new Skill(SkillType.MIASMA_BOLT, (byte)1, List.of()));
+        assertThat(newLock.skills().get(23)).isEqualTo(new Skill(SkillType.SIGIL_RANCOR, (byte)4, List.of()));
+        assertThat(newLock.skills().get(24)).isEqualTo(new Skill(SkillType.ENHANCED_ENTROPHY, (byte)3, List.of()));
+        assertThat(newLock.skills().get(25)).isEqualTo(new Skill(SkillType.FLAME_WAVE, (byte)6, List.of()));
+        assertThat(newLock.skills().get(26)).isEqualTo(new Skill(SkillType.MIASMA_CHAIN, (byte)5, List.of()));
+        assertThat(newLock.skills().get(27)).isEqualTo(new Skill(SkillType.SIGIL_DEATH, (byte)7, List.of()));
+        assertThat(newLock.skills().get(28)).isEqualTo(new Skill(SkillType.APOCALYPSE, (byte)2, List.of()));
+        assertThat(newLock.skills().get(29)).isEqualTo(new Skill(SkillType.ABYSS, (byte)1, List.of()));
+    }
 }

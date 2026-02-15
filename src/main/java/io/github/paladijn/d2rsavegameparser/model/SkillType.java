@@ -21,11 +21,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.BOW;
+import static io.github.paladijn.d2rsavegameparser.model.SkillTree.CHAOS;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.COLD;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.COMBAT;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.COMBAT_BARB;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.CURSES;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.DEFENSIVE;
+import static io.github.paladijn.d2rsavegameparser.model.SkillTree.DEMON;
+import static io.github.paladijn.d2rsavegameparser.model.SkillTree.ELDRITCH;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.ELEMENTAL;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.FIRE;
 import static io.github.paladijn.d2rsavegameparser.model.SkillTree.JAVELIN;
@@ -269,7 +272,41 @@ public enum SkillType {
     BLADE_SHIELD(277, 26, CharacterType.ASSASSIN, TRAPS),
     VENOM(278, 27, CharacterType.ASSASSIN, SHADOW),
     SHADOW_MASTER(279, 28, CharacterType.ASSASSIN, SHADOW),
-    ROYAL_STRIKE(280, 29, CharacterType.ASSASSIN, MARTIAL);
+    ROYAL_STRIKE(280, 29, CharacterType.ASSASSIN, MARTIAL),
+    // --- Warlock ---
+    // TODO check the ID values
+    SUMMON_GOATMAN(281, 0, CharacterType.WARLOCK, DEMON),
+    DEMONIC_MASTERY(282, 1, CharacterType.WARLOCK, DEMON),
+    DEATH_MARK(283, 2, CharacterType.WARLOCK, DEMON),
+    SUMMON_TAINTED(284, 3, CharacterType.WARLOCK, DEMON),
+    SUMMON_DEFILER(285, 4, CharacterType.WARLOCK, DEMON),
+    BLOOD_OATH(286, 5, CharacterType.WARLOCK, DEMON),
+    ENGORGE(287, 6,  CharacterType.WARLOCK, DEMON),
+    BLOOD_BOIL(288, 7, CharacterType.WARLOCK, DEMON),
+    CONSUME(289, 8,  CharacterType.WARLOCK, DEMON),
+    BIND_DEMON(290, 9,  CharacterType.WARLOCK, DEMON),
+
+    LEVITATION_MASTERY(291, 10, CharacterType.WARLOCK, ELDRITCH),
+    CLEAVE(292, 11, CharacterType.WARLOCK, ELDRITCH),
+    HEX_BANE(293, 12, CharacterType.WARLOCK, ELDRITCH),
+    HEX_SIPHON(294, 13,  CharacterType.WARLOCK, ELDRITCH),
+    PSYCHIC_WARD(295, 14, CharacterType.WARLOCK, ELDRITCH),
+    ECHOING_STRIKE(296, 15, CharacterType.WARLOCK, ELDRITCH),
+    HEX_PURGE(297, 16, CharacterType.WARLOCK, ELDRITCH),
+    BLADE_WARP(298, 17, CharacterType.WARLOCK, ELDRITCH),
+    ELDRITCH_BLAST(299, 18,  CharacterType.WARLOCK, ELDRITCH),
+    MIRRORED_BLADES(300, 19,  CharacterType.WARLOCK, ELDRITCH),
+
+    SIGIL_LETHARGY(301, 20, CharacterType.WARLOCK, CHAOS),
+    RING_OF_FIRE(302, 21, CharacterType.WARLOCK, CHAOS),
+    MIASMA_BOLT(303, 22, CharacterType.WARLOCK, CHAOS),
+    SIGIL_RANCOR(304, 23, CharacterType.WARLOCK, CHAOS),
+    ENHANCED_ENTROPHY(305, 24,  CharacterType.WARLOCK, CHAOS),
+    FLAME_WAVE(306, 25, CharacterType.WARLOCK, CHAOS),
+    MIASMA_CHAIN(307, 26, CharacterType.WARLOCK, CHAOS),
+    SIGIL_DEATH(308, 27,  CharacterType.WARLOCK, CHAOS),
+    APOCALYPSE(309, 28,  CharacterType.WARLOCK, CHAOS),
+    ABYSS(310, 29,  CharacterType.WARLOCK, CHAOS);
 
     private final int id;
 

@@ -67,3 +67,51 @@ The other is the skill ID used in some of the magical properties (i.e., "+2 to B
 | 29     | 35 | Lightning Fury   | 30    | Plague Javelin               |
 
 ...
+
+## Warlock skills
+
+Unlike the other classes the Warlock skills are all over the place in their offset. The ID locations still need to be determined.
+
+### Chaos
+| offset | ID  | Skill            | level | Prerequisites            |
+|--------|-----|------------------|-------|--------------------------|
+| 22     | tbd | Miasma Bolt      | 1     |                          |
+| 20     | tbd | Sigil: Lethargy  | 6     |                          |
+| 21     | tbd | Ring of Fire     | 6     |                          |
+| 23     | tbd | Sigil: Rancor    | 12    | Sigil: Lethargy          |
+| 26     | tbd | Miasma Chain     | 12    | Miasma Bolt              |
+| 25     | tbd | Flame Wave       | 18    | Ring of Fire             |
+| 27     | tbd | Sigil: Death     | 24    | Sigil: Rancor            |
+| 24     | tbd | Enhanced Entropy | 24    | Miasma Chain             |
+| 28     | tbd | Apocalypse       | 30    | Flame Wave, Sigil: Death |
+| 29     | tbd | Abyss            | 30    | Enhanced Entropy         |
+
+### Eldritch
+
+| offset | ID  | Skill              | level | Prerequisites      |
+|--------|-----|--------------------|-------|--------------------|
+| 10     | tbd | Levitation Mastery | 1     |                    |
+| 12     | tbd | Hex: Bane          | 1     |                    |
+| 11     | tbd | Cleave             | 6     | Levitation Mastery |
+| 15     | tbd | Echoing Strike     | 12    | Levitation Mastery |
+| 16     | tbd | Hex: Purge         | 12    | Hex: Bane          |
+| 17     | tbd | Blade Warp         | 18    | Echoing Strike     |
+| 14     | tbd | Psychic Ward       | 18    | Cleave             |
+| 18     | tbd | Eldritch Blast     | 24    | Physic Ward        |
+| 13     | tbd | Hex: Siphon        | 24    | Hex: Purge         |
+| 19     | tbd | Mirrored Blades    | 30    | Eldritch Blast     |
+
+### Demon
+
+| offset | ID  | Skill           | level | Prerequisites  |
+|--------|-----|-----------------|-------|----------------|
+| 0      | tbd | Summon Goatman  | 1     |                |
+| 1      | tbd | Demonic Mastery | 1     | Summon Goatman |
+| 5      | tbd | Blood Oath      | 6     |                |
+| 2      | tbd | Death Mark      | 6     | Summon Goatman |
+| 3      | tbd | Summon Tainted  | 12    | Summon Goatman |
+| 7      | tbd | Blood Boil      | 18    | Blood Oath     |
+| 4      | tbd | Summon Defiler  | 18    | Summon Tainted |
+| 6      | tbd | Engorge         | 24    | Blood Boil     |
+| 8      | tbd | Consume         | 30    | Blood Oath     |
+| 9      | tbd | Bind Demon      | 30    | Engorge        |
