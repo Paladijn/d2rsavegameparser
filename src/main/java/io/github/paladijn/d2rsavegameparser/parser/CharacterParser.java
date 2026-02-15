@@ -124,6 +124,8 @@ public final class CharacterParser {
                 .typeId(buffer.getShort(185))
                 .experience(buffer.getInt(187));
 
+        characterBuilder.riseOfTheWarlock(buffer.get(248));
+
         byte[] nameBytes = new byte[16];
         buffer.get(299, nameBytes, 0, 16);
         characterBuilder.name(new String(nameBytes).trim());
@@ -197,7 +199,7 @@ public final class CharacterParser {
         // adjusting passive skill benefits
         characterBuilder.skills(adjustSkillsForPassives(skills, getEquippedItems(adjustedItems), activeSetBenefits));
 
-        if(characterBuilder.isExpansion()) {
+        if(characterBuilder.isLordOfDestruction() || characterBuilder.isRiseOfTheWarlock()) {
             // the Classic characters don't have merc items, and don't store the iron golem item in the savegame file (it even disappears when switching acts!)
 
             // for iron lem and merc we'll search backwards as that is faster.

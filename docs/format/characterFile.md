@@ -22,6 +22,7 @@ This overview is partially based on Trevin Beattie's excellent description of th
 | 36            | long     | unknown                                                                                                                                                                                                                                                                                                                                                               |
 | 152           | 3 bytes  | [Difficulty](#difficulty-field) These bytes indicate which difficulty the character is playing. The first byte corresponds to Normal, the second Nightmare, and the third Hell.                                                                                                                                                                                       |
 | 155           | long     | Map ID                                                                                                                                                                                                                                                                                                                                                                |
+| 248           | byte     | Indication which expansion this is. In 105 `2` without being converted and `3` after conversion to RotW. `4` for version 99 (not sure what it's used for there)                                                                                                                                                                                                       |
 | 299           | 16 chars | Character name. The name may be up to 15 characters long; the rest of the field must be padded with null bytes. Remember the rules for Diablo II character names: 2-15 characters, containing only upper and lower case letters (A-Z), with the possible addition of one dash ( - ) or underscore ( _ ) as long as it is not the first or last character of the name. |
 
 New character files stop at 403 bytes and don't have the attributes, quest completion data, etc.  
@@ -110,9 +111,9 @@ As soon as the game triggers the first save (5 minutes went by, death, id an ite
 
 ### Character status
 
-| 7 - 6   | 5                   | 4       | 3                | 2        | 1 - 0   |
-|---------|---------------------|---------|------------------|----------|---------|
-| Unknown | Expansion Character | Unknown | died in the past | Hardcore | Unknown |
+| 7 - 6   | 5                                            | 4       | 3                | 2        | 1 - 0   |
+|---------|----------------------------------------------|---------|------------------|----------|---------|
+| Unknown | Lord of Destruction character (0 => classic) | Unknown | died in the past | Hardcore | Unknown |
 
 ### Character progression
 
