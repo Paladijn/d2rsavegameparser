@@ -189,16 +189,19 @@ final class ItemParser {
         }
 
         log.debug("item {} done, moving to the next", itemScaffolding.getItemName());
+
         // extra skip for special cases
-        if (br.peekTwoBytes() == 0) {
-            if (Item.isRotWCollectible(itemScaffolding.getType(), itemScaffolding.getType2(), itemScaffolding.getCode())) {
-                log.debug("Collectible (Rune, gems, rejuvs, etc.) and boundary on 0, skipping another byte");
+        if (isSimple) {
+            if (br.bitsToNextBoundary() == 0) {
+                log.debug("skipping another bit due to ending on a boundary");
                 br.skip(1);
-                br.moveToNextByteBoundary();
             }
-            log.debug("Skipping an extra bit on {} for specific items that end on a boundary, but have a trailing 0", itemScaffolding.getItemName());
-            br.skip(1);
+            if (br.peekNextByte() == 0 && br.getCurrentByte() != 0) {
+                log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
+                br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
+            }
         }
+
         br.moveToNextByteBoundary();
 
         final Item result = itemBuilder.build();
@@ -303,14 +306,14 @@ final class ItemParser {
             case ItemType.MISC -> parseMiscStats(itemBuilder, br, txtProperties.getMiscItemsByCode(itemScaffolding.getCode()));
         }
 
+        // this is new in RotW, the Dude adding the change to GoMule indicates this might be related to Quivers (Arrows/Bolts).
+        br.skip(1);
+
         if (itemScaffolding.isSocketed()) {
             short cntSockets = br.readShort(4);
             itemBuilder.cntSockets(cntSockets);
             log.debug("read total sockets: in item {}", cntSockets);
         }
-
-        // this is new in RotW
-        br.skip(1);
 
         int[] lSet = new int[5];
 

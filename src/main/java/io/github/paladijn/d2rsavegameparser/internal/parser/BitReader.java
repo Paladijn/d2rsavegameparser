@@ -76,30 +76,22 @@ public final class BitReader {
 
     public BitReader(byte[] data) {
         this.data = data;
-        log.debug("itemData [{}]: {}", data.length, Arrays.toString(data));
+        if (log.isDebugEnabled()) {
+            log.debug("itemData [{}]: {}", data.length, Arrays.toString(data));
+        }
         positionInBits = 0;
     }
 
     /**
-     * Checking the next two bytes of an item entry. if the item ends on a single 0 we return that, so an extra byte will be skipped in the parser.
-     *
-     * This is somewhat cheating, but we're looking for a single 0 byte at the end of an item.
-     * As this double 0 0 bytes are a legit start of a new item we -1 on those.
+     * Checking the next byte of an item entry. if the item ends on a single 0 we return that, so an extra byte will be skipped in the parser.
+     * We also assume that before this we checked if we ended on a boundary and +1ed it otherwise.
      */
-    public byte peekTwoBytes() {
-        int peekIndex = (positionInBits / 8);
-        log.debug("peeking at bit {} -> index {}", positionInBits, peekIndex);
+    public byte peekNextByte() {
+        int peekIndex = (positionInBits / 8) + (bitsToNextBoundary() == 0 ? 0 : 1);
+        log.debug("peeking at bit {}[{}] -> index {}[{}]", positionInBits, bitsToNextBoundary(), peekIndex, data[peekIndex]);
         if (peekIndex + 1 >= data.length) {
             log.debug("peek: no more data available");
             return -1;
-        }
-        if (data[peekIndex] == 0 && data[peekIndex + 1] == 0) {
-            log.debug("peek: 00000000 00000000, possible start of next item");
-            return -1;
-        }
-        if (data[peekIndex] != 16 && data[peekIndex + 1] == 0) {
-            log.debug("peek: {} 00000000, returning second byte", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
-            return 0;
         }
         final byte result = data[peekIndex];
         if (log.isDebugEnabled()) {
@@ -272,7 +264,8 @@ public final class BitReader {
         log.info(String.valueOf(sbBytes));
     }
 
-    public byte getData(int i) {
-        return data[i];
+    public byte getCurrentByte() {
+        int peekIndex = (positionInBits / 8);
+        return data[peekIndex];
     }
 }
