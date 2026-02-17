@@ -343,12 +343,23 @@ class ItemParserTest {
     }
 
     @Test
-    @Disabled("This breaks on 105, we should grab a tome of TP from a character file")
+    @Disabled("This breaks on 105, as the stacks value changed")
     void tomeOfTP() {
-        byte[] bytes = {16, 0, -128, 0, 5, 8, -42, -88, 20, -104, 113, 120, -64, 12, 2, 64, -31, 63 };
-        Item tomeOfTP = cut.parseItem(new BitReader(bytes));
-        assertThat(tomeOfTP.stacks()).isEqualTo((short)20);
+        final byte[] bytes = {16, 0, -128, 0, 5, 0, -60, -88, 20, 62, 71, 61, -36, 18, 2, -112, -63, 127};
+        final Item tomeOfTP = cut.parseItem(new BitReader(bytes));
+
+        assertThat(tomeOfTP.stacks()).isEqualTo((short)12);
     }
+
+    @Test
+    @Disabled("This breaks on 105, as the stacks value changed")
+    void tomeOfIdentify() {
+        byte[] bytes = {16, 0, -128, 0, 5, 4, -28, -89, 82, 120, 62, -39, -70, 52, 8, -63, 1, -1, 1};
+        final Item tomeOfID = cut.parseItem(new BitReader(bytes));
+
+        assertThat(tomeOfID.stacks()).isEqualTo((short)3);
+    }
+
 
     @Test
     void rotwManaPotOnBoundary() {

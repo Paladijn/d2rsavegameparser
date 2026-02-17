@@ -21,6 +21,7 @@ import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
 import io.github.paladijn.d2rsavegameparser.internal.parser.ItemScaffolding;
 import io.github.paladijn.d2rsavegameparser.internal.parser.ParseHelper;
 import io.github.paladijn.d2rsavegameparser.model.CharacterType;
+import io.github.paladijn.d2rsavegameparser.model.Difficulty;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemContainer;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
@@ -112,6 +113,7 @@ final class ItemParser {
      */
     Item parseItem(final BitReader br) {
         int startIndex = br.getPositionInBits() / 8;
+        log.debug("item start index: {}", startIndex);
 
         int flags = br.readFlippedInt(32);
         Item.ItemBuilder itemBuilder = new Item.ItemBuilder()
@@ -176,7 +178,10 @@ final class ItemParser {
             parseExtendedPart1(itemBuilder, itemScaffolding, br);
         }
 
-        if(br.readShort(1) == 1) { // has GUID
+        if ("ques".equals(itemScaffolding.getType()) && !"box".equals(itemScaffolding.getCode())) { // all quest items, except the Cube. Perhaps also check for simple item (aren't all quest items simple?)
+            byte questDifficulty = br.readByte(3);
+            log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
+        } else if(br.readShort(1) == 1) { // has GUID
             parseGUID(br, itemScaffolding, miscStats == null, itemBuilder);
         }
 
@@ -442,8 +447,8 @@ final class ItemParser {
 
     private void parseMiscStats(Item.ItemBuilder itemBuilder, BitReader br, MiscStats miscStats) {
         if (miscStats.isStackable()) {
-            final short stacks = br.readShort(9);
-            log.debug("Read stacks [{}}/{}}]", stacks, miscStats.getMaxStacks());
+            final short stacks = br.readShort(9); // Looks like this was changed in RotW, the values don't match now for book of TP/identify
+            log.debug("Read stacks [{}/{}]", stacks, miscStats.getMaxStacks());
             itemBuilder.stacks(stacks);
             itemBuilder.maxStacks(miscStats.getMaxStacks());
         }

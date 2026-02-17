@@ -87,12 +87,14 @@ public final class BitReader {
      * We also assume that before this we checked if we ended on a boundary and +1ed it otherwise.
      */
     public byte peekNextByte() {
-        int peekIndex = (positionInBits / 8) + (bitsToNextBoundary() == 0 ? 0 : 1);
-        log.debug("peeking at bit {}[{}] -> index {}[{}]", positionInBits, bitsToNextBoundary(), peekIndex, data[peekIndex]);
+        final int peekIndex = (positionInBits / 8) + (bitsToNextBoundary() == 0 ? 0 : 1);
         if (peekIndex + 1 >= data.length) {
             log.debug("peek: no more data available");
             return -1;
         }
+
+        log.debug("peeking at bit {}[{}] -> index {}[{}]", positionInBits, bitsToNextBoundary(), peekIndex, data[peekIndex]);
+
         final byte result = data[peekIndex];
         if (log.isDebugEnabled()) {
             log.debug("peek result: {}", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
