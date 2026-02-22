@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ItemParserTest {
-    private final ItemParser cut = new ItemParser(false);
+    private final ItemParser cut = new ItemParser(true);
 
     @Test
     void greaterHealthPot() {
@@ -170,16 +170,50 @@ class ItemParserTest {
 
     @Test
     void iniFuss() {
-        byte[] bytes = {16, 0, -96, 0, 5, -104, 68, 37, 42};
+        final byte[] bytes = {16, 0, -96, 0, 5, 76, 68, 37, 10, 0};
+
         Item result = cut.parseItem(new BitReader(bytes));
 
         assertThat(result.type()).isEqualTo("ques");
         assertThat(result.itemName()).isEqualTo("Scroll of Inifuss");
         assertThat(result.location()).isEqualTo(ItemLocation.STORED);
         assertThat(result.container()).isEqualTo(ItemContainer.INVENTORY);
-        assertThat(result.x()).isEqualTo((short)2);
-        assertThat(result.y()).isEqualTo((short)6);
+        assertThat(result.x()).isEqualTo((short)1);
+        assertThat(result.y()).isEqualTo((short)3);
     }
+
+    @Test
+    void iniFussNightmare() {
+        final byte[] bytes = {16, 0, -96, 0, 5, 0, 80, 37, 42, 0};
+
+        Item result = cut.parseItem(new BitReader(bytes));
+
+        assertThat(result.type()).isEqualTo("ques");
+        assertThat(result.itemName()).isEqualTo("Scroll of Inifuss");
+        assertThat(result.location()).isEqualTo(ItemLocation.STORED);
+        assertThat(result.container()).isEqualTo(ItemContainer.HORADRIC_CUBE);
+        assertThat(result.x()).isEqualTo((short)0);
+        assertThat(result.y()).isEqualTo((short)0);
+    }
+
+    @Test
+    void soulstone() {
+        final byte[] bytes = {16, 32, -96, 0, 5, 100, -42, 18, 5, 0, 0, -128, 0, 5};
+
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(result.type()).isEqualTo("ques");
+        assertThat(result.itemName()).isEqualTo("Mephisto's Soulstone");
+        assertThat(br.getPositionInBits()).isEqualTo(9 * 8);
+    }
+
+    void cairnStones() {
+        final byte[] bytes = {16, 32, -96, 0, 5, 24, 68, -91, 49, 0};
+
+    }
+
+    //Horadric Malus :: byte[] bytes = {16, 0, -128, 0, 5, 20, 4, -113, 54, -120, 17, -100, 18, 39, -114, -1, 119, 19, -61, 127};
 
     @Test
     void personalizedSpirit() {

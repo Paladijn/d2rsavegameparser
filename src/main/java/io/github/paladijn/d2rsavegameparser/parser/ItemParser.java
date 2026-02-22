@@ -201,7 +201,8 @@ final class ItemParser {
                 log.debug("skipping another bit due to ending on a boundary");
                 br.skip(1);
             }
-            if (br.peekNextByte() == 0 && br.getCurrentByte() != 0) {
+            if (br.peekNextByte() == 0 && br.getCurrentByte() != 0
+                    && !"mss".equals(itemScaffolding.getCode())) { // Mephisto's soul stone does not seem to have the extra byte.
                 log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
                 br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
             }

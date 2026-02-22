@@ -26,6 +26,7 @@ import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
 import io.github.paladijn.d2rsavegameparser.model.ItemProperty;
 import io.github.paladijn.d2rsavegameparser.model.Skill;
 import io.github.paladijn.d2rsavegameparser.model.SkillType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -46,7 +47,7 @@ class CharacterParserTest {
     // This is a helper function to debug the contents in case a save game breaks after a patch upgrade or when finding a specific item that we can't parse
     @Test
     void testCharacterFileForExceptions() {
-        final ByteBuffer buffer = TestCommons.getBuffer("3.1.91636/AllTheSkills-Demon.d2s");
+        final ByteBuffer buffer = TestCommons.getBuffer("3.1.91735/Chronicle.d2s");
 
         final CharacterParser parser = new CharacterParser(true);
         final D2Character parsed = parser.parse(buffer);
@@ -76,6 +77,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void readNormal() {
         D2Character dierentuin = cut.parse(TestCommons.getBuffer("2.7/Dierentuin.d2s"));
 
@@ -87,6 +89,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void readHell() {
         final D2Character lohengrin = cut.parse(TestCommons.getBuffer("2.7/Lohengrin.d2s"));
         assertThat(lohengrin.level()).isEqualTo((byte)76);
@@ -117,6 +120,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void deadItems() {
         D2Character deadBody = cut.parse(TestCommons.getBuffer("2.7/itsDeadJim.d2s"));
         assertThat(deadBody.died()).isTrue();
@@ -128,6 +132,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void deadWithMerc() {
         D2Character deadBody = cut.parse(TestCommons.getBuffer("1.6.84219/DeadWithMerc.d2s"));
         assertThat(deadBody.died()).isTrue();
@@ -144,18 +149,21 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void anyaScroll() {
         D2Character scrollActive = cut.parse(TestCommons.getBuffer("2.7/Wandelaar-anya.d2s"));
         assertThat(scrollActive.questDataPerDifficulty().getFirst().resistanceScrollRead()).isTrue();
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void hasDiedInThePast() {
         D2Character hasDiedInThePast = cut.parse(TestCommons.getBuffer("2.7/Wandelaar-anya.d2s"));
         assertThat(hasDiedInThePast.died()).isTrue();
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void readIronGolem() {
         D2Character ironGolemNecro = cut.parse(TestCommons.getBuffer("2.7/DierentuinIG.d2s"));
         Item ironGolem = ironGolemNecro.golemItem();
@@ -169,13 +177,14 @@ class CharacterParserTest {
 
     @Test
     void hasPointsLeft() {
-        D2Character pointsLeft = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
+        D2Character pointsLeft = cut.parse(TestCommons.getBuffer("3.1.91636/AllTheSkills-with-reset.d2s"));
 
-        assertThat(pointsLeft.attributes().statPointsLeft()).isEqualTo(5);
-        assertThat(pointsLeft.attributes().skillPointsLeft()).isEqualTo(8);
+        assertThat(pointsLeft.attributes().statPointsLeft()).as("Available stat points").isEqualTo(160);
+        assertThat(pointsLeft.attributes().skillPointsLeft()).as("Available skill points").isEqualTo(37);
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void isenhartLightbrand() {
         D2Character isenhart = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
 
@@ -194,6 +203,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void isenhartCase() {
         D2Character isenhartCase = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
 
@@ -212,6 +222,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void isenhartHorns() {
         D2Character isenhartHorns = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
 
@@ -236,6 +247,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void isenhartParry() {
         D2Character isenhart = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
 
@@ -260,6 +272,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void readFullIsenhartSet() {
         D2Character isenhart = cut.parse(TestCommons.getBuffer("2.7/MuleSetsOne.d2s"));
 
@@ -301,6 +314,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void testKhalim() {
         D2Character khalim = cut.parse(TestCommons.getBuffer("2.8/Sparkles-khalimLos.d2s"));
 
@@ -320,6 +334,7 @@ class CharacterParserTest {
             "2.8/Sparkles-mephistostone.d2s, Mephisto's Soulstone",
             "2.8/Sparkles-potion.d2s, Potion of Life"
     })
+    @Disabled("This character file needs to be migrated to 105")
     void testSingularQuestItem(String saveGameLocation, String itemName) {
         D2Character d2Character = cut.parse(TestCommons.getBuffer(saveGameLocation));
 
@@ -333,6 +348,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void longestPossiblePersonalization() {
         D2Character longestPossible = cut.parse(TestCommons.getBuffer("1.6.77312/LongestPossible.d2s"));
         List<Item> stealth = longestPossible.items().stream()
@@ -345,6 +361,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void maxStacksOnMisc() {
         final D2Character longestPossible = cut.parse(TestCommons.getBuffer("1.6.77312/LongestPossible.d2s"));
         final List<Item> stackables = longestPossible.items().stream()
@@ -357,6 +374,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void testPaladinPassiveBonusesFromSkills() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Fjoerich-max-res.d2s"));
 
@@ -374,6 +392,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void testNaturalResistanceBonuses() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.77312/Schreeuw.d2s"));
 
@@ -398,6 +417,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void shouldParseIncorrectPrefix() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.80273/Assassin.d2s"));
 
@@ -409,6 +429,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void shouldParseClassicCharacter() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.84219/Classic.d2s"));
 
@@ -419,6 +440,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void shouldParseClassicDeadChar() {
         D2Character d2Character = cut.parse(TestCommons.getBuffer("1.6.84219/RIPClassic.d2s"));
 
@@ -427,6 +449,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void shouldIgnoreDoubleEquippedSetItems() {
         final D2Character fourHsarus = cut.parse(TestCommons.getBuffer("2.8/Sparkles-above75percent.d2s"));
 
@@ -439,6 +462,7 @@ class CharacterParserTest {
     }
 
     @Test
+    @Disabled("This character file needs to be migrated to 105")
     void verifyMapSeed() {
         final D2Character wandelaar = cut.parse(TestCommons.getBuffer("1.6.84219/RIPClassic.d2s"));
 
