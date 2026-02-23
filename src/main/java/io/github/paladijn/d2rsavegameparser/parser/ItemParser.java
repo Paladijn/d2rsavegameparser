@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.SET;
+import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.UNIQUE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -210,7 +212,10 @@ final class ItemParser {
 
         br.moveToNextByteBoundary();
 
+        checkForChronicleData(br, itemScaffolding);
+
         final Item result = itemBuilder.build();
+
         boolean printBytesDueToError = false;
 
         if (result.prefixIds().stream().anyMatch(id -> id == 2047)) {
@@ -229,6 +234,46 @@ final class ItemParser {
         }
 
         return result;
+    }
+
+    private void checkForChronicleData(BitReader br, ItemScaffolding itemScaffolding) {
+        // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
+        // TODO 20260223 perhaps also for Runewords?
+        if (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality())) {
+            log.debug("Checking for Chronicle data");
+            // if the next byte is not 00 or 10 (16) there is chronicle data available
+            byte nextByte = br.peekNextByte();
+            if (nextByte != 0 && nextByte != 16) {
+                log.debug("found Chronicle data");
+                byte[] chronicleBytes = new byte[7];
+                // read the next four bytes, they are always part of the chronicle
+                chronicleBytes[0] = br.readByte(8);
+                chronicleBytes[1] = br.readByte(8);
+                chronicleBytes[2] = br.readByte(8);
+                chronicleBytes[3] = br.readByte(8);
+                // the fifth can be 0 as the closing byte
+                chronicleBytes[4] = br.readByte(8);
+                log.debug("byte 5 -> {}", chronicleBytes[4]);
+                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
+                    chronicleBytes[5] = br.readByte(8);
+                    log.debug("byte 6 -> {}", chronicleBytes[5]);
+                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16) {
+                        chronicleBytes[6] = br.readByte(8);
+                        log.debug("byte 7 -> {}", chronicleBytes[6]);
+                    }
+                }
+
+                log.info("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
+            }
+        }
+    }
+
+    private String getConcatenatedBits(byte[] bytes) {
+        final StringBuilder results = new StringBuilder();
+        for (final byte b : bytes) {
+            results.append(String.format("%8s_", Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
+        }
+        return results.toString();
     }
 
     private void parseEar(BitReader br) {
@@ -323,7 +368,7 @@ final class ItemParser {
 
         int[] lSet = new int[5];
 
-        if (itemScaffolding.getItemQuality() == ItemQuality.SET) {
+        if (itemScaffolding.getItemQuality() == SET) {
             for (int i = 0; i < 5; i++) {
                 lSet[i] = br.readInt(1);
             }
@@ -331,7 +376,7 @@ final class ItemParser {
 
         itemBuilder.addProperties(readProperties(br, Item.isJewel(itemScaffolding.getCode()) ? 1 : 0));
 
-        if (itemScaffolding.getItemQuality() == ItemQuality.SET) {
+        if (itemScaffolding.getItemQuality() == SET) {
             parseSetProperties(itemBuilder, br, lSet);
         }
 
