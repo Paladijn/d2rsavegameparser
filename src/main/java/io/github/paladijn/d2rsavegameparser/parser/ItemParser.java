@@ -132,10 +132,11 @@ final class ItemParser {
                 .simple(isSimple)
                 .ethereal(isEthereal);
 
-        boolean isPersonalized = isBitChecked(flags, 25);
+        final boolean isPersonalized = isBitChecked(flags, 25);
         itemBuilder.personalized(isPersonalized);
-        boolean isRuneword = isBitChecked(flags, 27);
+        final boolean isRuneword = isBitChecked(flags, 27);
         itemBuilder.runeword(isRuneword);
+        final boolean hasChronicleData = isBitChecked(flags, 29);
 
         br.skip(3);
         itemBuilder
@@ -159,7 +160,7 @@ final class ItemParser {
         log.debug("code: {}", code);
         ItemType itemType = determineItemType(armorStats, weaponStats, miscStats);
 
-        final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal);
+        final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal, hasChronicleData);
 
         itemBuilder
                 .code(code)
@@ -240,7 +241,7 @@ final class ItemParser {
         // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
         // TODO 20260223 perhaps also for Runewords?
         if (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality())) {
-            log.debug("Checking for Chronicle data");
+            log.debug("Checking for Chronicle data (bit 29-> {})", itemScaffolding.hasChronicleData());
             // if the next byte is not 00 or 10 (16) there is chronicle data available
             byte nextByte = br.peekNextByte();
             if (nextByte != 0 && nextByte != 16) {
@@ -254,10 +255,10 @@ final class ItemParser {
                 // the fifth can be 0 as the closing byte
                 chronicleBytes[4] = br.readByte(8);
                 log.debug("byte 5 -> {}", chronicleBytes[4]);
-                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
+                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16 && br.peekNextByte() != chronicleBytes[4]) {
                     chronicleBytes[5] = br.readByte(8);
                     log.debug("byte 6 -> {}", chronicleBytes[5]);
-                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16) {
+                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 && br.peekNextByte() != chronicleBytes[5]) {
                         chronicleBytes[6] = br.readByte(8);
                         log.debug("byte 7 -> {}", chronicleBytes[6]);
                     }
@@ -358,7 +359,10 @@ final class ItemParser {
         }
 
         // this is new in RotW, the Dude adding the change to GoMule indicates this might be related to Quivers (Arrows/Bolts).
-        br.skip(1);
+        byte unknown1 = br.readByte(1);
+        if (unknown1 != 0) {
+            log.debug("unknown value in RotW: {}", unknown1);
+        }
 
         if (itemScaffolding.isSocketed()) {
             short cntSockets = br.readShort(4);
@@ -608,14 +612,17 @@ final class ItemParser {
     }
 
     private ItemScaffolding getBasicItemStats(String code, ItemType itemType, ArmorStats armorStats, WeaponStats weaponStats, final MiscStats miscStats,
-                                              final boolean isPersonalized, final boolean isRuneword, final boolean isSocketed, boolean isEthereal) {
+                                              final boolean isPersonalized, final boolean isRuneword, final boolean isSocketed, boolean isEthereal, boolean hasChronicleData) {
         return switch (itemType) {
             case ARMOR -> new ItemScaffolding(code, armorStats.getName(), armorStats.getType(), armorStats.getType2(), armorStats.getReqStr(),
-                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(), armorStats.getInvHeight(), 0);
+                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(),
+                    armorStats.getInvHeight(), 0, hasChronicleData);
             case WEAPON -> new ItemScaffolding(code, weaponStats.getName(), weaponStats.getType(), weaponStats.getType2(), weaponStats.getReqStr(),
-                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(), weaponStats.getInvHeight(), weaponStats.getMaxStacks());
+                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(),
+                    weaponStats.getInvHeight(), weaponStats.getMaxStacks(), hasChronicleData);
             case MISC -> new ItemScaffolding(code, miscStats.getName(), miscStats.getType(), miscStats.getType2(), miscStats.getReqStr(),
-                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(), miscStats.getInvHeight(), miscStats.getMaxStacks());
+                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(),
+                    miscStats.getInvHeight(), miscStats.getMaxStacks(), hasChronicleData);
         };
     }
 
