@@ -352,16 +352,16 @@ final class ItemParser {
     private void parseExtendedPart2(Item.ItemBuilder itemBuilder, ItemScaffolding itemScaffolding, BitReader br) {
         log.debug("parseExtendedPart2 index: {}", br.getPositionInBits());
 
+        final MiscStats miscStats = txtProperties.getMiscItemsByCode(itemScaffolding.getCode());
         switch (itemScaffolding.getItemType()) {
             case ItemType.ARMOR -> parseArmorStats(itemBuilder, br);
             case ItemType.WEAPON -> parseWeaponStats(itemBuilder, itemScaffolding, br, txtProperties.getWeaponStatsByCode(itemScaffolding.getCode()));
-            case ItemType.MISC -> parseMiscStats(itemBuilder, br, txtProperties.getMiscItemsByCode(itemScaffolding.getCode()));
+            case ItemType.MISC -> parseMiscStats(itemBuilder, br, miscStats);
         }
 
-        // this is new in RotW, the Dude adding the change to GoMule indicates this might be related to Quivers (Arrows/Bolts).
-        byte unknown1 = br.readByte(1);
-        if (unknown1 != 0) {
-            log.debug("unknown value in RotW: {}", unknown1);
+        if (miscStats == null || !miscStats.isStackable()) {
+            // this is new in RotW and a bit ugly: if the item was stackable we read sufficient bytes, otherwise we'll have to skip another bit.
+            br.skip(1);
         }
 
         if (itemScaffolding.isSocketed()) {
@@ -497,7 +497,8 @@ final class ItemParser {
 
     private void parseMiscStats(Item.ItemBuilder itemBuilder, BitReader br, MiscStats miscStats) {
         if (miscStats.isStackable()) {
-            final short stacks = br.readShort(9); // Looks like this was changed in RotW, the values don't match now for book of TP/identify
+            br.skip(1); // Looks like this was changed in RotW, shifting the true value 1 bit
+            final short stacks = br.readShort(9);
             log.debug("Read stacks [{}/{}]", stacks, miscStats.getMaxStacks());
             itemBuilder.stacks(stacks);
             itemBuilder.maxStacks(miscStats.getMaxStacks());

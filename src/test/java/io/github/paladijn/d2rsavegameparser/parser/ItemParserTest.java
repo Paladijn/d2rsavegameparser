@@ -382,7 +382,6 @@ class ItemParserTest {
     }
 
     @Test
-    @Disabled("This breaks on 105, as the stacks value changed")
     void tomeOfTP() {
         final byte[] bytes = {16, 0, -128, 0, 5, 0, -60, -88, 20, 62, 71, 61, -36, 18, 2, -112, -63, 127};
         final Item tomeOfTP = cut.parseItem(new BitReader(bytes));
@@ -391,7 +390,6 @@ class ItemParserTest {
     }
 
     @Test
-    @Disabled("This breaks on 105, as the stacks value changed")
     void tomeOfIdentify() {
         byte[] bytes = {16, 0, -128, 0, 5, 4, -28, -89, 82, 120, 62, -39, -70, 52, 8, -63, 1, -1, 1};
         final Item tomeOfID = cut.parseItem(new BitReader(bytes));
