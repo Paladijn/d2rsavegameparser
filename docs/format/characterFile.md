@@ -61,26 +61,26 @@ As soon as the game triggers the first save (5 minutes went by, death, id an ite
 
 ## Character statistics
 
-| Byte position | Size    | Contents                                                       |
-|---------------|---------|----------------------------------------------------------------|
-| 833           | 2 chars | The string identifier `gf`, this used to be 765 prior to RotW. |
-| 835           | short   | unknown                                                        |
+| Byte position | Size    | Contents                                                               |
+|---------------|---------|------------------------------------------------------------------------|
+| 833           | 2 chars | The string identifier `gf` (67 66), this used to be 765 prior to RotW. |
+| 835           | short   | unknown                                                                |
 ...
 
 ## Character Skills
 
 | Byte position | Size     | Contents                                                                      |
 |---------------|----------|-------------------------------------------------------------------------------|
-| Varies        | 2 chars  | The string identifier `if`                                                    |
+| Varies        | 2 chars  | The string identifier `if` (69 66)                                            |
 | -             | 30 bytes | Each byte corresponds to one of the character skills listed [here](skills.md) |
 
 ## Items
 
 | Byte position | Size    | Contents                                                                                                    |
 |---------------|---------|-------------------------------------------------------------------------------------------------------------|
-| Varies        | 2 chars | The string identifier `JM`                                                                                  |
+| Varies        | 2 chars | The string identifier `JM` (6A 6D)                                                                          |
 | -             | short   | the number of items on the character                                                                        |
-| -             | varies  | the item data                                                                                               |
+| -             | varies  | the item data as described [here](items.md)                                                                 |
 | -             | 2 chars | The string identifier `JM` for items on the corpse                                                          |
 | -             | short   | the number of items on the corpse, in case this is 1 12 bytes will follow, after which the items are stored |
 
@@ -91,21 +91,22 @@ As soon as the game triggers the first save (5 minutes went by, death, id an ite
 | Varies        | jf      | If this is an expansion character the mercs items will follow |
 | -             | 2 chars | The string identifier `JM`                                    |
 | -             | short   | the number of items on the mercenary                          |
+| -             | varies  | the item data as described [here](items.md)                   |
 
 ## Iron Golem
 | Byte position | Size    | Contents                                                              |
 |---------------|---------|-----------------------------------------------------------------------|
-| Varies        | 2 chars | The string identifier `kf`                                            |
+| Varies        | 2 chars | The string identifier `kf` (6B 66)                                    |
 | -             | byte    | 1 when an iron golem is active                                        |
 | -             | varies  | the item data for the iron golem                                      |
 | -             | 2 bytes | In case of the Warlock there's also two bytes here, possibly consume? |
 
 ## Warlock minion
-| Byte position | Size    | Contents                   |
-|---------------|---------|----------------------------|
-| Varies        | 2 chars | The string identifier `lf` |
-| -             | byte    | unknown                    |
-| -             | byte    | unknown                    |
+| Byte position | Size    | Contents                           |
+|---------------|---------|------------------------------------|
+| Varies        | 2 chars | The string identifier `lf` (6C 66) |
+| -             | byte    | unknown                            |
+| -             | byte    | unknown                            |
 
 ## Sub-tables
 
