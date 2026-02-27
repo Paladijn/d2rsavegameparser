@@ -103,4 +103,12 @@ class SharedStashParserTest {
         assertThat(result).hasSize(6);
     }
 
+    @Test
+    void newGamePlusFromSliv() throws IOException {
+        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("3.1.91735/ModernSharedStashSoftCoreV2-NGplus.d2i").readAllBytes());
+
+        final List<SharedStashTab> result = cut.parse(buffer);
+
+        assertThat(result).hasSize(6);
+    }
 }

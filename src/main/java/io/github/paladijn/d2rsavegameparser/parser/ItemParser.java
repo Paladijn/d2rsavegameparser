@@ -181,10 +181,7 @@ final class ItemParser {
             parseExtendedPart1(itemBuilder, itemScaffolding, br);
         }
 
-        if ("ques".equals(itemScaffolding.getType())
-                // it looks like this is only for the difficulty-specific quest items, so we may need to make a filtered list for this.
-                && !"box".equals(itemScaffolding.getCode())
-                && !"toa".equals(itemScaffolding.getCode())) { // all quest items, except the Cube and Token of Absolution. Perhaps also check for simple item (aren't all quest items simple?)
+        if (itemScaffolding.hasQuestDifficulty()) {
             byte questDifficulty = br.readByte(3);
             log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
         } else if(br.readShort(1) == 1) { // has GUID
@@ -630,13 +627,13 @@ final class ItemParser {
         return switch (itemType) {
             case ARMOR -> new ItemScaffolding(code, armorStats.getName(), armorStats.getType(), armorStats.getType2(), armorStats.getReqStr(),
                     armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(),
-                    armorStats.getInvHeight(), 0, hasChronicleData);
+                    armorStats.getInvHeight(), 0, hasChronicleData, armorStats.isQuestDiffCheck());
             case WEAPON -> new ItemScaffolding(code, weaponStats.getName(), weaponStats.getType(), weaponStats.getType2(), weaponStats.getReqStr(),
                     weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(),
-                    weaponStats.getInvHeight(), weaponStats.getMaxStacks(), hasChronicleData);
+                    weaponStats.getInvHeight(), weaponStats.getMaxStacks(), hasChronicleData, weaponStats.isQuestDiffCheck());
             case MISC -> new ItemScaffolding(code, miscStats.getName(), miscStats.getType(), miscStats.getType2(), miscStats.getReqStr(),
                     miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(),
-                    miscStats.getInvHeight(), miscStats.getMaxStacks(), hasChronicleData);
+                    miscStats.getInvHeight(), miscStats.getMaxStacks(), hasChronicleData, miscStats.isQuestDiffCheck());
         };
     }
 

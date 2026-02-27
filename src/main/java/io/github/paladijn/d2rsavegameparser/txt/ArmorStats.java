@@ -34,6 +34,7 @@ public final class ArmorStats {
     private final int reqLvl;
     private final int invWidth;
     private final int invHeight;
+    private final boolean questDiffCheck;
 
     /**
      * Constructor which parses a tab-separated line from armor.txt
@@ -58,6 +59,8 @@ public final class ArmorStats {
         }
 
         reqLvl = Integer.parseInt(blocks[16]);
+
+        questDiffCheck = "1".equals(blocks[64]); // this is currently always false, but in case we get an expansion with armour quest items it'll work out of the box.
     }
 
     /**
@@ -139,5 +142,9 @@ public final class ArmorStats {
      */
     public int getInvHeight() {
         return invHeight;
+    }
+
+    public boolean isQuestDiffCheck() {
+        return questDiffCheck;
     }
 }

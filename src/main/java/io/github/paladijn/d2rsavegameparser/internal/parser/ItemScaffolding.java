@@ -34,6 +34,7 @@ public final class ItemScaffolding {
     private final boolean isPersonalized;
     private final boolean isRuneword;
     private final boolean chronicleDataAvailable;
+    private final boolean hasQuestDifficulty;
     private final boolean isSocketed;
     private final boolean isEthereal;
 
@@ -51,7 +52,7 @@ public final class ItemScaffolding {
 
     public ItemScaffolding(String code, String itemName, String type, String type2, int reqStr, int reqDex, int reqLvl,
                            boolean isPersonalized, boolean isRuneword, boolean isSocketed, boolean isEthereal,
-                           ItemType itemType, int invWidth, int invHeight, int maxStacks, boolean hasChronicleData) {
+                           ItemType itemType, int invWidth, int invHeight, int maxStacks, boolean hasChronicleData, boolean hasQuestDifficulty) {
         this.code = code;
         this.itemName = itemName;
         this.type = type;
@@ -68,6 +69,7 @@ public final class ItemScaffolding {
         this.invHeight = invHeight;
         this.maxStacks = maxStacks;
         this.chronicleDataAvailable = hasChronicleData;
+        this.hasQuestDifficulty = hasQuestDifficulty;
     }
 
     public String getCode() {
@@ -172,5 +174,9 @@ public final class ItemScaffolding {
 
     public boolean hasChronicleData() {
         return chronicleDataAvailable;
+    }
+
+    public boolean hasQuestDifficulty() {
+        return hasQuestDifficulty;
     }
 }

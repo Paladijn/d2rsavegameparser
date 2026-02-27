@@ -51,6 +51,8 @@ public final class WeaponStats {
 
     private int maxStacks;
 
+    private final boolean questDiffCheck;
+
     /**
      * Constructor which parses a tab-separated line from weapons.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -81,6 +83,7 @@ public final class WeaponStats {
             maxStacks = Integer.parseInt(blocks[49]);
         }
         isThrown = "primarily thrown".equals(blocks[58]);
+        questDiffCheck = blocks[70].equals("1");
     }
 
     /**
@@ -197,5 +200,9 @@ public final class WeaponStats {
      */
     public int getInvHeight() {
         return invHeight;
+    }
+
+    public boolean isQuestDiffCheck() {
+        return questDiffCheck;
     }
 }
