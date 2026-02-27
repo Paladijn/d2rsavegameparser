@@ -222,6 +222,9 @@ public final class BitReader {
      */
     public void printBytes(Item item, int startIndex) {
         int endIndex = positionInBits / 8;
+        if (endIndex >= data.length) {
+            endIndex = data.length -1;
+        }
         log.debug("printing bytes {} -> {} of {}", startIndex, endIndex, item);
         StringBuilder sbBytes = new StringBuilder();
         sbBytes.append(item)
@@ -248,6 +251,9 @@ public final class BitReader {
      */
     public void printHexBytes(Item item, int startIndex) {
         int endIndex = positionInBits / 8;
+        if (endIndex >= data.length) {
+            endIndex = data.length -1;
+        }
         log.debug("printing hex bytes {} -> {} of {}", startIndex, endIndex, item.itemName());
         StringBuilder sbBytes = new StringBuilder();
         sbBytes.append(item.itemName())

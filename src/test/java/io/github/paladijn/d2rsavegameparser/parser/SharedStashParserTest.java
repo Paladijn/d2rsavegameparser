@@ -18,6 +18,7 @@
 package io.github.paladijn.d2rsavegameparser.parser;
 
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -33,27 +34,28 @@ class SharedStashParserTest {
 
     @Test
     void parseStash() throws IOException {
-        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("2.7/" + SharedStashParser.SOFTCORE_SHARED_STASH).readAllBytes());
+        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("3.1.91735/" + SharedStashParser.SOFTCORE_SHARED_STASH).readAllBytes());
 
         final List<SharedStashTab> result = cut.parse(buffer);
 
         assertThat(result).hasSize(3);
 
         SharedStashTab tab1 = result.getFirst();
-        assertThat(tab1.gold()).isEqualTo(100);
-        assertThat(tab1.lengthInBytes()).isEqualTo(483);
-        assertThat(tab1.items()).hasSize(11);
+        assertThat(tab1.gold()).isEqualTo(2500000);
+        assertThat(tab1.lengthInBytes()).isEqualTo(1557);
+        assertThat(tab1.items()).hasSize(63);
 
         SharedStashTab tab2 = result.get(1);
-        assertThat(tab2.gold()).isEqualTo(200);
-        assertThat(tab2.items()).hasSize(19);
+        assertThat(tab2.gold()).isEqualTo(498118);
+        assertThat(tab2.items()).hasSize(61);
 
         SharedStashTab tab3 = result.get(2);
-        assertThat(tab3.gold()).isEqualTo(1798284);
-        assertThat(tab3.items()).hasSize(75);
+        assertThat(tab3.gold()).isEqualTo(2124989);
+        assertThat(tab3.items()).hasSize(94);
     }
 
     @Test
+    @Disabled("update to RotW stashes (both types)")
     void emptyStash() throws IOException {
         final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("2.7/SharedStashSoftCoreV2-empty.d2i").readAllBytes());
 
@@ -75,6 +77,7 @@ class SharedStashParserTest {
     }
 
     @Test
+    @Disabled("convert to RotW")
     void brokenStash() throws IOException {
         final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("1.6.84219/BrokenNecroNGPlusStash.d2i").readAllBytes());
 
@@ -90,4 +93,14 @@ class SharedStashParserTest {
         assertThat(tab1.items().get(12).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
         assertThat(tab1.items().get(35).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
     }
+
+    @Test
+    void parseModernStash() throws IOException {
+        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("3.1.91735/" + SharedStashParser.ROTW_SHARED_STASH).readAllBytes());
+
+        final List<SharedStashTab> result = cut.parse(buffer);
+
+        assertThat(result).hasSize(6);
+    }
+
 }

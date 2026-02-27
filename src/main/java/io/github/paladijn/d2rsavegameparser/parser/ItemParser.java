@@ -181,7 +181,10 @@ final class ItemParser {
             parseExtendedPart1(itemBuilder, itemScaffolding, br);
         }
 
-        if ("ques".equals(itemScaffolding.getType()) && !"box".equals(itemScaffolding.getCode())) { // all quest items, except the Cube. Perhaps also check for simple item (aren't all quest items simple?)
+        if ("ques".equals(itemScaffolding.getType())
+                // it looks like this is only for the difficulty-specific quest items, so we may need to make a filtered list for this.
+                && !"box".equals(itemScaffolding.getCode())
+                && !"toa".equals(itemScaffolding.getCode())) { // all quest items, except the Cube and Token of Absolution. Perhaps also check for simple item (aren't all quest items simple?)
             byte questDifficulty = br.readByte(3);
             log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
         } else if(br.readShort(1) == 1) { // has GUID
@@ -204,8 +207,17 @@ final class ItemParser {
                 log.debug("skipping another bit due to ending on a boundary");
                 br.skip(1);
             }
-            if (br.peekNextByte() == 0 && br.getCurrentByte() != 0
-                    && !"mss".equals(itemScaffolding.getCode())) { // Mephisto's soul stone does not seem to have the extra byte.
+            final byte peekedNextByte = br.peekNextByte();
+            if (Item.isRotWCollectible(itemScaffolding.getType(), itemScaffolding.getType2(), code)) {
+                // this is an item that can be hosted in the materials stash which contains extra bits for the amount (up to 99)
+                log.debug("Material stashtab type, next byte value: {}", peekedNextByte);
+                if (peekedNextByte != 0 && peekedNextByte != 16) {
+                    byte amount = br.readByte(8);
+                    log.debug("amount? {}", amount);
+                }
+            }
+            if (peekedNextByte == 0 && br.getCurrentByte() != 0
+                    && !"mss".equals(code)) { // Mephisto's soul stone does not seem to have the extra byte.
                 log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
                 br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
             }
@@ -239,9 +251,10 @@ final class ItemParser {
 
     private void checkForChronicleData(BitReader br, ItemScaffolding itemScaffolding) {
         // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
-        // TODO 20260223 perhaps also for Runewords?
-        if (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality())) {
-            log.debug("Checking for Chronicle data (bit 29-> {})", itemScaffolding.hasChronicleData());
+        // TODO 20260223 Does not seem to appear on Runewords?
+        log.debug("Checking for Chronicle data (bit 29-> {})", itemScaffolding.hasChronicleData());
+        if (itemScaffolding.hasChronicleData() &&
+                (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality()))) {
             // if the next byte is not 00 or 10 (16) there is chronicle data available
             byte nextByte = br.peekNextByte();
             if (nextByte != 0 && nextByte != 16) {
