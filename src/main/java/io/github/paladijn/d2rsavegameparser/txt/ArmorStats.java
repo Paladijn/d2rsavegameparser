@@ -60,7 +60,7 @@ public final class ArmorStats {
 
         reqLvl = Integer.parseInt(blocks[16]);
 
-        questDiffCheck = "1".equals(blocks[64]); // this is currently always false, but in case we get an expansion with armour quest items it'll work out of the box.
+        questDiffCheck = false; // "1".equals(blocks[64]); // this is currently always false, but in case we get an expansion with armour quest items it'll work out of the box.
     }
 
     /**

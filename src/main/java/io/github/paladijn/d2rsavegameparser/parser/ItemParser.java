@@ -389,7 +389,13 @@ final class ItemParser {
             }
         }
 
-        itemBuilder.addProperties(readProperties(br, Item.isJewel(itemScaffolding.getCode()) ? 1 : 0));
+        final List<ItemProperty> itemProperties = readProperties(br, Item.isJewel(itemScaffolding.getCode()) ? 1 : 0);
+        itemBuilder.addProperties(itemProperties);
+
+        itemProperties.stream()
+                .filter(ip -> "questitemdifficulty".equals(ip.name()))
+                .findAny()
+                .ifPresent(ip -> itemBuilder.questDifficulty(Difficulty.values()[ip.values()[0]]));
 
         if (itemScaffolding.getItemQuality() == SET) {
             parseSetProperties(itemBuilder, br, lSet);

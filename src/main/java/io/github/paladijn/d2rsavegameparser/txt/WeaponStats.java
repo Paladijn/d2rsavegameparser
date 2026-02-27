@@ -83,7 +83,7 @@ public final class WeaponStats {
             maxStacks = Integer.parseInt(blocks[49]);
         }
         isThrown = "primarily thrown".equals(blocks[58]);
-        questDiffCheck = blocks[70].equals("1");
+        questDiffCheck = false; // This is at index 70, however the difficulty is stored in a property instead.
     }
 
     /**

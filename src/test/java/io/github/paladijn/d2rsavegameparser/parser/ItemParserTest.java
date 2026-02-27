@@ -19,6 +19,7 @@ package io.github.paladijn.d2rsavegameparser.parser;
 
 import io.github.paladijn.d2rsavegameparser.TestCommons;
 import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
+import io.github.paladijn.d2rsavegameparser.model.Difficulty;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemContainer;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
@@ -209,6 +210,33 @@ class ItemParserTest {
         assertThat(result.type()).isEqualTo("ques");
         assertThat(result.itemName()).isEqualTo("Mephisto's Soulstone");
         assertThat(br.getPositionInBits()).isEqualTo(9 * 8);
+    }
+
+    @Test
+    @Disabled("crashed parsing properties")
+    void wirtsLegHell() {
+        final byte[] bytes = {16, 8, -128, 0, 5, 16, -28, 14, 43, 8, -30, 73, 15, 51, 5, 66, 55, 12, 89, -1, 3, 16, 8, -128 };
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(result.properties()).hasSize(2);
+        assertThat(result.properties().getLast())
+                .extracting(ItemProperty::name, ItemProperty::values)
+                .containsExactly("questitemdifficulty", new int[]{2});
+        assertThat(result.questDifficulty()).isEqualTo(Difficulty.HELL);
+    }
+
+    @Test
+    void horadricMalusHell() {
+        final byte[] bytes = {16, 0, -128, 0, 5, 8, 4, -113, 54, -8, -22, -57, 16, 26, -113, -1, 119, -61, 1, 89, -1, 3, 16, 0, -128};
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(result.properties()).hasSize(2);
+        assertThat(result.properties().getLast())
+                .extracting(ItemProperty::name, ItemProperty::values)
+                .containsExactly("questitemdifficulty", new int[]{2});
+        assertThat(result.questDifficulty()).isEqualTo(Difficulty.HELL);
     }
 
     void cairnStones() {
