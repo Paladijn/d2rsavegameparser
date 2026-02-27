@@ -32,5 +32,7 @@ public enum Difficulty {
     /**
      * Hell difficulty
      */
-    HELL
+    HELL,
+
+    NONE
 }

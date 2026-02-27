@@ -183,6 +183,7 @@ final class ItemParser {
 
         if (itemScaffolding.hasQuestDifficulty()) {
             byte questDifficulty = br.readByte(3);
+            itemBuilder.questDifficulty(Difficulty.values()[questDifficulty]);
             log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
         } else if(br.readShort(1) == 1) { // has GUID
             parseGUID(br, itemScaffolding, miscStats == null, itemBuilder);

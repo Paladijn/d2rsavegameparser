@@ -507,7 +507,7 @@ public final class CharacterParser {
                     item.itemName(), item.setName(), item.personalizedName(), item.baseDefense(), item.maxDurability(), item.durability(),
                     item.stacks(), item.maxStacks(), item.reqStr(), item.reqDex(), item.reqLvl(), item.restrictedToClass(), keepThese,
                     item.socketedItems(), item.location(), item.quality(), item.position(), item.container(), item.treasureClass(),
-                    item.tomeId(), item.invWidth(), item.invHeight()));
+                    item.tomeId(), item.invWidth(), item.invHeight(), item.questDifficulty()));
         }
         return adjustedItems;
     }

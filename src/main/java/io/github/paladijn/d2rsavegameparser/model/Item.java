@@ -35,28 +35,13 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                    short rareNameId2, String itemName, String setName, String personalizedName, int baseDefense, short maxDurability,
                    short durability, short stacks, int maxStacks, int reqStr, int reqDex, int reqLvl, CharacterType restrictedToClass,
                    List<ItemProperty> properties, List<Item> socketedItems, ItemLocation location, ItemQuality quality, ItemPosition position,
-                   ItemContainer container, int treasureClass, short tomeId, int invWidth, int invHeight) {
+                   ItemContainer container, int treasureClass, short tomeId, int invWidth, int invHeight, Difficulty questDifficulty) {
 
     public Item {
-        try {
-            prefixIds.addAll(List.of());
-            throw new IllegalArgumentException("prefixIds should be an immutable list");
-        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
-
-        try {
-            suffixIds.addAll(List.of());
-            throw new IllegalArgumentException("suffixIds should be an immutable list");
-        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
-
-        try {
-            properties.addAll(List.of());
-            throw new IllegalArgumentException("properties should be an immutable list");
-        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
-
-        try {
-            socketedItems.addAll(List.of());
-            throw new IllegalArgumentException("socketedItems should be an immutable list");
-        } catch (UnsupportedOperationException _) { /* expected behaviour */ }
+        prefixIds = List.copyOf(prefixIds);
+        suffixIds = List.copyOf(suffixIds);
+        properties = List.copyOf(properties);
+        socketedItems = List.copyOf(socketedItems);
     }
 
     /**
@@ -221,6 +206,8 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
         private int treasureClass;
 
         private short tomeId;
+
+        private Difficulty questDifficulty = Difficulty.NONE;
 
         /**
          * Sets the identification status of the item.
@@ -785,6 +772,11 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
             return this;
         }
 
+        public ItemBuilder questDifficulty(Difficulty questDifficulty) {
+            this.questDifficulty = questDifficulty;
+            return this;
+        }
+
         /**
          * Build the {@link Item} instance with the configured values. This will also sort the properties in the correct display order.
          *
@@ -799,7 +791,8 @@ public record Item(boolean isIdentified, boolean isSocketed, boolean isEar,
                     guid, level, pictureId, List.copyOf(prefixIds), List.copyOf(suffixIds),
                     setItemId, uniqueId, rareNameId1, rareNameId2, itemName, setName, personalizedName, baseDefense, maxDurability,
                     durability, stacks, maxStacks, reqStr, reqDex, reqLvl, restrictedToClass, List.copyOf(properties),
-                    List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId, invWidth, invHeight);
+                    List.copyOf(socketedItems), location, quality, position, container, treasureClass, tomeId, invWidth, invHeight,
+                    questDifficulty);
         }
     }
 }
