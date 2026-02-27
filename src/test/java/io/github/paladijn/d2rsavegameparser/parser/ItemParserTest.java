@@ -405,6 +405,30 @@ class ItemParserTest {
         assertThat(tomeOfID.stacks()).isEqualTo((short)3);
     }
 
+    @Test
+    void arrows() {
+        final byte[] bytes = {16, 0, -128, 0, 5, 4, -16, 109, -18, -126, 79, -18, -62, 114, 81, 80, -19, 127};
+        final Item arrows = cut.parseItem(new BitReader(bytes));
+
+        assertThat(arrows.stacks()).isEqualTo((short)362);
+    }
+
+    @Test
+    void bolts() {
+        final byte[] bytes = {16, 0, -128, 0, 5, 0, 80, 108, -18, 2, -95, -115, -67, 88, 81, -112, -36, 127};
+        final Item bolts = cut.parseItem(new BitReader(bytes));
+
+        assertThat(bolts.stacks()).isEqualTo((short)228);
+    }
+
+    @Test
+    void harpoonStacks() {
+        byte[] bytes = {16, 0, -128, 0, 5, 12, -60, 25, 10, 46, 46, -65, 71, 69, 2, 0, 104, 33, -47, 32, 24, 31, -122, -1, 0};
+        final Item harpoon = cut.parseItem(new BitReader(bytes));
+
+        assertThat(harpoon.stacks()).isEqualTo((short)96);
+    }
+
 
     @Test
     void rotwManaPotOnBoundary() {

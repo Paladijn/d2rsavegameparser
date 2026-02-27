@@ -265,10 +265,10 @@ final class ItemParser {
                 // the fifth can be 0 as the closing byte
                 chronicleBytes[4] = br.readByte(8);
                 log.debug("byte 5 -> {}", chronicleBytes[4]);
-                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16 && br.peekNextByte() != chronicleBytes[4]) {
+                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
                     chronicleBytes[5] = br.readByte(8);
                     log.debug("byte 6 -> {}", chronicleBytes[5]);
-                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 && br.peekNextByte() != chronicleBytes[5]) {
+                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 || br.peekNextByte() == chronicleBytes[5]) {
                         chronicleBytes[6] = br.readByte(8);
                         log.debug("byte 7 -> {}", chronicleBytes[6]);
                     }
@@ -369,7 +369,7 @@ final class ItemParser {
             case ItemType.MISC -> parseMiscStats(itemBuilder, br, miscStats);
         }
 
-        if (miscStats == null || !miscStats.isStackable()) {
+        if (itemScaffolding.getMaxStacks() == 0) {
             // this is new in RotW and a bit ugly: if the item was stackable we read sufficient bytes, otherwise we'll have to skip another bit.
             br.skip(1);
         }
@@ -480,6 +480,7 @@ final class ItemParser {
         }
 
         if (weaponStats.isStackable()) {
+            br.skip(1);
             itemBuilder.stacks(br.readShort(9));
             itemBuilder.maxStacks(itemScaffolding.getMaxStacks());
         }
