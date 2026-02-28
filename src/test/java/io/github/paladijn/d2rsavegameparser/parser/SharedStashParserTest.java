@@ -90,8 +90,8 @@ class SharedStashParserTest {
         assertThat(tab1.lengthInBytes()).isEqualTo(2790);
         assertThat(tab1.items()).hasSize(46);
 
-        assertThat(tab1.items().get(12).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
-        assertThat(tab1.items().get(35).itemName()).contains("DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV");
+        assertThat(tab1.items().get(12).itemName()).contains("INVALID_RARE_PREFIX");
+        assertThat(tab1.items().get(35).itemName()).contains("INVALID_RARE_PREFIX");
     }
 
     @Test
