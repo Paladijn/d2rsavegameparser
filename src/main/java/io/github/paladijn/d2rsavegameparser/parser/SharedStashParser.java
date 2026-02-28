@@ -142,13 +142,14 @@ public final class SharedStashParser {
 
     private ChronicleItem getChronicleItem(final BitReader brItemData, final ItemQuality itemQuality) {
         final short monsterId = brItemData.readShort(16);
-        long timestamp = brItemData.readInt(32);
+        final long timestamp = brItemData.readInt(32);
         log.debug("timestamp {}", timestamp);
         final LocalDateTime found = LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timestamp * 60),
                 ZoneId.systemDefault()
         );
         final int extraID = brItemData.readInt(32);
+
         return new ChronicleItem(extraID, itemQuality, monsterId, found);
     }
 
