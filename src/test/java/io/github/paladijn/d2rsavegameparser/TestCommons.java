@@ -32,4 +32,31 @@ public interface TestCommons {
         }
         return buffer;
     }
+
+    static String getBitDetails(final byte[] bytes) {
+        final StringBuilder results = new StringBuilder();
+
+        results.append("Index | Value | Unsigned | Hex  | Bits\n");
+        results.append("-----------------------------------------\n");
+
+        for (int i = 0; i < bytes.length; i++) {
+            final byte b = bytes[i];
+
+            final int unsignedByte = b & 0xFF;
+            final String decimalValue = String.valueOf(b);
+            final String hexValue = String.format("%02X", unsignedByte);
+            final String binaryValue = String.format("%8s", Integer.toBinaryString(unsignedByte)).replace(" ", "0");
+
+            results.append(String.format("%-5d | %5s | %8s | %3s | %s%n", i, decimalValue, unsignedByte, hexValue, binaryValue));
+        }
+        return results.toString();
+    }
+
+    static String getConcatenatedBits(byte[] bytes) {
+        final StringBuilder results = new StringBuilder();
+        for (final byte b : bytes) {
+            results.append(String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
+        }
+        return results.toString();
+    }
 }

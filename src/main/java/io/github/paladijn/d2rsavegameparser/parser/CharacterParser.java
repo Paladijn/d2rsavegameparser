@@ -61,6 +61,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public final class CharacterParser {
     private static final Logger log = getLogger(CharacterParser.class);
+    public static final int QUEST_START_INDEX = 403;
 
     private final ItemParser itemParser;
 
@@ -97,24 +98,24 @@ public final class CharacterParser {
 
         D2Character.D2CharacterBuilder characterBuilder = new D2Character.D2CharacterBuilder().fileData(fileData);
 
-        if (fileData.version() != 99) {
+        if (fileData.version() != 105) {
             throw new ParseException("Unsupported version: " + fileData.version());
         }
         characterBuilder
-                .parseCharacterStatus(buffer.get(36))
-                .actProgression(buffer.get(37));
+                .parseCharacterStatus(buffer.get(20))
+                .actProgression(buffer.get(21));
 
-        final CharacterType characterType = CharacterType.values()[buffer.get(40)];
+        final CharacterType characterType = CharacterType.values()[buffer.get(24)];
 
         characterBuilder.characterType(characterType)
-                .level(buffer.get(43))
+                .level(buffer.get(27))
                 // not bothering to parse the hotkeys and selected left/right click assigned skills. We may in the future.
                 .locations(List.of(
-                        parseLocation(Difficulty.NORMAL, buffer.get(168)),
-                        parseLocation(Difficulty.NIGHTMARE, buffer.get(169)),
-                        parseLocation(Difficulty.HELL, buffer.get(170))
+                        parseLocation(Difficulty.NORMAL, buffer.get(152)),
+                        parseLocation(Difficulty.NIGHTMARE, buffer.get(153)),
+                        parseLocation(Difficulty.HELL, buffer.get(154))
                 ))
-                .mapId(buffer.getLong(171));
+                .mapId(buffer.getLong(155));
 
         Mercenary.MercenaryBuilder mercenaryBuilder = new Mercenary.MercenaryBuilder()
                 .alive(buffer.getShort(177))
@@ -123,11 +124,13 @@ public final class CharacterParser {
                 .typeId(buffer.getShort(185))
                 .experience(buffer.getInt(187));
 
+        characterBuilder.riseOfTheWarlock(buffer.get(248));
+
         byte[] nameBytes = new byte[16];
-        buffer.get(267, nameBytes, 0, 16);
+        buffer.get(299, nameBytes, 0, 16);
         characterBuilder.name(new String(nameBytes).trim());
 
-        if (buffer.limit() == 335) {
+        if (buffer.limit() == 403) {
             log.info("This is a newly created character, so we'll only supply the starter attributes until the game triggers another save.");
             characterBuilder.attributes(StarterAttributes.getStarterAttributesByClass(characterType));
             return characterBuilder.build();
@@ -138,7 +141,7 @@ public final class CharacterParser {
                 .waypoints(parseWaypoints(buffer));
 
         byte[] npcHeaderBytes = new byte[2];
-        buffer.get(714, npcHeaderBytes, 0, 2);
+        buffer.get(782, npcHeaderBytes, 0, 2);
         String npcHeader = new String(npcHeaderBytes); // "w4"
         if (!"w4".equals(npcHeader)) {
             throw new ParseException("Could not find NPC header");
@@ -146,7 +149,7 @@ public final class CharacterParser {
 
         // stats
         byte[] statHeaderBytes = new byte[2];
-        buffer.get(765, statHeaderBytes, 0, 2);
+        buffer.get(833, statHeaderBytes, 0, 2);
         String statHeader = new String(statHeaderBytes); // "gf" until "if"
         if (!"gf".equals(statHeader)) {
             throw new ParseException("Could not find stat header");
@@ -155,7 +158,7 @@ public final class CharacterParser {
         // stat length is at least xx bytes and at most yy bytes, followed by if header for the skills. We're assuming max 60 which so far seems to work (it should be < 36, but we've encountered one crash on >= 40 so far)
         byte[] skillHeaderBytes = new byte[2];
         int skillIndex = -1;
-        for(int i = 800; i < 860; i++) {
+        for(int i = 870; i < 933; i++) {
             buffer.get(i, skillHeaderBytes, 0, 2);
             if("if".equals(new String(skillHeaderBytes))) {
                 skillIndex = i;
@@ -166,9 +169,9 @@ public final class CharacterParser {
             throw new ParseException("Could not find skill header 'if' below index 860");
         }
 
-        final int statLength = skillIndex - 767;
+        final int statLength = skillIndex - 835;
         byte[] statBytes = new byte[statLength];
-        buffer.get(767, statBytes, 0, statLength);
+        buffer.get(835, statBytes, 0, statLength);
         characterBuilder.attributes(attributeParser.parse(statBytes));
 
         byte[] skillBytes = new byte[30];
@@ -178,8 +181,12 @@ public final class CharacterParser {
         // (available) skills are 30 bytes after the skillindex plus the 2 header bytes
         int itemIndex = skillIndex + 32;
         log.debug("parsing character items");
+        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here.
+        // Skip 16 bytes -> JM items on body. So we'll look for the next JM, if it's nearby with count 0 => we're alive.
+        int deadBodyIndex = findNextJM(buffer, itemIndex + 2);
+        log.debug("dead body at index {}, items start at {}", deadBodyIndex, itemIndex);
+
         final List<Item> items = itemParser.parseItems(buffer, itemIndex, buffer.limit());
-        final int minimalItemBytes = 9 * items.size(); // items have a minimum length of 9 bytes.
 
         // adjusting sets
         final HashMap<String, Integer> setCounts = getEquippedSetCounts(getEquippedSetItems(items));
@@ -192,14 +199,14 @@ public final class CharacterParser {
         // adjusting passive skill benefits
         characterBuilder.skills(adjustSkillsForPassives(skills, getEquippedItems(adjustedItems), activeSetBenefits));
 
-        if(characterBuilder.isExpansion()) {
+        if(characterBuilder.isLordOfDestruction() || characterBuilder.isRiseOfTheWarlock()) {
             // the Classic characters don't have merc items, and don't store the iron golem item in the savegame file (it even disappears when switching acts!)
 
             // for iron lem and merc we'll search backwards as that is faster.
             // iron golem starts with kf and in case the following byte is 1 the item will follow without a JM prefix
             byte[] ironLemHeaderBytes = new byte[2];
             int ironIndex = -1;
-            for (int i = buffer.limit() - 3; i > itemIndex + minimalItemBytes; i--) {
+            for (int i = buffer.limit() - 3; i > deadBodyIndex; i--) {
                 buffer.get(i, ironLemHeaderBytes, 0, 2);
                 if("kf".equals(new String(ironLemHeaderBytes))) {
                     ironIndex = i;
@@ -213,7 +220,7 @@ public final class CharacterParser {
             // merc items are at "jf"
             byte[] mercItemHeaderBytes = new byte[2];
             int mercItemIndex = -1;
-            for (int i = ironIndex; i > itemIndex + minimalItemBytes; i--) {
+            for (int i = ironIndex; i > deadBodyIndex; i--) {
                 buffer.get(i, mercItemHeaderBytes, 0, 2);
                 if("jf".equals(new String(mercItemHeaderBytes))) {
                     mercItemIndex = i + 2;
@@ -242,26 +249,27 @@ public final class CharacterParser {
             }
         }
 
-        // There should be a dead body indicator here JM + short value = 0, you're alive. short value = 1, then we have the items of your dead body here.
-        // Skip 16 bytes -> JM items on body. So we'll look for the next JM, if it's nearby with count 0 => we're alive.
-        byte[] deadBodyBytes = new byte[2];
-
-        final int deadBodySearchStart = itemIndex + minimalItemBytes;
-        for (int i = deadBodySearchStart; i < buffer.limit(); i++) {
-            buffer.get(i, deadBodyBytes, 0, 2);
-            if ("JM".equals(new String(deadBodyBytes))) {
-                final short deadIndicator = buffer.getShort(i + 2);
-                if (deadIndicator == 1) {
-                    log.debug("dead body items found at index {}", i);
-                    characterBuilder.deadBodyItems(itemParser.parseItems(buffer, i + 16, buffer.limit()));
-                } else {
-                    log.debug("No dead body items found");
-                }
-                break;
-            }
+        final short deadIndicator = buffer.getShort(deadBodyIndex + 2);
+        if (deadIndicator == 1) {
+            log.debug("dead body items found at index {}", deadBodyIndex);
+            characterBuilder.deadBodyItems(itemParser.parseItems(buffer, deadBodyIndex + 16, buffer.limit()));
+        } else {
+            log.debug("No dead body items found");
         }
 
         return characterBuilder.build();
+    }
+
+    private int findNextJM(ByteBuffer buffer, int start) {
+        // skip 16 bytes, look for the next one:
+        byte[] nextJM = new byte[2];
+        for (int i = start; i < buffer.limit(); i++) {
+            buffer.get(i, nextJM, 0, 2);
+            if ("JM".equals(new String(nextJM))) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private static FileData getFileData(ByteBuffer buffer) {
@@ -344,7 +352,7 @@ public final class CharacterParser {
     private List<WaypointStatus> parseWaypoints(ByteBuffer buffer) {
         List<WaypointStatus> result = new ArrayList<>();
         byte[] wsHeaderBytes = new byte[2];
-        buffer.get(633, wsHeaderBytes, 0, 2);
+        buffer.get(701, wsHeaderBytes, 0, 2);
         String wsHeader = new String(wsHeaderBytes); // "WS"
         if (!"WS".equals(wsHeader)) {
             throw new ParseException("Could not find Waypoints header");
@@ -352,7 +360,7 @@ public final class CharacterParser {
         // skip 6 unknown bytes to end up at 641 for normal. We read 24 bytes here per difficulty, even though the last 17 are (currently) not used.
         for (Difficulty difficulty : Difficulty.values()) {
             byte[] waypointBytes = new byte[24];
-            int startIndex = 641 + difficulty.ordinal() * 24;
+            int startIndex = 709 + difficulty.ordinal() * 24;
             buffer.get(startIndex, waypointBytes, 0, 24);
             BitReader brWaypoints = new BitReader(waypointBytes);
             brWaypoints.skip(16); // ignore the first two
@@ -417,7 +425,7 @@ public final class CharacterParser {
     private List<QuestData> parseQuestData(ByteBuffer buffer) {
         List<QuestData> result = new ArrayList<>();
         byte[] questHeaderBytes = new byte[4];
-        buffer.get(335, questHeaderBytes, 0, 4);
+        buffer.get(QUEST_START_INDEX, questHeaderBytes, 0, 4);
         String questHeader = new String(questHeaderBytes);
         if (!"Woo!".equals(questHeader)) {
             throw new ParseException("Could not find quest header");
@@ -427,7 +435,7 @@ public final class CharacterParser {
             // for now, we are only interested in Anya's scroll and Larzuk's socket quest reward still available
             QuestData.QuestDataBuilder questDataBuilder = new QuestData.QuestDataBuilder(difficulty);
 
-            int larzukIndex = 345 + 70 + difficulty.ordinal() * 96;
+            int larzukIndex = QUEST_START_INDEX + 10 + 70 + difficulty.ordinal() * 96;
             short larzuk = buffer.getShort(larzukIndex);
             // 01000100 socket reward available
             // 10000100 socket quest used
@@ -439,7 +447,7 @@ public final class CharacterParser {
                     .socketQuestRewardAvailable(bit1 && bit5)
                     .socketQuestUsed(bit0 && bit5);
 
-            int anyaIndex = 345 + 74 + difficulty.ordinal() * 96;
+            int anyaIndex = QUEST_START_INDEX + 10 + 74 + difficulty.ordinal() * 96;
             short anya = buffer.getShort(anyaIndex);
             questDataBuilder.resistanceScrollRead((anya & (1 << 7)) != 0);
 
@@ -499,7 +507,7 @@ public final class CharacterParser {
                     item.itemName(), item.setName(), item.personalizedName(), item.baseDefense(), item.maxDurability(), item.durability(),
                     item.stacks(), item.maxStacks(), item.reqStr(), item.reqDex(), item.reqLvl(), item.restrictedToClass(), keepThese,
                     item.socketedItems(), item.location(), item.quality(), item.position(), item.container(), item.treasureClass(),
-                    item.tomeId(), item.invWidth(), item.invHeight()));
+                    item.tomeId(), item.invWidth(), item.invHeight(), item.questDifficulty()));
         }
         return adjustedItems;
     }

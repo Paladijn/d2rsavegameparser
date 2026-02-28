@@ -127,6 +127,12 @@ public enum SkillTree {
      */
     MARTIAL(50, CharacterType.ASSASSIN, "SkillCategoryAs1", "StrSklTabItem21"),
 
+    DEMON(51, CharacterType.WARLOCK, "SkillCategoryW1", "StrSklTabItem24"), // don't know the keys yet
+
+    ELDRITCH(52, CharacterType.WARLOCK, "SkillCategoryW2", "StrSklTabItem22"), // don't know the keys yet
+
+    CHAOS(53, CharacterType.WARLOCK, "SkillCategoryW3", "StrSklTabItem23"), // don't know the keys yet
+
     /**
      * Unknown skill tree.
      */

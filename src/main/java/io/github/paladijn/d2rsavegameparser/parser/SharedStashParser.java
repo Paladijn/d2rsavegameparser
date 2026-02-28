@@ -19,10 +19,18 @@ package io.github.paladijn.d2rsavegameparser.parser;
 
 
 import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
+import io.github.paladijn.d2rsavegameparser.model.ChronicleItem;
+import io.github.paladijn.d2rsavegameparser.model.ChronicleStashTab;
+import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +46,11 @@ public final class SharedStashParser {
     /** Softcore shared stash filename */
     public static final String SOFTCORE_SHARED_STASH = "SharedStashSoftCoreV2.d2i";
 
+    public static final String ROTW_SHARED_STASH = "ModernSharedStashSoftCoreV2.d2i";
+
     /** Hardcore shared stash filename */
     public static final String HARDCORE_SHARED_STASH = "SharedStashHardCoreV2.d2i";
+    private static final Logger log = LoggerFactory.getLogger(SharedStashParser.class);
 
     private final ItemParser itemParser;
 
@@ -61,15 +72,90 @@ public final class SharedStashParser {
         buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         final List<SharedStashTab> tabs = new ArrayList<>();
-        final List<Integer> tabIndeces = getStartIndices(buffer);
+        final List<Integer> tabIndices = getStartIndices(buffer);
 
-        tabIndeces.forEach( index -> tabs.add(parseTab(index, buffer)));
+        if (tabIndices.size() == 3) {
+            log.debug("parsing pre-RotW shared stash");
+            tabIndices.forEach( index -> tabs.add(parseTab(index, buffer)));
+        } else {
+            if (tabIndices.size() != 7) {
+                throw new ParseException("SharedStash did not contain seven tabs, but " + tabIndices.size());
+            }
+            for (int i = 0; i < 6; i++) { // skip the last tab as that contains the Chronicle data
+                tabs.add(parseTab(tabIndices.get(i), buffer));
+            }
+        }
 
         return tabs;
     }
 
+    public ChronicleStashTab getChronicleStashTab(final ByteBuffer buffer) {
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        final List<Integer> tabIndices = getStartIndices(buffer);
+        if (tabIndices.size() != 7) {
+            throw new ParseException("SharedStash did not contain seven tabs, but %d, unable to parse chronicle data".formatted(tabIndices.size()));
+        }
+
+        return parseChronicleTab(tabIndices.getLast(), buffer);
+    }
+
+    private ChronicleStashTab parseChronicleTab(final int index, final ByteBuffer buffer) {
+        final SharedStashTab stashWithoutItems = parseHeader(index, buffer);
+        log.debug("Parsing Chronicle tab at index {} length {}", index, stashWithoutItems.lengthInBytes());
+
+        byte[] countBytes = new byte[6];
+        buffer.get(index + 70, countBytes, 0, 6);
+        final BitReader countData = new BitReader(countBytes);
+        final int cntSetItems = countData.readShort(16);
+        final int cntUniques = countData.readShort(16);
+        final int cntRunewords = countData.readShort(16);
+        final int total = cntSetItems + cntUniques + cntRunewords;
+        final List<ChronicleItem> setItems = new ArrayList<>();
+        final List<ChronicleItem> uniques = new ArrayList<>();
+        final List<ChronicleItem> runewords = new ArrayList<>();
+
+        byte[] itemBytes = new byte[total * 10];
+        buffer.get(index + 88, itemBytes, 0, itemBytes.length);
+        final BitReader brItemData = new BitReader(itemBytes);
+
+        for (int i = 0; i < cntSetItems; i++) {
+            ChronicleItem setItem = getChronicleItem(brItemData, ItemQuality.SET);
+            log.debug("set item {} found: {}", i + 1, setItem);
+            setItems.add(setItem);
+        }
+
+        for (int i = 0; i < cntUniques; i++) {
+            ChronicleItem unique = getChronicleItem(brItemData, ItemQuality.UNIQUE);
+            log.debug("unique {} found: {}", i + 1, unique);
+            uniques.add(unique);
+        }
+
+        for (int i = 0; i < cntRunewords; i++) {
+            ChronicleItem runeword = getChronicleItem(brItemData, ItemQuality.NORMAL);
+            log.debug("runeword {} found: {}", i + 1, runeword);
+            runewords.add(runeword);
+        }
+
+        return new ChronicleStashTab(cntSetItems, cntUniques, cntRunewords, setItems, uniques, runewords);
+    }
+
+    private ChronicleItem getChronicleItem(final BitReader brItemData, final ItemQuality itemQuality) {
+        final short monsterId = brItemData.readShort(16);
+        final long timestamp = brItemData.readInt(32);
+        log.debug("timestamp {}", timestamp);
+        final LocalDateTime found = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(timestamp * 60),
+                ZoneId.systemDefault()
+        );
+        final int extraID = brItemData.readInt(32);
+
+        return new ChronicleItem(extraID, itemQuality, monsterId, found);
+    }
+
     private SharedStashTab parseTab(final int index, final ByteBuffer buffer) {
         final SharedStashTab stashWithoutItems = parseHeader(index, buffer);
+        log.debug("Parsing tab at index {} length {}, gold {}", index, stashWithoutItems.lengthInBytes(), stashWithoutItems.gold());
 
         // the items start at byte 64, this feels a bit hacky because we have to re-use the header content to calculate the end index of the items
         return new SharedStashTab.SharedStashTabBuilder()
@@ -87,7 +173,7 @@ public final class SharedStashParser {
         headerData.skip(64); // skip the first 8 bytes
 
         final int version = headerData.readInt();
-        if (version != 99) {
+        if (version != 105) {
             throw new ParseException("Unsupported shared stash version " + version);
         }
 
@@ -110,9 +196,8 @@ public final class SharedStashParser {
                 }
             }
         }
-        if (indices.size() != 3) {
-            throw new ParseException("SharedStash did not contain three tabs, but " + indices.size());
-        }
+        log.debug("start indices: {}", indices);
+
         return indices;
     }
 }

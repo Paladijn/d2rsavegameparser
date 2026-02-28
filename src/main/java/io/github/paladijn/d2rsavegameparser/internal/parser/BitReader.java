@@ -21,6 +21,7 @@ import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.parser.ParseException;
 import org.slf4j.Logger;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -75,7 +76,30 @@ public final class BitReader {
 
     public BitReader(byte[] data) {
         this.data = data;
+        if (log.isDebugEnabled()) {
+            log.debug("itemData [{}]: {}", data.length, Arrays.toString(data));
+        }
         positionInBits = 0;
+    }
+
+    /**
+     * Checking the next byte of an item entry. if the item ends on a single 0 we return that, so an extra byte will be skipped in the parser.
+     * We also assume that before this we checked if we ended on a boundary and +1ed it otherwise.
+     */
+    public byte peekNextByte() {
+        final int peekIndex = (positionInBits / 8) + (bitsToNextBoundary() == 0 ? 0 : 1);
+        if (peekIndex + 1 >= data.length) {
+            log.debug("peek: no more data available");
+            return -1;
+        }
+
+        log.debug("peeking at bit {}[{}] -> index {}[{}]", positionInBits, bitsToNextBoundary(), peekIndex, data[peekIndex]);
+
+        final byte result = data[peekIndex];
+        if (log.isDebugEnabled()) {
+            log.debug("peek result: {}", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
+        }
+        return result;
     }
 
     public void skip(int bits) {
@@ -94,6 +118,10 @@ public final class BitReader {
 
     public char readChar(int bits) {
         return (char) unflip(read(bits), bits);
+    }
+
+    public byte readByte(int bits) {
+        return (byte) unflip(read(bits), bits);
     }
 
     public short readShort(int bits) {
@@ -194,6 +222,9 @@ public final class BitReader {
      */
     public void printBytes(Item item, int startIndex) {
         int endIndex = positionInBits / 8;
+        if (endIndex >= data.length) {
+            endIndex = data.length -1;
+        }
         log.debug("printing bytes {} -> {} of {}", startIndex, endIndex, item);
         StringBuilder sbBytes = new StringBuilder();
         sbBytes.append(item)
@@ -213,7 +244,36 @@ public final class BitReader {
         log.info(String.valueOf(sbBytes));
     }
 
-    public byte getData(int i) {
-        return data[i];
+    /**
+     * helper function to print the current item's bytes in hexadecimal format, so they can be used for debugging and unit tests.
+     * @param item The {@link Item} to print.
+     * @param startIndex The start index of the current item in this {@link BitReader} instance.
+     */
+    public void printHexBytes(Item item, int startIndex) {
+        int endIndex = positionInBits / 8;
+        if (endIndex >= data.length) {
+            endIndex = data.length -1;
+        }
+        log.debug("printing hex bytes {} -> {} of {}", startIndex, endIndex, item.itemName());
+        StringBuilder sbBytes = new StringBuilder();
+        sbBytes.append(item.itemName())
+                .append(" in Hex\n");
+
+        int displayIndex = 0;
+        for (int i = startIndex; i < endIndex; i++) {
+            if (displayIndex % 16 == 0) {
+                sbBytes.append("\n");
+            }
+            displayIndex++;
+            sbBytes.append(String.format("%02X ", data[i]));
+        }
+
+        sbBytes.append("\n");
+        log.info(String.valueOf(sbBytes));
+    }
+
+    public byte getCurrentByte() {
+        int peekIndex = (positionInBits / 8);
+        return data[peekIndex];
     }
 }

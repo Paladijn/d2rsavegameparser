@@ -21,6 +21,7 @@ import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
 import io.github.paladijn.d2rsavegameparser.internal.parser.ItemScaffolding;
 import io.github.paladijn.d2rsavegameparser.internal.parser.ParseHelper;
 import io.github.paladijn.d2rsavegameparser.model.CharacterType;
+import io.github.paladijn.d2rsavegameparser.model.Difficulty;
 import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemContainer;
 import io.github.paladijn.d2rsavegameparser.model.ItemLocation;
@@ -43,6 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.SET;
+import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.UNIQUE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -91,10 +94,14 @@ final class ItemParser {
         int cntItems = buffer.getShort(start + 2);
         log.debug("Total items: {}", cntItems);
 
-        final BitReader itemData = new BitReader(itemBytes);
-        for (int i = 0; i < cntItems; i++) {
-            result.add(parseItem(itemData));
-        }
+        //try {
+            final BitReader itemData = new BitReader(itemBytes);
+            for (int i = 0; i < cntItems; i++) {
+                result.add(parseItem(itemData));
+            }
+//        } catch (ParseException e) {
+//            log.error(e.getMessage());
+//        }
 
         return result;
     }
@@ -108,6 +115,7 @@ final class ItemParser {
      */
     Item parseItem(final BitReader br) {
         int startIndex = br.getPositionInBits() / 8;
+        log.debug("item start index: {}", startIndex);
 
         int flags = br.readFlippedInt(32);
         Item.ItemBuilder itemBuilder = new Item.ItemBuilder()
@@ -124,10 +132,11 @@ final class ItemParser {
                 .simple(isSimple)
                 .ethereal(isEthereal);
 
-        boolean isPersonalized = isBitChecked(flags, 25);
+        final boolean isPersonalized = isBitChecked(flags, 25);
         itemBuilder.personalized(isPersonalized);
-        boolean isRuneword = isBitChecked(flags, 27);
+        final boolean isRuneword = isBitChecked(flags, 27);
         itemBuilder.runeword(isRuneword);
+        final boolean hasChronicleData = isBitChecked(flags, 29);
 
         br.skip(3);
         itemBuilder
@@ -148,9 +157,10 @@ final class ItemParser {
         WeaponStats weaponStats = txtProperties.getWeaponStatsByCode(code);
         MiscStats miscStats = txtProperties.getMiscItemsByCode(code);
 
+        log.debug("code: {}", code);
         ItemType itemType = determineItemType(armorStats, weaponStats, miscStats);
 
-        final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal);
+        final ItemScaffolding itemScaffolding = getBasicItemStats(code, itemType, armorStats, weaponStats, miscStats, isPersonalized, isRuneword, isSocketed, isEthereal, hasChronicleData);
 
         itemBuilder
                 .code(code)
@@ -171,7 +181,11 @@ final class ItemParser {
             parseExtendedPart1(itemBuilder, itemScaffolding, br);
         }
 
-        if(br.readShort(1) == 1) { // has GUID
+        if (itemScaffolding.hasQuestDifficulty()) {
+            byte questDifficulty = br.readByte(3);
+            itemBuilder.questDifficulty(Difficulty.values()[questDifficulty]);
+            log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
+        } else if(br.readShort(1) == 1) { // has GUID
             parseGUID(br, itemScaffolding, miscStats == null, itemBuilder);
         }
 
@@ -184,17 +198,35 @@ final class ItemParser {
         }
 
         log.debug("item {} done, moving to the next", itemScaffolding.getItemName());
+
         // extra skip for special cases
-        if (isSimple
-                && "ques".equals(itemScaffolding.getType())
-                && ("j34".equals(code) || "bkd".equals(code))
-                && br.bitsToNextBoundary() == 0) {
-            log.info("Skipping 8 extra bits on {} for specific quest items such as a Jade Figurine as they end on a boundary and result in parse errors when not skipping a byte.", itemScaffolding.getItemName());
-            br.skip(8);
+        if (isSimple) {
+            if (br.bitsToNextBoundary() == 0) {
+                log.debug("skipping another bit due to ending on a boundary");
+                br.skip(1);
+            }
+            final byte peekedNextByte = br.peekNextByte();
+            if (Item.isRotWCollectible(itemScaffolding.getType(), itemScaffolding.getType2(), code)) {
+                // this is an item that can be hosted in the materials stash which contains extra bits for the amount (up to 99)
+                log.debug("Material stashtab type, next byte value: {}", peekedNextByte);
+                if (peekedNextByte != 0 && peekedNextByte != 16) {
+                    byte amount = br.readByte(8);
+                    log.debug("amount? {}", amount);
+                }
+            }
+            if (peekedNextByte == 0 && br.getCurrentByte() != 0
+                    && !"mss".equals(code)) { // Mephisto's soul stone does not seem to have the extra byte.
+                log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
+                br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
+            }
         }
+
         br.moveToNextByteBoundary();
 
+        checkForChronicleData(br, itemScaffolding);
+
         final Item result = itemBuilder.build();
+
         boolean printBytesDueToError = false;
 
         if (result.prefixIds().stream().anyMatch(id -> id == 2047)) {
@@ -209,10 +241,51 @@ final class ItemParser {
 
         if (printItemBytes || printBytesDueToError) {
             br.printBytes(result, startIndex);
+            br.printHexBytes(result, startIndex);
         }
 
-
         return result;
+    }
+
+    private void checkForChronicleData(BitReader br, ItemScaffolding itemScaffolding) {
+        // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
+        // TODO 20260223 Does not seem to appear on Runewords?
+        log.debug("Checking for Chronicle data (bit 29-> {})", itemScaffolding.hasChronicleData());
+        if (itemScaffolding.hasChronicleData() &&
+                (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality()))) {
+            // if the next byte is not 00 or 10 (16) there is chronicle data available
+            byte nextByte = br.peekNextByte();
+            if (nextByte != 0 && nextByte != 16) {
+                log.debug("found Chronicle data");
+                byte[] chronicleBytes = new byte[7];
+                // read the next four bytes, they are always part of the chronicle
+                chronicleBytes[0] = br.readByte(8);
+                chronicleBytes[1] = br.readByte(8);
+                chronicleBytes[2] = br.readByte(8);
+                chronicleBytes[3] = br.readByte(8);
+                // the fifth can be 0 as the closing byte
+                chronicleBytes[4] = br.readByte(8);
+                log.debug("byte 5 -> {}", chronicleBytes[4]);
+                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
+                    chronicleBytes[5] = br.readByte(8);
+                    log.debug("byte 6 -> {}", chronicleBytes[5]);
+                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 || br.peekNextByte() == chronicleBytes[5]) {
+                        chronicleBytes[6] = br.readByte(8);
+                        log.debug("byte 7 -> {}", chronicleBytes[6]);
+                    }
+                }
+
+                log.info("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
+            }
+        }
+    }
+
+    private String getConcatenatedBits(byte[] bytes) {
+        final StringBuilder results = new StringBuilder();
+        for (final byte b : bytes) {
+            results.append(String.format("%8s_", Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
+        }
+        return results.toString();
     }
 
     private void parseEar(BitReader br) {
@@ -290,10 +363,16 @@ final class ItemParser {
     private void parseExtendedPart2(Item.ItemBuilder itemBuilder, ItemScaffolding itemScaffolding, BitReader br) {
         log.debug("parseExtendedPart2 index: {}", br.getPositionInBits());
 
+        final MiscStats miscStats = txtProperties.getMiscItemsByCode(itemScaffolding.getCode());
         switch (itemScaffolding.getItemType()) {
             case ItemType.ARMOR -> parseArmorStats(itemBuilder, br);
             case ItemType.WEAPON -> parseWeaponStats(itemBuilder, itemScaffolding, br, txtProperties.getWeaponStatsByCode(itemScaffolding.getCode()));
-            case ItemType.MISC -> parseMiscStats(itemBuilder, br, txtProperties.getMiscItemsByCode(itemScaffolding.getCode()));
+            case ItemType.MISC -> parseMiscStats(itemBuilder, br, miscStats);
+        }
+
+        if (itemScaffolding.getMaxStacks() == 0) {
+            // this is new in RotW and a bit ugly: if the item was stackable we read sufficient bytes, otherwise we'll have to skip another bit.
+            br.skip(1);
         }
 
         if (itemScaffolding.isSocketed()) {
@@ -304,20 +383,32 @@ final class ItemParser {
 
         int[] lSet = new int[5];
 
-        if (itemScaffolding.getItemQuality() == ItemQuality.SET) {
+        if (itemScaffolding.getItemQuality() == SET) {
             for (int i = 0; i < 5; i++) {
                 lSet[i] = br.readInt(1);
             }
         }
 
-        itemBuilder.addProperties(readProperties(br, Item.isJewel(itemScaffolding.getCode()) ? 1 : 0));
+        final List<ItemProperty> itemProperties = readProperties(br, Item.isJewel(itemScaffolding.getCode()) ? 1 : 0);
+        itemBuilder.addProperties(itemProperties);
 
-        if (itemScaffolding.getItemQuality() == ItemQuality.SET) {
+        itemProperties.stream()
+                .filter(ip -> "questitemdifficulty".equals(ip.name()))
+                .findAny()
+                .ifPresent(ip -> itemBuilder.questDifficulty(Difficulty.values()[ip.values()[0]]));
+
+        if (itemScaffolding.getItemQuality() == SET) {
             parseSetProperties(itemBuilder, br, lSet);
         }
 
         if (itemScaffolding.isRuneword()) {
             itemBuilder.addProperties(readProperties(br, 0));
+        }
+
+        if(br.readShort(1) == 1) {
+            // this is a new feature in RotW where the material stash amount is stored in a byte value
+            byte itemStashCount = br.readByte(8);
+            log.debug("item {} has a material stash count of {}", itemScaffolding.getItemName(), itemStashCount);
         }
 
         if (itemScaffolding.getCntFilledSockets() > 0) {
@@ -396,6 +487,7 @@ final class ItemParser {
         }
 
         if (weaponStats.isStackable()) {
+            br.skip(1);
             itemBuilder.stacks(br.readShort(9));
             itemBuilder.maxStacks(itemScaffolding.getMaxStacks());
         }
@@ -423,7 +515,10 @@ final class ItemParser {
 
     private void parseMiscStats(Item.ItemBuilder itemBuilder, BitReader br, MiscStats miscStats) {
         if (miscStats.isStackable()) {
-            itemBuilder.stacks(br.readShort(9));
+            br.skip(1); // Looks like this was changed in RotW, shifting the true value 1 bit
+            final short stacks = br.readShort(9);
+            log.debug("Read stacks [{}/{}]", stacks, miscStats.getMaxStacks());
+            itemBuilder.stacks(stacks);
             itemBuilder.maxStacks(miscStats.getMaxStacks());
         }
     }
@@ -493,10 +588,7 @@ final class ItemParser {
     private List<ItemProperty> readProperties(BitReader br, int qflag) {
         List<ItemProperty> properties = new ArrayList<>();
         int rootProp = br.readInt(9);
-        if (rootProp == ParseHelper.PROPERTY_END) {
-            log.debug("skipping properties due to value 511");
-        }
-        while (rootProp != ParseHelper.PROPERTY_END) {
+        while (rootProp != ParseHelper.PROPERTY_END && rootProp < 368) {
             ItemProperty itemProperty = parseItemProperty(br, rootProp, qflag);
             log.debug("rootprop: {}, property: {}", rootProp, itemProperty);
             properties.add(itemProperty);
@@ -539,14 +631,17 @@ final class ItemParser {
     }
 
     private ItemScaffolding getBasicItemStats(String code, ItemType itemType, ArmorStats armorStats, WeaponStats weaponStats, final MiscStats miscStats,
-                                              final boolean isPersonalized, final boolean isRuneword, final boolean isSocketed, boolean isEthereal) {
+                                              final boolean isPersonalized, final boolean isRuneword, final boolean isSocketed, boolean isEthereal, boolean hasChronicleData) {
         return switch (itemType) {
             case ARMOR -> new ItemScaffolding(code, armorStats.getName(), armorStats.getType(), armorStats.getType2(), armorStats.getReqStr(),
-                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(), armorStats.getInvHeight(), 0);
+                    armorStats.getReqDex(), armorStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, armorStats.getInvWidth(),
+                    armorStats.getInvHeight(), 0, hasChronicleData, armorStats.isQuestDiffCheck());
             case WEAPON -> new ItemScaffolding(code, weaponStats.getName(), weaponStats.getType(), weaponStats.getType2(), weaponStats.getReqStr(),
-                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(), weaponStats.getInvHeight(), weaponStats.getMaxStacks());
+                    weaponStats.getReqDex(), weaponStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, weaponStats.getInvWidth(),
+                    weaponStats.getInvHeight(), weaponStats.getMaxStacks(), hasChronicleData, weaponStats.isQuestDiffCheck());
             case MISC -> new ItemScaffolding(code, miscStats.getName(), miscStats.getType(), miscStats.getType2(), miscStats.getReqStr(),
-                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(), miscStats.getInvHeight(), miscStats.getMaxStacks());
+                    miscStats.getReqStr(), miscStats.getReqLvl(), isPersonalized, isRuneword, isSocketed, isEthereal, itemType, miscStats.getInvWidth(),
+                    miscStats.getInvHeight(), miscStats.getMaxStacks(), hasChronicleData, miscStats.isQuestDiffCheck());
         };
     }
 
@@ -568,7 +663,7 @@ final class ItemParser {
         final short rareId1 = br.readShort(8);
         final short rareId2 = br.readShort(8);
 
-        final String name1 = (rareId1 >= 156) ? txtProperties.getRarePrefixById(rareId1 - 156) : "DID_YOU_FORGET_TO_SET_THE_PREFIX_ID_SLIV";
+        final String name1 = (rareId1 >= 156) ? txtProperties.getRarePrefixById(rareId1 - 156) : "INVALID_RARE_PREFIX_" + rareId1;
         final String name2 = txtProperties.getRareSuffixById(rareId2 - 1);
 
         // read the pre- and suffixes in order

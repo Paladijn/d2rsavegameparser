@@ -47,6 +47,8 @@ public final class MiscStats {
 
     private int maxStacks;
 
+    private boolean questDiffCheck;
+
     /**
      * Constructor which parses a tab-separated line from misc.txt
      * @param line a tab-separated line which contains the fields we need for this item representation
@@ -54,11 +56,11 @@ public final class MiscStats {
     public MiscStats(final String line) {
         final String[] blocks = line.split("\t");
         name = blocks[0];
-        type = blocks[31];
-        type2 = blocks[32];
-        code = blocks[14];
-        invWidth = Integer.parseInt(blocks[18]);
-        invHeight = Integer.parseInt(blocks[19]);
+        type = blocks[32];
+        type2 = blocks[33];
+        code = blocks[15];
+        invWidth = Integer.parseInt(blocks[19]);
+        invHeight = Integer.parseInt(blocks[20]);
 
         if (ParseHelper.isNumeric(blocks[6])) {
             reqStr = Integer.parseInt(blocks[6]);
@@ -69,10 +71,11 @@ public final class MiscStats {
         }
 
         reqLvl = Integer.parseInt(blocks[5]);
-        isStackable = blocks[42].equals("1");
-        if (isStackable && ParseHelper.isNumeric(blocks[44])) {
-            maxStacks = Integer.parseInt(blocks[44]);
+        isStackable = blocks[43].equals("1");
+        if (isStackable && ParseHelper.isNumeric(blocks[45])) {
+            maxStacks = Integer.parseInt(blocks[45]);
         }
+        questDiffCheck = blocks[48].equals("1");
     }
 
     /**
@@ -171,5 +174,9 @@ public final class MiscStats {
      */
     public int getMaxStacks() {
         return maxStacks;
+    }
+
+    public boolean isQuestDiffCheck() {
+        return questDiffCheck;
     }
 }

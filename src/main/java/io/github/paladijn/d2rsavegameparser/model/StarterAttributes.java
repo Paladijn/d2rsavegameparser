@@ -41,6 +41,7 @@ public interface StarterAttributes {
             case SORCERESS -> new CharacterAttributes.CharacterAttributesBuilder(10, 25, 10, 35, 40, 30, 74).build();
             case ASSASSIN -> new CharacterAttributes.CharacterAttributesBuilder(20, 20, 20, 25, 50, 25, 95).build();
             case DRUID -> new CharacterAttributes.CharacterAttributesBuilder(15, 20, 25, 20, 55, 20, 84).build();
+            case WARLOCK -> new CharacterAttributes.CharacterAttributesBuilder(15, 20, 25, 20, 55, 20, 86).build();
             case NONE -> throw new ParseException("No character type to build attributes for");
         };
     }

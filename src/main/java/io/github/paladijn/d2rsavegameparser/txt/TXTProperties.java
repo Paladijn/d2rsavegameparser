@@ -308,7 +308,7 @@ public final class TXTProperties {
     private void parseUniqueItems() {
         try (InputStream resource = new FileInputStream("txt/uniqueitems.txt")) {
             new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines().forEach(line -> {
-                if (!line.startsWith("index") && line.length() > 90) { // skip the headers and comments
+                if (!line.startsWith("index") && !line.startsWith("Warlock") && line.length() > 90) { // skip the headers and comments
                     UniqueItem uniqueItem = new UniqueItem(line);
                     if (uniqueItem.isEnabled()) {
                         uniqueItemById.put(uniqueItem.getId(), uniqueItem);
@@ -471,7 +471,7 @@ public final class TXTProperties {
         final String specificProperty = itemStatCostAndProperties.genericPropertiesByCode().get(name);
         String[] blocks = specificProperty.split("\t");
         for (int i = 0; i < 7; i++) {
-            int checkIndex = 3 + (i * 4); // stat1..8 use four fields each and start at index 3
+            int checkIndex = 4 + (i * 4); // stat1..8 use four fields each and start at index 3
             String statName = blocks[checkIndex];
             if (statName.isBlank()) {
                 if ("dmg%".equals(name) && i == 0) { // this is a workaround specifically for phys "dmg%",dmg-max and dmg-min on stat1 as this is not parsed properly from the txt file

@@ -17,6 +17,9 @@
  */
 package io.github.paladijn.d2rsavegameparser.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +30,12 @@ import java.util.List;
  * @author Paladijn
  */
 
-public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean expansion, byte actProgression,
+public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean lordOfDestruction, boolean riseOfTheWarlock, byte actProgression,
                          CharacterType characterType, byte level, List<Location> locations, long mapId, List<QuestData> questDataPerDifficulty,
                          List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
                          List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
 
+    private static final Logger log = LoggerFactory.getLogger(D2Character.class);
 
     /**
      * Builder class for constructing instances of {@link D2Character}.
@@ -46,7 +50,9 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
 
         private boolean died;
 
-        private boolean expansion;
+        private boolean lordOfDestruction;
+
+        private boolean riseOfTheWarlock;
 
         private byte actProgression;
 
@@ -250,6 +256,11 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
             return this;
         }
 
+        public D2CharacterBuilder riseOfTheWarlock(byte value) {
+            this.riseOfTheWarlock = (value == 3);
+            return this;
+        }
+
         /**
          * parse the status bits for this character. This fills the state for hardcore and expansion characters as wel as an indication of the character died.
          *
@@ -259,17 +270,21 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         public D2CharacterBuilder parseCharacterStatus(final byte statusBits) {
             hardcore = (0xff & statusBits & 1 << 2) != 0;
             died = (0xff & statusBits & 1 << 3) != 0;
-            expansion = (0xff & statusBits & 1 << 5) != 0;
+            lordOfDestruction = (0xff & statusBits & 1 << 5) != 0;
             return this;
         }
 
         /**
-         * Indication whether this is an expansion character. Classic characters don't have an iron golem or mercenary items stored in the savegame.
+         * Indication whether this is a Lord of Destruction expansion character. Classic characters don't have an iron golem or mercenary items stored in the savegame.
          *
-         * @return true if this is an expansion character, false if it's classic.
+         * @return true if this is a Lord of Destruction expansion character, false if it's classic or Rise of the Warlock.
          */
-        public boolean isExpansion() {
-            return expansion;
+        public boolean isLordOfDestruction() {
+            return lordOfDestruction;
+        }
+
+        public boolean isRiseOfTheWarlock() {
+            return riseOfTheWarlock;
         }
 
         /**
@@ -278,7 +293,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
          * @return The constructed {@link D2Character} instance.
          */
         public D2Character build() {
-            return new D2Character(fileData, name, hardcore, died, expansion, actProgression, characterType, level,
+            return new D2Character(fileData, name, hardcore, died, lordOfDestruction, riseOfTheWarlock, actProgression, characterType, level,
                     List.copyOf(locations), mapId, List.copyOf(questDataPerDifficulty),
                     List.copyOf(waypoints), mercenary, attributes, List.copyOf(items),
                     List.copyOf(deadBodyItems), golemItem, List.copyOf(skills),

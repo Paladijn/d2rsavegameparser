@@ -34,6 +34,7 @@ public final class ArmorStats {
     private final int reqLvl;
     private final int invWidth;
     private final int invHeight;
+    private final boolean questDiffCheck;
 
     /**
      * Constructor which parses a tab-separated line from armor.txt
@@ -42,22 +43,24 @@ public final class ArmorStats {
     public ArmorStats(final String line) {
         final String[] blocks = line.split("\t");
         name = blocks[0];
-        type = blocks[51];
-        type2 = blocks[52];
-        code = blocks[18];
+        type = blocks[52];
+        type2 = blocks[53];
+        code = blocks[19];
 
-        invWidth = Integer.parseInt(blocks[27]);
-        invHeight = Integer.parseInt(blocks[28]);
-
-        if (ParseHelper.isNumeric(blocks[8])) {
-            reqStr = Integer.parseInt(blocks[8]);
-        }
+        invWidth = Integer.parseInt(blocks[28]);
+        invHeight = Integer.parseInt(blocks[29]);
 
         if (ParseHelper.isNumeric(blocks[9])) {
-            reqDex = Integer.parseInt(blocks[9]);
+            reqStr = Integer.parseInt(blocks[9]);
         }
 
-        reqLvl = Integer.parseInt(blocks[15]);
+        if (ParseHelper.isNumeric(blocks[10])) {
+            reqDex = Integer.parseInt(blocks[10]);
+        }
+
+        reqLvl = Integer.parseInt(blocks[16]);
+
+        questDiffCheck = false; // "1".equals(blocks[64]); // this is currently always false, but in case we get an expansion with armour quest items it'll work out of the box.
     }
 
     /**
@@ -139,5 +142,9 @@ public final class ArmorStats {
      */
     public int getInvHeight() {
         return invHeight;
+    }
+
+    public boolean isQuestDiffCheck() {
+        return questDiffCheck;
     }
 }
