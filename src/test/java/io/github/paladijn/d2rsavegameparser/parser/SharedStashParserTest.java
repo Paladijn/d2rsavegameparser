@@ -17,6 +17,7 @@
  */
 package io.github.paladijn.d2rsavegameparser.parser;
 
+import io.github.paladijn.d2rsavegameparser.model.ChronicleStashTab;
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,21 @@ class SharedStashParserTest {
         final List<SharedStashTab> result = cut.parse(buffer);
 
         assertThat(result).hasSize(6);
+    }
+
+    @Test
+    void parseChronicleData() throws IOException {
+        final ByteBuffer buffer = ByteBuffer.wrap(ClassLoader.getSystemResourceAsStream("3.1.91735/" + SharedStashParser.ROTW_SHARED_STASH).readAllBytes());
+
+        final ChronicleStashTab result = cut.getChronicleStashTab(buffer);
+
+        assertThat(result.runewordsDiscovered()).isEqualTo(5);
+        assertThat(result.setItemsDiscovered()).isEqualTo(20);
+        assertThat(result.uniqueItemsDiscovered()).isEqualTo(10);
+
+        assertThat(result.runewords()).hasSize(result.runewordsDiscovered());
+        assertThat(result.setItems()).hasSize(result.setItemsDiscovered());
+        assertThat(result.uniques()).hasSize(result.uniqueItemsDiscovered());
     }
 
     @Test

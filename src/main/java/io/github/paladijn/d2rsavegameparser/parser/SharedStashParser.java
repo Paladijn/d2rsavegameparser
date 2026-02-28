@@ -19,6 +19,9 @@ package io.github.paladijn.d2rsavegameparser.parser;
 
 
 import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
+import io.github.paladijn.d2rsavegameparser.model.ChronicleItem;
+import io.github.paladijn.d2rsavegameparser.model.ChronicleStashTab;
+import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,36 +84,72 @@ public final class SharedStashParser {
             for (int i = 0; i < 6; i++) { // skip the last tab as that contains the Chronicle data
                 tabs.add(parseTab(tabIndices.get(i), buffer));
             }
-            parseChronicleTab(tabIndices.get(6), buffer);
         }
 
         return tabs;
     }
 
-    private void parseChronicleTab(final int index, final ByteBuffer buffer) {
+    public ChronicleStashTab getChronicleStashTab(final ByteBuffer buffer) {
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        final List<Integer> tabIndices = getStartIndices(buffer);
+        if (tabIndices.size() != 7) {
+            throw new ParseException("SharedStash did not contain seven tabs, but %d, unable to parse chronicle data".formatted(tabIndices.size()));
+        }
+
+        return parseChronicleTab(tabIndices.getLast(), buffer);
+    }
+
+    private ChronicleStashTab parseChronicleTab(final int index, final ByteBuffer buffer) {
         final SharedStashTab stashWithoutItems = parseHeader(index, buffer);
         log.debug("Parsing Chronicle tab at index {} length {}", index, stashWithoutItems.lengthInBytes());
 
-        // data seems to start at 88 bytes in, each time a short, int and long. I assume in the fields before there's an amount of items found available (per unique, set, runeword perhaps?)
-        int start = index + 88;
-        while (start < (index + stashWithoutItems.lengthInBytes())) {
-            byte[] chronicleData = new byte[7];
-            buffer.get(start, chronicleData);
-            BitReader br = new BitReader(chronicleData);
-            final short monsterId = br.readShort(16);
-            if (monsterId == 0) {
-                log.debug("end of the chronicle items at index {}?", start);
-                // likely the next items are the runewords as they lack a monsterId (for obvious reasons).
-                break;
-            }
-            final LocalDateTime found = LocalDateTime.ofInstant(
-                    Instant.ofEpochSecond(br.readInt(32) * 60),
-                    ZoneId.systemDefault()
-            );
-            final short extraID = br.readShort(16);
-            log.debug("Chronicle data at {} monsterId {}, time {}, unknown {}", start, monsterId, found, extraID);
-            start += 10;
+        byte[] countBytes = new byte[6];
+        buffer.get(index + 70, countBytes, 0, 6);
+        final BitReader countData = new BitReader(countBytes);
+        final int cntSetItems = countData.readShort(16);
+        final int cntUniques = countData.readShort(16);
+        final int cntRunewords = countData.readShort(16);
+        final int total = cntSetItems + cntUniques + cntRunewords;
+        final List<ChronicleItem> setItems = new ArrayList<>();
+        final List<ChronicleItem> uniques = new ArrayList<>();
+        final List<ChronicleItem> runewords = new ArrayList<>();
+
+        byte[] itemBytes = new byte[total * 10];
+        buffer.get(index + 88, itemBytes, 0, itemBytes.length);
+        final BitReader brItemData = new BitReader(itemBytes);
+
+        for (int i = 0; i < cntSetItems; i++) {
+            ChronicleItem setItem = getChronicleItem(brItemData, ItemQuality.SET);
+            log.debug("set item {} found: {}", i + 1, setItem);
+            setItems.add(setItem);
         }
+
+        for (int i = 0; i < cntUniques; i++) {
+            ChronicleItem unique = getChronicleItem(brItemData, ItemQuality.UNIQUE);
+            log.debug("unique {} found: {}", i + 1, unique);
+            uniques.add(unique);
+        }
+
+        for (int i = 0; i < cntRunewords; i++) {
+            ChronicleItem runeword = getChronicleItem(brItemData, ItemQuality.NORMAL);
+            log.debug("runeword {} found: {}", i + 1, runeword);
+            runewords.add(runeword);
+        }
+
+        return new ChronicleStashTab(cntSetItems, cntUniques, cntRunewords, setItems, uniques, runewords);
+    }
+
+    private ChronicleItem getChronicleItem(final BitReader brItemData, final ItemQuality itemQuality) {
+        final short monsterId = brItemData.readShort(16);
+        long timestamp = brItemData.readInt(32);
+        log.debug("timestamp {}", timestamp);
+        final LocalDateTime found = LocalDateTime.ofInstant(
+                Instant.ofEpochSecond(timestamp * 60),
+                ZoneId.systemDefault()
+        );
+        final int extraID = brItemData.readInt(32);
+        return new ChronicleItem(extraID, itemQuality, monsterId, found);
     }
 
     private SharedStashTab parseTab(final int index, final ByteBuffer buffer) {
