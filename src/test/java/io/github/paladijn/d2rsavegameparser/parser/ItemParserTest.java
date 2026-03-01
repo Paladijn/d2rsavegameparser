@@ -250,6 +250,11 @@ class ItemParserTest {
     // NM Horadric Scroll :: byte[] bytes = {16, 0, -96, 0, 5, -128, -48, -100, 79, 1};
     //NM   Lam Esen's Tome :: byte[] bytes = {16, 0, -96, 0, 5, 8, 68, 85, 11};
     // NM Hell Forge Hammer :: byte[] bytes = {16, 0, -128, 0, 5, 0, 16, -53, 56, -52, 71, -14, -23, -13, 14, 63, 112, 35, -62, -121, 22, -100, -128, 7, -93, -128, 2, -39, -2, 3};
+    // hell A Jade Figurine :: byte[] bytes = {16, 0, -96, 0, 5, 8, 4, -35, -10, 43, 1};
+    // hell KhalimFlail :: byte[] bytes = {16, 0, -128, 0, 5, 64, 112, 83, -2, 4, 111, -86, 120, -122, -22, -15, 7, 60, 58, -104, -128, -126, -116, -128, -126, 46, 70, -78, -2, 7};
+    // hell Khalim's Eye :: byte[] bytes = {16, 0, -96, 0, 5, -56, 112, 115, 64, 37};
+    // hell Khalim's Brain :: byte[] bytes = {16, 0, -96, 0, 5, -120, 112, 83, 79, 2};
+    // hell Khalim's Heart :: byte[] bytes = {16, 0, -96, 0, 5, 72, 112, 19, -97, 4};
 
     @Test
     void personalizedSpirit() {
