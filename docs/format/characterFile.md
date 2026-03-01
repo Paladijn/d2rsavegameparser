@@ -142,7 +142,7 @@ I believe this value is used in determining your character's title. The title is
 | 4  | Barbarian                                                 |
 | 5  | Druid (`Lord of Destruction` Expansion character only)    |
 | 6  | Assassin (`Lord of Destruction` Expansion character only) |
-| 7  | Warlock (`Rise of the Warlock` expansion character only)  |
+| 7  | Warlock (`Reign of the Warlock` expansion character only) |
 
 ### Difficulty field
 

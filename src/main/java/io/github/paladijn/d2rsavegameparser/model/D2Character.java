@@ -30,10 +30,10 @@ import java.util.List;
  * @author Paladijn
  */
 
-public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean lordOfDestruction, boolean riseOfTheWarlock, byte actProgression,
-                         CharacterType characterType, byte level, List<Location> locations, long mapId, List<QuestData> questDataPerDifficulty,
-                         List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
-                         List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
+public record D2Character(FileData fileData, String name, boolean hardcore, boolean died, boolean lordOfDestruction, boolean reignOfTheWarlock, byte actProgression,
+                          CharacterType characterType, byte level, List<Location> locations, long mapId, List<QuestData> questDataPerDifficulty,
+                          List<WaypointStatus> waypoints, Mercenary mercenary, CharacterAttributes attributes, List<Item> items,
+                          List<Item> deadBodyItems, Item golemItem, List<Skill> skills, List<ItemProperty> equippedSetBenefits) {
 
     private static final Logger log = LoggerFactory.getLogger(D2Character.class);
 
@@ -52,7 +52,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
 
         private boolean lordOfDestruction;
 
-        private boolean riseOfTheWarlock;
+        private boolean reignOfTheWarlock;
 
         private byte actProgression;
 
@@ -256,8 +256,8 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
             return this;
         }
 
-        public D2CharacterBuilder riseOfTheWarlock(byte value) {
-            this.riseOfTheWarlock = (value == 3);
+        public D2CharacterBuilder reignOfTheWarlock(byte value) {
+            this.reignOfTheWarlock = (value == 3);
             return this;
         }
 
@@ -277,14 +277,14 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
         /**
          * Indication whether this is a Lord of Destruction expansion character. Classic characters don't have an iron golem or mercenary items stored in the savegame.
          *
-         * @return true if this is a Lord of Destruction expansion character, false if it's classic or Rise of the Warlock.
+         * @return true if this is a Lord of Destruction expansion character, false if it's classic or Reign of the Warlock.
          */
         public boolean isLordOfDestruction() {
             return lordOfDestruction;
         }
 
-        public boolean isRiseOfTheWarlock() {
-            return riseOfTheWarlock;
+        public boolean isReignOfTheWarlock() {
+            return reignOfTheWarlock;
         }
 
         /**
@@ -293,7 +293,7 @@ public record D2Character(FileData fileData, String name, boolean hardcore, bool
          * @return The constructed {@link D2Character} instance.
          */
         public D2Character build() {
-            return new D2Character(fileData, name, hardcore, died, lordOfDestruction, riseOfTheWarlock, actProgression, characterType, level,
+            return new D2Character(fileData, name, hardcore, died, lordOfDestruction, reignOfTheWarlock, actProgression, characterType, level,
                     List.copyOf(locations), mapId, List.copyOf(questDataPerDifficulty),
                     List.copyOf(waypoints), mercenary, attributes, List.copyOf(items),
                     List.copyOf(deadBodyItems), golemItem, List.copyOf(skills),

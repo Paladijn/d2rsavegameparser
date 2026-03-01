@@ -1,6 +1,6 @@
 # Diablo II item format
 
-The `Rise of the Warlock` expansion significantly changed the item format as used from 1.09 up to 3.1.91636. This document is an attempt to document the changes as of file identifier 105
+The `Reign of the Warlock` expansion significantly changed the item format as used from 1.09 up to 3.1.91636. This document is an attempt to document the changes as of file identifier 105
 
 ## Item list Header
 

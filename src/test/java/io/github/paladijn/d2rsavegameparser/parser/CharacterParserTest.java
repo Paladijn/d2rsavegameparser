@@ -474,7 +474,7 @@ class CharacterParserTest {
         final D2Character newLock = cut.parse(TestCommons.getBuffer("3.1.91636/Nieuw.d2s"));
 
         assertThat(newLock.characterType()).isEqualTo(CharacterType.WARLOCK);
-        assertThat(newLock.riseOfTheWarlock()).isTrue().as("The character should be marked as a Rise of the Warlock one.");
+        assertThat(newLock.reignOfTheWarlock()).isTrue().as("The character should be marked as a Reign of the Warlock one.");
         assertThat(newLock.items()).hasSize(7); // 4 pots, 2 scrolls and a dagger
 
         final Item dagger = newLock.items().getLast();
