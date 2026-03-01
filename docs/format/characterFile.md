@@ -78,7 +78,7 @@ As soon as the game triggers the first save (5 minutes went by, death, id an ite
 
 | Byte position | Size    | Contents                                                                                                    |
 |---------------|---------|-------------------------------------------------------------------------------------------------------------|
-| Varies        | 2 chars | The string identifier `JM` (6A 6D)                                                                          |
+| Varies        | 2 chars | The string identifier `JM` (4A 4D)                                                                          |
 | -             | short   | the number of items on the character                                                                        |
 | -             | varies  | the item data as described [here](items.md)                                                                 |
 | -             | 2 chars | The string identifier `JM` for items on the corpse                                                          |
@@ -86,27 +86,28 @@ As soon as the game triggers the first save (5 minutes went by, death, id an ite
 
 ## Mercenary items
 
-| Byte position | Size    | Contents                                                      |
-|---------------|---------|---------------------------------------------------------------|
-| Varies        | jf      | If this is an expansion character the mercs items will follow |
-| -             | 2 chars | The string identifier `JM`                                    |
-| -             | short   | the number of items on the mercenary                          |
-| -             | varies  | the item data as described [here](items.md)                   |
+| Byte position | Size    | Contents                                                                                          |
+|---------------|---------|---------------------------------------------------------------------------------------------------|
+| Varies        | 2 chars | The string identifier `jf` (6A 66) If this is a LoD or RotW character the mercs items will follow |
+| -             | 2 chars | The string identifier `JM` (4A 4D)                                                                |
+| -             | short   | the number of items on the mercenary                                                              |
+| -             | varies  | the item data as described [here](items.md)                                                       |
 
 ## Iron Golem
 | Byte position | Size    | Contents                                                              |
 |---------------|---------|-----------------------------------------------------------------------|
-| Varies        | 2 chars | The string identifier `kf` (6B 66)                                    |
+| Varies        | 2 chars | The string identifier `kf` (6B 66) if this is a LoD or RotW character |
 | -             | byte    | 1 when an iron golem is active                                        |
 | -             | varies  | the item data for the iron golem                                      |
-| -             | 2 bytes | In case of the Warlock there's also two bytes here, possibly consume? |
+| -             | 2 bytes | In case of the Warlock there's also two extra bytes here: 00 01       |
 
 ## Warlock minion
-| Byte position | Size    | Contents                           |
-|---------------|---------|------------------------------------|
-| Varies        | 2 chars | The string identifier `lf` (6C 66) |
-| -             | byte    | unknown                            |
-| -             | byte    | unknown                            |
+| Byte position | Size    | Contents                                                                                     |
+|---------------|---------|----------------------------------------------------------------------------------------------|
+| Varies        | 2 chars | The string identifier `lf` (6C 66) if this is a RotW character                               |
+| -             | byte    | 1 when the a demon is bound                                                                  |
+| -             | byte    | unknown                                                                                      |
+| -             | varies  | a large amount of data will follow in case the demon is bound, likely containing their stats |
 
 ## Sub-tables
 
