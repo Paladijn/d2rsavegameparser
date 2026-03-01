@@ -274,8 +274,9 @@ final class ItemParser {
                         log.debug("byte 7 -> {}", chronicleBytes[6]);
                     }
                 }
-
-                log.info("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
+                if (log.isDebugEnabled()) {
+                    log.debug("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
+                }
             }
         }
     }
