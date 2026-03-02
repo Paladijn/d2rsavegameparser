@@ -17,6 +17,9 @@
  */
 package io.github.paladijn.d2rsavegameparser.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -282,9 +285,9 @@ public enum SkillType {
     SUMMON_DEFILER(377, 4, CharacterType.WARLOCK, DEMON),
     BLOOD_OATH(378, 5, CharacterType.WARLOCK, DEMON),
     ENGORGE(379, 6,  CharacterType.WARLOCK, DEMON),
-    BLOOD_BOIL(400, 7, CharacterType.WARLOCK, DEMON),
-    CONSUME(401, 8,  CharacterType.WARLOCK, DEMON),
-    BIND_DEMON(402, 9,  CharacterType.WARLOCK, DEMON),
+    BLOOD_BOIL(380, 7, CharacterType.WARLOCK, DEMON),
+    CONSUME(381, 8,  CharacterType.WARLOCK, DEMON),
+    BIND_DEMON(382, 9,  CharacterType.WARLOCK, DEMON),
 
     LEVITATION_MASTERY(383, 10, CharacterType.WARLOCK, ELDRITCH),
     ELDRITCH_BLAST(384, 11,  CharacterType.WARLOCK, ELDRITCH),
@@ -308,6 +311,7 @@ public enum SkillType {
     APOCALYPSE(401, 28,  CharacterType.WARLOCK, CHAOS),
     ABYSS(402, 29,  CharacterType.WARLOCK, CHAOS);
 
+    private static final Logger log = LoggerFactory.getLogger(SkillType.class);
     private final int id;
 
     private final int offset;
@@ -334,6 +338,8 @@ public enum SkillType {
                 return skillType;
             }
         }
+
+        log.warn("Unknown skill ID {}", id);
         return UNSUMMON;
     }
 
