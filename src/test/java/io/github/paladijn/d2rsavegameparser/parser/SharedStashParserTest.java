@@ -17,13 +17,16 @@
  */
 package io.github.paladijn.d2rsavegameparser.parser;
 
+import io.github.paladijn.d2rsavegameparser.model.ChronicleItem;
 import io.github.paladijn.d2rsavegameparser.model.ChronicleStashTab;
+import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -114,9 +117,17 @@ class SharedStashParserTest {
         assertThat(result.setItemsDiscovered()).isEqualTo(20);
         assertThat(result.uniqueItemsDiscovered()).isEqualTo(10);
 
-        assertThat(result.runewords()).hasSize(result.runewordsDiscovered());
+        assertThat(result.runewords()).hasSize(1);
         assertThat(result.setItems()).hasSize(result.setItemsDiscovered());
         assertThat(result.uniques()).hasSize(result.uniqueItemsDiscovered());
+
+        assertThat(result.setItems().getLast())
+                .isEqualTo(new ChronicleItem(
+                        14, // Isenhart's Parry
+                        ItemQuality.SET,
+                        (short)3062, // Mephisto
+                        LocalDateTime.of(2026, 2, 20, 23, 31, 0))
+                );
     }
 
     @Test

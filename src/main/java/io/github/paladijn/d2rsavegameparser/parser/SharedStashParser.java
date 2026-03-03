@@ -116,7 +116,7 @@ public final class SharedStashParser {
         final List<ChronicleItem> runewords = new ArrayList<>();
 
         byte[] itemBytes = new byte[total * 10];
-        buffer.get(index + 88, itemBytes, 0, itemBytes.length);
+        buffer.get(index + 84, itemBytes, 0, itemBytes.length);
         final BitReader brItemData = new BitReader(itemBytes);
 
         for (int i = 0; i < cntSetItems; i++) {
@@ -141,6 +141,7 @@ public final class SharedStashParser {
     }
 
     private ChronicleItem getChronicleItem(final BitReader brItemData, final ItemQuality itemQuality) {
+        final int itemId = brItemData.readInt(32);
         final short monsterId = brItemData.readShort(16);
         final long timestamp = brItemData.readInt(32);
         log.debug("timestamp {}", timestamp);
@@ -148,9 +149,8 @@ public final class SharedStashParser {
                 Instant.ofEpochSecond(timestamp * 60),
                 ZoneId.systemDefault()
         );
-        final int extraID = brItemData.readInt(32);
 
-        return new ChronicleItem(extraID, itemQuality, monsterId, found);
+        return new ChronicleItem(itemId, itemQuality, monsterId, found);
     }
 
     private SharedStashTab parseTab(final int index, final ByteBuffer buffer) {

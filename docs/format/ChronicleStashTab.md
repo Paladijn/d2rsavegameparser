@@ -24,14 +24,13 @@ The bytes below are counted from the final `55 AA 55 AA` field in the stash file
 | 72            | short             | number of uniques discovered                                                                         |
 | 74            | short             | number of runewords discovered                                                                       |
 | 76-83         | -                 | 00s                                                                                                  |
-| 84            | int               | unknown                                                                                              |
-| 88            | 10 bytes per item | List of chronicle registries, first the sets, then uniques and finally the runewords                 |
+| 84            | 10 bytes per item | List of chronicle registries, first the sets, then uniques and finally the runewords                 |
 | varies        | -                 | There is some leftover data here that's still unclear to me. Patterns include `10 00 A0 00` and 0x74 |
 
 ## Chronicle item
 
-| Byte position | Size  | Contents                                        |
-|---------------|-------|-------------------------------------------------|
-| 0             | short | monster ID (name can be found in monsters.json) |
-| 2             | int   | timestamp in minutes since 1-1-1970             |
-| 6             | int   | unknown id, likely referring to the item        |
+| Byte position | Size  | Contents                                                                                     |
+|---------------|-------|----------------------------------------------------------------------------------------------|
+| 0             | int   | Item id: for set/unique items the id in the .txt file, for runewords the one from runes.json |
+| 4             | short | monster ID (name can be found in monsters.json)                                              |
+| 6             | int   | timestamp in minutes since 1-1-1970                                                          |
