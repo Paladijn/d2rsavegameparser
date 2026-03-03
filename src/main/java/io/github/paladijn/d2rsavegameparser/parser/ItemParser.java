@@ -249,7 +249,7 @@ final class ItemParser {
         // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
         // So far it looks fine to not check for set/unique item type here, bit 29 + 5 (chronicle, but unidentified) seems to be sufficient.
         log.debug("Checking for Chronicle data (bit 29-> {}), identified {}", hasChronicleData, isIdentified);
-        if (hasChronicleData && isIdentified) {
+        if (hasChronicleData && !isIdentified) {
             log.debug("Parsing chronicle data");
             byte[] chronicleBytes = new byte[7];
             // read the next four bytes, they are always part of the chronicle
