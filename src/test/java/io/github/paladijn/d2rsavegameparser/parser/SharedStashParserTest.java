@@ -117,7 +117,7 @@ class SharedStashParserTest {
         assertThat(result.setItemsDiscovered()).isEqualTo(20);
         assertThat(result.uniqueItemsDiscovered()).isEqualTo(10);
 
-        assertThat(result.runewords()).hasSize(1);
+        assertThat(result.runewords()).hasSize(result.runewordsDiscovered());
         assertThat(result.setItems()).hasSize(result.setItemsDiscovered());
         assertThat(result.uniques()).hasSize(result.uniqueItemsDiscovered());
 

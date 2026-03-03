@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.SET;
-import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.UNIQUE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -117,16 +116,15 @@ final class ItemParser {
         int startIndex = br.getPositionInBits() / 8;
         log.debug("item start index: {}", startIndex);
 
-        int flags = br.readFlippedInt(32);
-        Item.ItemBuilder itemBuilder = new Item.ItemBuilder()
-                .identified(isBitChecked(flags, 5));
-
+        final int flags = br.readFlippedInt(32);
+        final boolean isIdentified = isBitChecked(flags, 5);
         final boolean isSocketed = isBitChecked(flags, 12);
         final boolean isEar = isBitChecked(flags, 17);
         final boolean isSimple = isBitChecked(flags, 22);
         final boolean isEthereal = isBitChecked(flags, 23);
 
-        itemBuilder
+        Item.ItemBuilder itemBuilder = new Item.ItemBuilder()
+                .identified(isIdentified)
                 .socketed(isSocketed)
                 .ear(isEar)
                 .simple(isSimple)
@@ -223,7 +221,7 @@ final class ItemParser {
 
         br.moveToNextByteBoundary();
 
-        checkForChronicleData(br, itemScaffolding);
+        checkForChronicleData(br, isIdentified, hasChronicleData);
 
         final Item result = itemBuilder.build();
 
@@ -247,36 +245,31 @@ final class ItemParser {
         return result;
     }
 
-    private void checkForChronicleData(BitReader br, ItemScaffolding itemScaffolding) {
+    private void checkForChronicleData(BitReader br, final boolean isIdentified, final boolean hasChronicleData) {
         // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
-        // TODO 20260223 Does not seem to appear on Runewords?
-        log.debug("Checking for Chronicle data (bit 29-> {})", itemScaffolding.hasChronicleData());
-        if (itemScaffolding.hasChronicleData() &&
-                (SET.equals(itemScaffolding.getItemQuality()) || UNIQUE.equals(itemScaffolding.getItemQuality()))) {
-            // if the next byte is not 00 or 10 (16) there is chronicle data available
-            byte nextByte = br.peekNextByte();
-            if (nextByte != 0 && nextByte != 16) {
-                log.debug("found Chronicle data");
-                byte[] chronicleBytes = new byte[7];
-                // read the next four bytes, they are always part of the chronicle
-                chronicleBytes[0] = br.readByte(8);
-                chronicleBytes[1] = br.readByte(8);
-                chronicleBytes[2] = br.readByte(8);
-                chronicleBytes[3] = br.readByte(8);
-                // the fifth can be 0 as the closing byte
-                chronicleBytes[4] = br.readByte(8);
-                log.debug("byte 5 -> {}", chronicleBytes[4]);
-                if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
-                    chronicleBytes[5] = br.readByte(8);
-                    log.debug("byte 6 -> {}", chronicleBytes[5]);
-                    if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 || br.peekNextByte() == chronicleBytes[5]) {
-                        chronicleBytes[6] = br.readByte(8);
-                        log.debug("byte 7 -> {}", chronicleBytes[6]);
-                    }
+        // So far it looks fine to not check for set/unique item type here, bit 29 + 5 (chronicle, but unidentified) seems to be sufficient.
+        log.debug("Checking for Chronicle data (bit 29-> {}), identified {}", hasChronicleData, isIdentified);
+        if (hasChronicleData && isIdentified) {
+            log.debug("Parsing chronicle data");
+            byte[] chronicleBytes = new byte[7];
+            // read the next four bytes, they are always part of the chronicle
+            chronicleBytes[0] = br.readByte(8);
+            chronicleBytes[1] = br.readByte(8);
+            chronicleBytes[2] = br.readByte(8);
+            chronicleBytes[3] = br.readByte(8);
+            // the fifth can be 0 as the closing byte
+            chronicleBytes[4] = br.readByte(8);
+            log.debug("byte 5 -> {}", chronicleBytes[4]);
+            if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
+                chronicleBytes[5] = br.readByte(8);
+                log.debug("byte 6 -> {}", chronicleBytes[5]);
+                if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 || br.peekNextByte() == chronicleBytes[5]) {
+                    chronicleBytes[6] = br.readByte(8);
+                    log.debug("byte 7 -> {}", chronicleBytes[6]);
                 }
-                if (log.isDebugEnabled()) {
-                    log.debug("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
-                }
+            }
+            if (log.isDebugEnabled()) {
+                log.debug("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
             }
         }
     }
