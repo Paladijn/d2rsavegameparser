@@ -118,11 +118,11 @@ public final class CharacterParser {
                 .mapId(buffer.getLong(155));
 
         Mercenary.MercenaryBuilder mercenaryBuilder = new Mercenary.MercenaryBuilder()
-                .alive(buffer.getShort(177))
-                .id(buffer.getInt(179))
-                .nameId(buffer.getShort(183))
-                .typeId(buffer.getShort(185))
-                .experience(buffer.getInt(187));
+                .alive(buffer.getShort(161))
+                .id(buffer.getInt(163))
+                .nameId(buffer.getShort(167))
+                .typeId(buffer.getShort(169))
+                .experience(buffer.getInt(171));
 
         characterBuilder.reignOfTheWarlock(buffer.get(248));
 
