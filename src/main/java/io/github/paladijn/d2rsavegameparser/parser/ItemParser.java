@@ -41,10 +41,12 @@ import org.slf4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.SET;
+import static io.github.paladijn.d2rsavegameparser.model.ItemQuality.UNIQUE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -195,6 +197,8 @@ final class ItemParser {
             itemBuilder.addProperties(txtProperties.getGemsAndRunesByCode(code).getAllProperties());
         }
 
+        checkForChronicleData(br, isIdentified, hasChronicleData, itemScaffolding.getItemQuality());
+
         log.debug("item {} done, moving to the next", itemScaffolding.getItemName());
 
         // extra skip for special cases
@@ -217,11 +221,12 @@ final class ItemParser {
                 log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
                 br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
             }
+        } else if ("ice".equals(itemScaffolding.getCode())) {
+            log.debug("skipping 8 extra bits on Malah's potion");
+            br.skip(8);
         }
 
         br.moveToNextByteBoundary();
-
-        checkForChronicleData(br, isIdentified, hasChronicleData);
 
         final Item result = itemBuilder.build();
 
@@ -245,31 +250,34 @@ final class ItemParser {
         return result;
     }
 
-    private void checkForChronicleData(BitReader br, final boolean isIdentified, final boolean hasChronicleData) {
+    private void checkForChronicleData(BitReader br, final boolean isIdentified, final boolean hasChronicleData, final ItemQuality quality) {
         // special case for Set and Unique items in RotW as they can contain Chronicle data when you've just picked them up (is cleared once you equip or stash them)
-        // So far it looks fine to not check for set/unique item type here, bit 29 + 5 (chronicle, but unidentified) seems to be sufficient.
-        log.debug("Checking for Chronicle data (bit 29-> {}), identified {}", hasChronicleData, isIdentified);
-        if (hasChronicleData && !isIdentified) {
-            log.debug("Parsing chronicle data");
+        log.debug("Checking for Chronicle data (bit 29-> {}), identified {} - quality {}", hasChronicleData, isIdentified, quality);
+        if (hasChronicleData
+                && (quality == SET || quality == UNIQUE)) {
+            log.debug("Parsing chronicle data at bit {}", br.bitsToNextBoundary());
             byte[] chronicleBytes = new byte[7];
             // read the next four bytes, they are always part of the chronicle
             chronicleBytes[0] = br.readByte(8);
             chronicleBytes[1] = br.readByte(8);
             chronicleBytes[2] = br.readByte(8);
             chronicleBytes[3] = br.readByte(8);
-            // the fifth can be 0 as the closing byte
+            final short byte45 = br.peekNextShort(16);
             chronicleBytes[4] = br.readByte(8);
-            log.debug("byte 5 -> {}", chronicleBytes[4]);
-            if (chronicleBytes[4] != 0 || br.peekNextByte() != 16) {
+
+            // The items have 5-7 bytes of extra chronicle data. They seem to end on -31 0 0, depending on where the bit is located within the byte.
+            // Considering the -31 can be date-specific we're checking for the double 00 00 value in bits and ending accordingly.
+            if (byte45 == 0) {
+                log.debug("chronicle has 6 bytes");
+                chronicleBytes[5] = br.readByte(8 - br.bitsToNextBoundary());
+            } else {
+                log.debug("chronicle has 7 bytes");
                 chronicleBytes[5] = br.readByte(8);
-                log.debug("byte 6 -> {}", chronicleBytes[5]);
-                if (chronicleBytes[5] != 0 || br.peekNextByte() != 16 || br.peekNextByte() == chronicleBytes[5]) {
-                    chronicleBytes[6] = br.readByte(8);
-                    log.debug("byte 7 -> {}", chronicleBytes[6]);
-                }
+                chronicleBytes[6] = br.readByte(8 - br.bitsToNextBoundary());
             }
+
             if (log.isDebugEnabled()) {
-                log.debug("Chronicle data: {}", getConcatenatedBits(chronicleBytes));
+                log.debug("Chronicle data: {} {}", getConcatenatedBits(chronicleBytes), Arrays.toString(chronicleBytes));
             }
         }
     }
@@ -364,7 +372,7 @@ final class ItemParser {
             case ItemType.MISC -> parseMiscStats(itemBuilder, br, miscStats);
         }
 
-        if (itemScaffolding.getMaxStacks() == 0) {
+        if (itemScaffolding.getMaxStacks() == 0 && !"ice".equals(itemScaffolding.getCode())) {
             // this is new in RotW and a bit ugly: if the item was stackable we read sufficient bytes, otherwise we'll have to skip another bit.
             br.skip(1);
         }

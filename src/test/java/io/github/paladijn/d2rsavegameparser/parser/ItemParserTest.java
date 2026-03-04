@@ -239,6 +239,44 @@ class ItemParserTest {
         assertThat(result.questDifficulty()).isEqualTo(Difficulty.HELL);
     }
 
+    @Test
+    void malahBorder() {
+        final byte[] bytes = {16, 32, -128, 0, 5, -112, -28, 39, -122, -128, -50, 24, 57, -32, 19, 32, -37, 127, 16, 0, -128, 0};
+
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(result.properties()).isEmpty();
+        assertThat(br.peekNextByte()).isEqualTo((byte)16);
+    }
+
+    @Test
+    void fetlockBorder() {
+        final byte[] bytes = {0, 0, -128, 16, 5, 8, -60, -88, 9, -106, -54, -64, 50, -53, 66, 2, 84, 64, -30, -127, -80, -64, 22, -116, -20, -1, 9, 104, 41, -96, -83, -128, -42, 2, -38, -1, -41, -85, 108, 81, -31, 0, 0, 0, 0, -64, 0, 5};
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(br.getPositionInBits()).isEqualTo(344); // we should border mid-way the 00 00 00 00 as the final two bytes are for the next item.
+    }
+
+    @Test
+    void boneslayerBladeBorder() {
+        final byte[] bytes = {0, 0, -128, 16, 5, 8, -60, -83, 23, -74, -6, 83, -67, -105, 71, 34, -112, 113, 1, 0, 74, -124, 99, -57, -70, -96, -18, -36, 72, 38, -107, 33, 99, 70, -107, 113, -121, 76, -113, -78, -89, -4, 111, 94, 0, 31, 22, 14, 0, 0, 0, -64};
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(br.getPositionInBits()).isEqualTo(392); // should end after the first 0 value of 00 00 00 (-64)
+    }
+
+    @Test
+    void ceglaw() {
+        final byte[] bytes = {16, 0, -128, 16, 5, 76, -60, -82, 27, 24, 78, 11, 55, 111, 5, 2, -104, 0, -124, 3, 33, 74, -64, 82, -26, 63, 56, -22, -65, -10, 66, -62, -91, 112, 0, 0, 16, 0, -128};
+        final BitReader br = new BitReader(bytes);
+        final Item result = cut.parseItem(br);
+
+        assertThat(br.getPositionInBits()).isEqualTo(288);
+    }
+
     void cairnStones() {
         final byte[] bytes = {16, 32, -96, 0, 5, 24, 68, -91, 49, 0};
 

@@ -102,6 +102,10 @@ public final class BitReader {
         return result;
     }
 
+    public short peekNextShort(int bits) {
+        return (short) unflip(read(bits, false), bits);
+    }
+
     public void skip(int bits) {
         increasePositionInBits(bits);
     }
@@ -117,15 +121,15 @@ public final class BitReader {
     }
 
     public char readChar(int bits) {
-        return (char) unflip(read(bits), bits);
+        return (char) unflip(read(bits, true), bits);
     }
 
     public byte readByte(int bits) {
-        return (byte) unflip(read(bits), bits);
+        return (byte) unflip(read(bits, true), bits);
     }
 
     public short readShort(int bits) {
-        return (short) unflip(read(bits), bits);
+        return (short) unflip(read(bits, true), bits);
     }
 
     public int readInt() {
@@ -133,15 +137,15 @@ public final class BitReader {
     }
     
     public int readInt(int bits) {
-        return (int) unflip(read(bits), bits);
+        return (int) unflip(read(bits, true), bits);
     }
 
     public long readLong(int bits) {
-        return unflip(read(bits), bits);
+        return unflip(read(bits, true), bits);
     }
 
     public int readFlippedInt(int bits) {
-        return (int) read(bits);
+        return (int) read(bits, true);
     }
 
     public int getPositionInBits() {
@@ -152,7 +156,7 @@ public final class BitReader {
         positionInBits += amount;
     }
 
-    private long read(int bits) {
+    private long read(int bits, boolean updatePosition) {
         final int positionInBytes = positionInBits / 8;
         final int bitsInLastByte = positionInBits % 8;
 
@@ -171,8 +175,9 @@ public final class BitReader {
         result = result << bitsInLastByte;
         result = result >>> (64 - bits);
 
-        // update position
-        increasePositionInBits(bits);
+        if (updatePosition) {
+            increasePositionInBits(bits);
+        }
 
         return result;
     }
@@ -182,7 +187,7 @@ public final class BitReader {
         StringBuilder result = new StringBuilder();
         Character character;
         do {
-            reader.append(read(1));
+            reader.append(read(1, true));
             character = huffmanDictionary.get(reader.toString());
             if (character != null && ' ' != character) {
                 result.append(character);
