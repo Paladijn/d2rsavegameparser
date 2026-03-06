@@ -19,10 +19,13 @@ package io.github.paladijn.d2rsavegameparser.parser;
 
 import io.github.paladijn.d2rsavegameparser.model.ChronicleItem;
 import io.github.paladijn.d2rsavegameparser.model.ChronicleStashTab;
+import io.github.paladijn.d2rsavegameparser.model.Item;
 import io.github.paladijn.d2rsavegameparser.model.ItemQuality;
 import io.github.paladijn.d2rsavegameparser.model.SharedStashTab;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -34,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class SharedStashParserTest {
 
+    private static final Logger log = LoggerFactory.getLogger(SharedStashParserTest.class);
     private final SharedStashParser cut = new SharedStashParser(true);
 
     @Test
@@ -137,5 +141,13 @@ class SharedStashParserTest {
         final List<SharedStashTab> result = cut.parse(buffer);
 
         assertThat(result).hasSize(6);
+
+        final List<Item> materialStashWithStacks = result.getLast().items().stream()
+                .filter(item -> item.stacks() > 0)
+                .toList();
+        materialStashWithStacks.forEach(item -> log.debug("materialStashWithStacks: {} {}", item.itemName(), item.stacks()));
+        assertThat(materialStashWithStacks).hasSize(10);
+        // all the items in the material stash with stacks have 99
+        assertThat(materialStashWithStacks.getFirst().stacks()).isEqualTo((short)99);
     }
 }

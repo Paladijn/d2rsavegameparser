@@ -203,18 +203,19 @@ final class ItemParser {
 
         // extra skip for special cases
         if (isSimple) {
-            if (br.bitsToNextBoundary() == 0) {
-                log.debug("skipping another bit due to ending on a boundary");
-                br.skip(1);
-            }
             final byte peekedNextByte = br.peekNextByte();
-            if (Item.isRotWCollectible(itemScaffolding.getType(), itemScaffolding.getType2(), code)) {
+            if (miscStats != null && miscStats.isAdvancedStashStackable()) {
                 // this is an item that can be hosted in the materials stash which contains extra bits for the amount (up to 99)
+                br.skip(1);
                 log.debug("Material stashtab type, next byte value: {}", peekedNextByte);
                 if (peekedNextByte != 0 && peekedNextByte != 16) {
                     byte amount = br.readByte(8);
                     log.debug("amount? {}", amount);
+                    itemBuilder.stacks(amount);
                 }
+            } else if (br.bitsToNextBoundary() == 0) {
+                log.debug("skipping another bit due to ending on a boundary");
+                br.skip(1);
             }
             if (peekedNextByte == 0 && br.getCurrentByte() != 0
                     && !"mss".equals(code)) { // Mephisto's soul stone does not seem to have the extra byte.

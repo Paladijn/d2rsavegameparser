@@ -18,6 +18,8 @@
 package io.github.paladijn.d2rsavegameparser.txt;
 
 import io.github.paladijn.d2rsavegameparser.internal.parser.ParseHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Representation of stats from the misc.txt resource file.
@@ -25,6 +27,7 @@ import io.github.paladijn.d2rsavegameparser.internal.parser.ParseHelper;
  * @author Paladijn
  */
 public final class MiscStats {
+    private static final Logger log = LoggerFactory.getLogger(MiscStats.class);
     private final String name;
 
     private final String type;
@@ -47,7 +50,9 @@ public final class MiscStats {
 
     private int maxStacks;
 
-    private boolean questDiffCheck;
+    private final boolean questDiffCheck;
+
+    private final boolean advancedStashStackable;
 
     /**
      * Constructor which parses a tab-separated line from misc.txt
@@ -76,6 +81,7 @@ public final class MiscStats {
             maxStacks = Integer.parseInt(blocks[45]);
         }
         questDiffCheck = blocks[48].equals("1");
+        advancedStashStackable = blocks.length > 170 && blocks[170].equals("1");
     }
 
     /**
@@ -178,5 +184,9 @@ public final class MiscStats {
 
     public boolean isQuestDiffCheck() {
         return questDiffCheck;
+    }
+
+    public boolean isAdvancedStashStackable() {
+        return advancedStashStackable;
     }
 }
