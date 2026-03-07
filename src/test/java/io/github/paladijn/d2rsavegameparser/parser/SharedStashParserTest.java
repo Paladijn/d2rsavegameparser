@@ -146,8 +146,9 @@ class SharedStashParserTest {
                 .filter(item -> item.stacks() > 0)
                 .toList();
         materialStashWithStacks.forEach(item -> log.debug("materialStashWithStacks: {} {}", item.itemName(), item.stacks()));
-        assertThat(materialStashWithStacks).hasSize(10);
-        // all the items in the material stash with stacks have 99
+        assertThat(materialStashWithStacks).hasSize(18);
+
         assertThat(materialStashWithStacks.getFirst().stacks()).isEqualTo((short)99);
+        assertThat(materialStashWithStacks.get(10).stacks()).isEqualTo((short)3); // one of the keys
     }
 }

@@ -203,17 +203,19 @@ final class ItemParser {
 
         // extra skip for special cases
         if (isSimple) {
-            final byte peekedNextByte = br.peekNextByte();
             if (miscStats != null && miscStats.isAdvancedStashStackable()) {
                 // this is an item that can be hosted in the materials stash which contains extra bits for the amount (up to 99)
                 br.skip(1);
+                final byte peekedNextByte = br.peekNextByte();
                 log.debug("Material stashtab type, next byte value: {}", peekedNextByte);
                 if (peekedNextByte != 0 && peekedNextByte != 16) {
                     byte amount = br.readByte(8);
                     log.debug("amount? {}", amount);
                     itemBuilder.stacks(amount);
                 }
-            } else if (br.bitsToNextBoundary() == 0) {
+            }
+            final byte peekedNextByte = br.peekNextByte();
+            if (br.bitsToNextBoundary() == 0 && peekedNextByte != 16) {
                 log.debug("skipping another bit due to ending on a boundary");
                 br.skip(1);
             }
@@ -411,6 +413,7 @@ final class ItemParser {
         if(br.readShort(1) == 1) {
             // this is a new feature in RotW where the material stash amount is stored in a byte value
             byte itemStashCount = br.readByte(8);
+            itemBuilder.stacks(itemStashCount);
             log.debug("item {} has a material stash count of {}", itemScaffolding.getItemName(), itemStashCount);
         }
 
