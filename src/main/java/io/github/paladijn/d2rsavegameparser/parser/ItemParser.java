@@ -182,6 +182,9 @@ final class ItemParser {
         }
 
         if (itemScaffolding.hasQuestDifficulty()) {
+            if ("vip".equals(code) || "ice".equals(code)) { // these are exceptions for specific the viper amulet and Malah's potion. If this only occurs on normal we'll need to adjust this code.
+                br.revert(2);
+            }
             byte questDifficulty = br.readByte(3);
             itemBuilder.questDifficulty(Difficulty.values()[questDifficulty]);
             log.debug("questDifficulty: {} - {}", questDifficulty, Difficulty.values()[questDifficulty]);
@@ -205,28 +208,33 @@ final class ItemParser {
         if (isSimple) {
             if (miscStats != null && miscStats.isAdvancedStashStackable()) {
                 // this is an item that can be hosted in the materials stash which contains extra bits for the amount (up to 99)
-                br.skip(1);
+                final boolean hasData = br.readByte(1) != 0;
                 final byte peekedNextByte = br.peekNextByte();
-                log.debug("Material stashtab type, next byte value: {}", peekedNextByte);
-                if (peekedNextByte != 0 && peekedNextByte != 16) {
+                log.debug("Material stashtab type, next byte value: {} - {}", peekedNextByte, hasData);
+                if (hasData) {
                     byte amount = br.readByte(8);
                     log.debug("amount? {}", amount);
                     itemBuilder.stacks(amount);
                 }
             }
             final byte peekedNextByte = br.peekNextByte();
-            if (br.bitsToNextBoundary() == 0 && peekedNextByte != 16) {
+            if (br.bitsToNextBoundary() == 0
+                    && peekedNextByte != 16
+                    && (br.peekNextBytes(16) != 0 || br.peekNextBytes(24) == 0) // we may have to extend this to four bytes 00 00 00 00 check, but so far haven't found it.
+            ) {
                 log.debug("skipping another bit due to ending on a boundary");
                 br.skip(1);
             }
-            if (peekedNextByte == 0 && br.getCurrentByte() != 0
-                    && !"mss".equals(code)) { // Mephisto's soul stone does not seem to have the extra byte.
+            if (peekedNextByte == 0
+                    && br.getCurrentByte() != 0
+                    && br.peekNextBytes(16) != 0
+            ) {
                 log.debug("This is a simple item with a 00 byte at the end, skipping 8 bits");
                 br.skip(8); // skip an entire byte, the next boundary should move to the next byte to read.
             }
-        } else if ("ice".equals(itemScaffolding.getCode())) {
-            log.debug("skipping 8 extra bits on Malah's potion");
-            br.skip(8);
+        } else if ("xyz".equals(itemScaffolding.getCode())) {
+            log.debug("skipping two bytes (FF 01) on Potion of Life");
+            br.skip(16);
         }
 
         br.moveToNextByteBoundary();
@@ -265,7 +273,7 @@ final class ItemParser {
             chronicleBytes[1] = br.readByte(8);
             chronicleBytes[2] = br.readByte(8);
             chronicleBytes[3] = br.readByte(8);
-            final short byte45 = br.peekNextShort(16);
+            final short byte45 = (short)br.peekNextBytes(16);
             chronicleBytes[4] = br.readByte(8);
 
             // The items have 5-7 bytes of extra chronicle data. They seem to end on -31 0 0, depending on where the bit is located within the byte.
@@ -375,7 +383,7 @@ final class ItemParser {
             case ItemType.MISC -> parseMiscStats(itemBuilder, br, miscStats);
         }
 
-        if (itemScaffolding.getMaxStacks() == 0 && !"ice".equals(itemScaffolding.getCode())) {
+        if (itemScaffolding.getMaxStacks() == 0 && !"xyz".equals(itemScaffolding.getCode())) {
             // this is new in RotW and a bit ugly: if the item was stackable we read sufficient bytes, otherwise we'll have to skip another bit.
             br.skip(1);
         }

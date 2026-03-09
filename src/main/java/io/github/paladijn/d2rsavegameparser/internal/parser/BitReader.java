@@ -102,8 +102,13 @@ public final class BitReader {
         return result;
     }
 
-    public short peekNextShort(int bits) {
-        return (short) unflip(read(bits, false), bits);
+    public long peekNextBytes(int bits) {
+        bits = Math.min(bits, 64);
+        return unflip(read(bits, false), bits);
+    }
+
+    public void revert(int amount) {
+        positionInBits -= amount;
     }
 
     public void skip(int bits) {

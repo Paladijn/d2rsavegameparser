@@ -17,7 +17,6 @@
  */
 package io.github.paladijn.d2rsavegameparser.parser;
 
-import io.github.paladijn.d2rsavegameparser.TestCommons;
 import io.github.paladijn.d2rsavegameparser.internal.parser.BitReader;
 import io.github.paladijn.d2rsavegameparser.model.Difficulty;
 import io.github.paladijn.d2rsavegameparser.model.Item;
@@ -246,7 +245,9 @@ class ItemParserTest {
         final BitReader br = new BitReader(bytes);
         final Item result = cut.parseItem(br);
 
-        assertThat(result.properties()).isEmpty();
+        // interesting enough, this item also has a questItemDifficulty property.
+        assertThat(result.properties()).hasSize(1);
+        assertThat(result.properties().getLast().name()).isEqualTo("questitemdifficulty");
         assertThat(br.peekNextByte()).isEqualTo((byte)16);
     }
 
@@ -520,19 +521,61 @@ class ItemParserTest {
     }
 
     @Test
-    void listBits() {
-        //Quilted Armor of Balance ::
-        byte[] bytes = {16, 0, -128, 0, -51, 12, 96, 19, -2, -62, 81, 59, -4, -71, -127, 0, -128, 65, 76, -128, -126, -62, 24, -49, 127};
+    void thawingOnBoundary() {
+        final byte[] bytes = {16, 0, -96, 8, 5, -52, 4, 88, 10, 0, 0, -64};
+        final BitReader br = new BitReader(bytes);
+        cut.parseItem(br);
 
-        IO.println(TestCommons.getBitDetails(bytes));
+        assertThat(br.getPositionInBits()).isEqualTo(72); // 9 characters read.
+    }
 
-        IO.println(TestCommons.getConcatenatedBits(bytes));
+    @Test
+    void talRune() {
+        final byte[] bytes = {16, 0, -96, 0, 53, 0, -32, 124, -5, 4, 0, 16, 0, -96};
+        final BitReader br = new BitReader(bytes);
+        cut.parseItem(br);
 
-        // new style
-        byte[] newBytes = {16, 0, -128, 0, -51, 12, 96, 19, -2, -62, 81, 59, -4, -71, -127, 0, -128, 65, 76, -128, -126, -126, 49, -98, -1, 0};
+        assertThat(br.getPositionInBits()).isEqualTo(88); // 11 characters read.
+    }
 
-        IO.println(TestCommons.getBitDetails(newBytes));
+    @Test
+    void normalViper() {
+        final byte[] bytes = {16, 0, -128, 0, -115, 8, 96, -9, -101, 97, -8, 4, 51, -55, 113, 101, 15, 56, -96, 34, -127, 74, -117, 112, -1, 1};
+        final BitReader br = new BitReader(bytes);
+        final Item item = cut.parseItem(br);
 
-        IO.println(TestCommons.getConcatenatedBits(newBytes));
+        assertThat(item.properties()).containsExactly(
+                new ItemProperty(7, "maxhp", new int[]{10}, 0, 59),
+                new ItemProperty(9, "maxmana", new int[]{10}, 0, 55),
+                new ItemProperty(45, "poisonresist", new int[]{25}, 0, 34)
+        );
+        assertThat(br.getPositionInBits()).isEqualTo(208); // 26 characters read.
+    }
+
+    @Test
+    void khalimEyeNormal() {
+        final byte[] bytes = {16, 0, -96, 0, 5, -120, 100, 115, 64, 5, 0, 0, -128};
+
+        final BitReader br = new BitReader(bytes);
+        cut.parseItem(br);
+
+        assertThat(br.getPositionInBits()).isEqualTo(80); // 10 characters read
+    }
+
+    @Test
+    void lamEsenNormal() {
+        final byte[] bytes = {16, 0, -96, 0, 5, 8, 68, 85, 11, 0, 0, -128};
+        final BitReader br = new BitReader(bytes);
+        cut.parseItem(br);
+        assertThat(br.getPositionInBits()).isEqualTo(72);
+    }
+
+    @Test
+    void potionOfLife() {
+        final byte[]  bytes = {16, 32, -128, 0, 5, 24, -124, -93, 54, -62, -45, 28, -84, -51, 75, -128, 108, -1, 1, 16, 0, -128, 0, 5, 4, -28, -89, 82};
+
+        final BitReader br = new BitReader(bytes);
+        cut.parseItem(br);
+        assertThat(br.getPositionInBits()).isEqualTo(152);
     }
 }
