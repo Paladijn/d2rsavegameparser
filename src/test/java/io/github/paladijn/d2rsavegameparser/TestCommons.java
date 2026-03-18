@@ -44,10 +44,10 @@ public interface TestCommons {
 
             final int unsignedByte = b & 0xFF;
             final String decimalValue = String.valueOf(b);
-            final String hexValue = String.format("%02X", unsignedByte);
-            final String binaryValue = String.format("%8s", Integer.toBinaryString(unsignedByte)).replace(" ", "0");
+            final String hexValue = "%02X".formatted(unsignedByte);
+            final String binaryValue = "%8s".formatted(Integer.toBinaryString(unsignedByte)).replace(" ", "0");
 
-            results.append(String.format("%-5d | %5s | %8s | %3s | %s%n", i, decimalValue, unsignedByte, hexValue, binaryValue));
+            results.append("%-5d | %5s | %8s | %3s | %s%n".formatted(i, decimalValue, unsignedByte, hexValue, binaryValue));
         }
         return results.toString();
     }
@@ -55,7 +55,7 @@ public interface TestCommons {
     static String getConcatenatedBits(byte[] bytes) {
         final StringBuilder results = new StringBuilder();
         for (final byte b : bytes) {
-            results.append(String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
+            results.append("%8s".formatted(Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
         }
         return results.toString();
     }

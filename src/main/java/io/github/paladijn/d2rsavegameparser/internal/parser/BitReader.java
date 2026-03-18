@@ -97,7 +97,7 @@ public final class BitReader {
 
         final byte result = data[peekIndex];
         if (log.isDebugEnabled()) {
-            log.debug("peek result: {}", String.format("%8s", Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
+            log.debug("peek result: {}", "%8s".formatted(Integer.toBinaryString(data[peekIndex] & 0xFF)).replace(" ", "0"));
         }
         return result;
     }
@@ -275,7 +275,7 @@ public final class BitReader {
                 sbBytes.append("\n");
             }
             displayIndex++;
-            sbBytes.append(String.format("%02X ", data[i]));
+            sbBytes.append("%02X ".formatted(data[i]));
         }
 
         sbBytes.append("\n");

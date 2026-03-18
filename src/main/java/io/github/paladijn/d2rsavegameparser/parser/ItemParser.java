@@ -296,7 +296,7 @@ final class ItemParser {
     private String getConcatenatedBits(byte[] bytes) {
         final StringBuilder results = new StringBuilder();
         for (final byte b : bytes) {
-            results.append(String.format("%8s_", Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
+            results.append("%8s_".formatted(Integer.toBinaryString(b & 0xFF)).replace(" ", "0"));
         }
         return results.toString();
     }
