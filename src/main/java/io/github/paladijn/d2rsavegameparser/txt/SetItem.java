@@ -26,7 +26,8 @@ public final class SetItem {
     private final String name;
     private final int id;
     private final String setName;
-    private final boolean cannotLoot;
+    private final boolean spawnable;
+    private final boolean disableChronicle;
     private final String code;
     private final String itemName;
 
@@ -39,7 +40,8 @@ public final class SetItem {
         name = blocks[0];
         id = Integer.parseInt(blocks[1]);
         setName = blocks[2];
-        cannotLoot = "1".equals(blocks[3]); // Oddly enough this is only set to 1 for the "Warlord's Glory" items, and "" instead of 0 for the other ones.
+        spawnable = "1".equals(blocks[4]); // for my EU build this is set to 1 for all set items except Warlord's Glory
+        disableChronicle = "1".equals(blocks[5]); // Oddly enough this is only set to 1 for the "Warlord's Glory" items, and "" instead of 0 for the other ones.
         code = blocks[9];
         itemName = blocks[10];
     }
@@ -85,10 +87,18 @@ public final class SetItem {
     }
 
     /**
-     * The set item cannot be looted - actually meaning it cannot drop. This was added in 1.7.90471 for the Chinese-only "Warlord's Glory" set.
-     * @return true if the item cannot be looted (or dropped?) in this version of the game
+     * This is set to true for the Chinese-only "Warlord's Glory" set, so leaving it in for those that use the parser on Chinese savegames.
+     * @return true if the item should not be part of the chronicle
      */
-    public boolean cannotLoot() {
-        return cannotLoot;
+    public boolean disableChronicle() {
+        return disableChronicle;
+    }
+
+    /**
+     * The set item can be spawned - actually meaning it will drop. This was originally added in 1.7.90471 for the Chinese-only "Warlord's Glory" set, but changed in RotW.
+     * @return true if the item can be looted in this version of the game
+     */
+    public boolean spawnable() {
+        return spawnable;
     }
 }

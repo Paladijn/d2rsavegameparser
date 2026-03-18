@@ -34,7 +34,9 @@ import static org.slf4j.LoggerFactory.getLogger;
 public final class Runeword {
     private static final Logger log = getLogger(Runeword.class);
 
-    private final String name;
+    private int id;
+
+    private String name;
 
     private final boolean active;
 
@@ -52,11 +54,13 @@ public final class Runeword {
      */
     public Runeword(String line) {
         String[] blocks = line.split("\t");
-        name = blocks[1];
         active = "1".equals(blocks[2]);
         if (!active) {
             return;
         }
+
+        id  = Integer.parseInt(blocks[0].substring(8));
+        name = blocks[1];
         patch = blocks[7];
         for (int i = 8; i <=13; i++) { // iType1..6
             if (blocks[i].isBlank()) {
@@ -112,5 +116,17 @@ public final class Runeword {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * get the ID of this runeword (they are stored as runeword1..200 in the txt files)
+     * @return the id of this {@link Runeword}
+     */
+    public int getId() {
+        return id;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

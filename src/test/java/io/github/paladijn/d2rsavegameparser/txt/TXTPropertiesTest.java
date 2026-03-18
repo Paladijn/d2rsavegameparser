@@ -38,7 +38,16 @@ class TXTPropertiesTest {
         final SetItem ironFist = cut.getSetItemById((short) 4);
 
         assertThat(ironFist)
-                .extracting(SetItem::getId, SetItem::getSetName, SetItem::getName, SetItem::getCode, SetItem::getItemName, SetItem::cannotLoot)
-                .containsExactly(4, "Hsarus' Defense", "Hsarus' Iron Fist", "buc", "Buckler", false);
+                .extracting(SetItem::getId, SetItem::getSetName, SetItem::getName, SetItem::getCode, SetItem::getItemName, SetItem::spawnable)
+                .containsExactly(4, "Hsarus' Defense", "Hsarus' Iron Fist", "buc", "Buckler", true);
+    }
+
+    @Test
+    void notSpawnableAndDisabledForChronicle() {
+        final SetItem ironFist = cut.getSetItemById((short) 128);
+
+        assertThat(ironFist)
+                .extracting(SetItem::getId, SetItem::getSetName, SetItem::getName, SetItem::getCode, SetItem::getItemName, SetItem::spawnable, SetItem::disableChronicle)
+                .containsExactly(128, "Warlord's Glory", "Warlord's Lust", "ghm", "Great Helm", false, true);
     }
 }
