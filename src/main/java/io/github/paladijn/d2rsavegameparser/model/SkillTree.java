@@ -17,6 +17,9 @@
  */
 package io.github.paladijn.d2rsavegameparser.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Enum representing different skill trees in the game.
  */
@@ -127,17 +130,18 @@ public enum SkillTree {
      */
     MARTIAL(50, CharacterType.ASSASSIN, "SkillCategoryAs1", "StrSklTabItem21"),
 
-    DEMON(51, CharacterType.WARLOCK, "SkillCategoryW1", "StrSklTabItem24"), // don't know the keys yet
+    DEMON(56, CharacterType.WARLOCK, "SkillCategoryW1", "StrSklTabItem24"), // don't know the keys yet
 
-    ELDRITCH(52, CharacterType.WARLOCK, "SkillCategoryW2", "StrSklTabItem22"), // don't know the keys yet
+    ELDRITCH(57, CharacterType.WARLOCK, "SkillCategoryW2", "StrSklTabItem22"),
 
-    CHAOS(53, CharacterType.WARLOCK, "SkillCategoryW3", "StrSklTabItem23"), // don't know the keys yet
+    CHAOS(58, CharacterType.WARLOCK, "SkillCategoryW3", "StrSklTabItem23"), // don't know the keys yet
 
     /**
      * Unknown skill tree.
      */
     UNKNOWN(999, CharacterType.NONE, "Unknown skilltree (or not linked to any character type)", "unknown skill tab");
 
+    private static final Logger log = LoggerFactory.getLogger(SkillTree.class);
     private final int index;
 
     private final CharacterType characterType;
@@ -164,6 +168,7 @@ public enum SkillTree {
                 return skillTree;
             }
         }
+        log.warn("unknown skiltree ID {}", id);
         return UNKNOWN;
     }
 
