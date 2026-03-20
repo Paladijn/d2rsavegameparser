@@ -160,7 +160,6 @@ Maiden Pike	27
 Grim Wand	27
 Greaves	27
 Plate Boots	27
-Girdle	27
 Giant Axe	27
 Gauntlets	27
 Flamberge	27
@@ -290,7 +289,7 @@ Crowbill	45
 Ceremonial Spear	45
 Basinet	45
 Stilleto	48
-Sparking Ball	48
+Sparkling Ball	48
 Rune Staff	48
 Protector Shield	48
 Naga	48
@@ -427,7 +426,7 @@ Tiara	72
 thresher	72
 Sacred Rondache	72
 Monarch	72
-Mithirl Point	72
+Mithril Point	72
 Ettin Axe	72
 Diamond Mail	72
 Diamond Bow	72

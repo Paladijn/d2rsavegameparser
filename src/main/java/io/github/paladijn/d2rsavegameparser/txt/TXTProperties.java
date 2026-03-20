@@ -75,6 +75,7 @@ public final class TXTProperties {
     private final List<MagicAffix> magicSuffixes = new ArrayList<>();
 
     private final HashMap<String, Integer> treasureClassByItem = new HashMap<>();
+    private final HashMap<String, Integer> treasureClassByCode = new HashMap<>();
 
     /**
      * Retrieve the singleton instance of the txt file properties so they're only read once.
@@ -104,6 +105,7 @@ public final class TXTProperties {
         parseMagicPrefix();
         parseMagicSuffix();
         parseTreasureClass();
+        parseTreasureClassByCode();
     }
 
     /**
@@ -253,6 +255,15 @@ public final class TXTProperties {
      */
     public int getTreasureClass(String itemName) {
         return Optional.ofNullable(treasureClassByItem.get(itemName.toLowerCase())).orElse(0);
+    }
+
+    /**
+     * Get the treasure class by item code
+     * @param code the item code to look for
+     * @return The treasure class of the item, or 0 if it couldn't be found
+     */
+    public int getTreasureClassByCode(String code) {
+        return Optional.ofNullable(treasureClassByCode.get(code)).orElse(0);
     }
 
     private void parseMagicSuffix() {
@@ -463,6 +474,27 @@ public final class TXTProperties {
             });
         } catch (IOException | NullPointerException e) {
             throw new ParseException("Could not parse tcbyitemname.txt file", e);
+        }
+    }
+
+    private void parseTreasureClassByCode() {
+        try (InputStream resource = Thread.currentThread().getContextClassLoader().getResourceAsStream("tcbyitemcode.txt")) {
+            new BufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8)).lines().forEach(line -> {
+                if (!line.isBlank() && !line.startsWith("name")) {
+                    String[] blocks = line.split("\t");
+                    if (blocks.length != 2) {
+                        log.error("incorrect line in tcbyitemcode: {}", line);
+                    } else {
+                        if (!ParseHelper.isNumeric(blocks[1])) {
+                            log.error("could not read numeric TC from line {}", line);
+                        } else {
+                            treasureClassByCode.put(blocks[0].toLowerCase(), Integer.parseInt(blocks[1]));
+                        }
+                    }
+                }
+            });
+        } catch (IOException | NullPointerException e) {
+            throw new ParseException("Could not parse tcbyitemcode.txt file", e);
         }
     }
 
