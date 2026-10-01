@@ -473,10 +473,6 @@ final class ItemParser {
 
         final String personalizedName = sbPersonalization.toString();
         itemBuilder.personalizedName(personalizedName);
-        if (!itemScaffolding.isRuneword()) { // Runewords are on odd duck: the item will become "Personalized's Leather Armor" with the name Stealth.
-            final String personalizedFormat = personalizedName.endsWith("s") ? "%s' %s" : "%s's %s";
-            itemBuilder.itemName(personalizedFormat.formatted(personalizedName, itemScaffolding.getItemName()));
-        }
     }
 
     private static void adjustForEthereal(Item.ItemBuilder itemBuilder, ItemScaffolding itemScaffolding) {
